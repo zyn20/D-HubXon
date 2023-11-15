@@ -406,5 +406,27 @@ The system must provide responsive and helpful customer support to users.
 - If the freelancer does not have enough funds in their wallet, they will be prompted to add funds before they can subscribe to a plan.
 - If the freelancer's payment is declined, they will be prompted to enter a different payment method.
 
+# 5.5 Dispute Management
+
+## Table 19: Dispute Management Expanded Use Case
+
+**Use Case Name:** Dispute Resolution Process  
+**Use Case ID:** UC005  
+**Description:** This use case outlines the process for resolving disputes between clients and freelancers on the D-HubXon platform.  
+**Primary Actors:** Client, Freelancer  
+**Secondary Actors:** Community  
+**Preconditions:**
+- The freelancer and the client must have a registered account on D-HubXon.
+- The freelancer and the client must have agreed to the terms and conditions of the platform.
+- The freelancer and the client must have a contract in place for the project.
+
+**Main Flow:**
+1. The client or the freelancer initiates the dispute resolution process by submitting a formal complaint through the platform's designated interface.
+2. The community creates a poll to gather member votes on the presented dispute, facilitating transparent decision-making.
+3. The final decision is based on the majority vote from the community members, ensuring a fair and democratic resolution process.
+
+**Post conditions:** The disagreement is settled in a way that makes both the client and the freelancer happy, or a fair decision is reached after looking at the proof provided.  
+**Alternative Flows:**
+- If the freelancer or the client does not agree with the decision of the Dispute Resolution Team, they can appeal the decision.
 
 
