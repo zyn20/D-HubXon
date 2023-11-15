@@ -52,3 +52,16 @@ The Decentralized Marketplace is a great business opportunity. It allows busines
 ### 2.4 Scope
 
 The "Decentralized Marketplace" project addresses the challenges of costly intermediaries and the lack of collaborative platforms in service and software exchanges. It leverages blockchain technology to facilitate direct interactions, ensuring secure and transparent transactions. Users can create detailed profiles, connect with suitable freelancers, and access ready-to-use software. Beyond transactions, the platform offers educational resources, healthcare benefits, and support for open-source projects, fostering a collaborative and inclusive ecosystem that empowers users to build strong connections and access valuable services.
+### 2.5 Constraints
+
+Project constraints for "D-HubXon" include:
+
+- Implementing and maintaining blockchain technology may introduce technical complexities, including scalability challenges and performance bottlenecks.
+
+- A decentralized marketplace might face resistance due to unfamiliarity with blockchain technology and concerns about security and trust.
+
+- Dealing with the platform slowing down when a lot of people use it, and sometimes making it more expensive.
+
+- The platform operates solely with digital currencies, which means traditional forms of payment (like cash or credit cards) are not accepted. Users must use digital currencies for all transactions on the platform, which could limit accessibility for those not familiar with digital currencies.
+
+- Regulatory and legal restrictions in certain countries or regions may limit the platform's accessibility and functionality in specific areas.
