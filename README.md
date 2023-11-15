@@ -224,4 +224,187 @@ The system must provide robust communication tools to help freelancers and clien
 ### 3.3.10 Customer Support Requirement
 
 The system must provide responsive and helpful customer support to users.
+# 4. High-Level Use Cases
+
+## 4.1 Registration
+
+**Table 5 Registration brief use case**
+- **ID:** UC1
+- **Name:** Registration
+- **Type:** Primary
+- **Actors:** Freelancers, Clients
+- **Description:** Users can create an account on the D-HubXon platform using a valid email and providing a password. During registration, the user provides necessary information and credentials to create an account on the platform.
+
+## 4.2 Login
+
+**Table 6 Login brief use case**
+- **ID:** UC2
+- **Name:** Login
+- **Type:** Primary
+- **Actors:** Freelancers, Clients
+- **Description:** Users can log in to the D-HubXon platform using their registered credentials, providing access to their personalized profiles, project details, course materials, and community interactions.
+
+## 4.3 Manage Profile
+
+**Table 7 Manage Profile brief use case**
+- **ID:** UC3
+- **Name:** Manage Profile
+- **Type:** Primary
+- **Actors:** Freelancers, Clients
+- **Description:** Users can create and manage their profiles by adding personal information, skills, experience, portfolio, and other relevant details. They can edit, update, and delete information as needed to maintain an accurate and up-to-date profile. This profile information serves as a primary representation of the user's capabilities and offerings within the D-HubXon ecosystem.
+
+## 4.4 Manage Portfolio
+
+**Table 8 Manage Portfolio brief use case**
+- **ID:** UC4
+- **Name:** Manage Portfolio
+- **Type:** Primary
+- **Actors:** Freelancers
+- **Description:** Freelancers can use D-HubXon to manage their portfolios, including their skills, experience, projects, and courses. They can also use D-HubXon to showcase their portfolios to potential clients.
+
+## 4.5 Join Community
+
+**Table 9 Join Community brief use case**
+- **ID:** UC5
+- **Name:** Join Community
+- **Type:** Secondary
+- **Actors:** Freelancers, Clients
+- **Description:** Users, both freelancers, and clients, can join the community to participate in discussions, collaborate on open-source projects, and contribute to funding polls. This enhances networking opportunities and fosters a sense of belonging within the decentralized freelance marketplace ecosystem.
+
+## 4.6 Create Poll
+
+**Table 10 Create Poll brief use case**
+- **ID:** UC6
+- **Name:** Create Poll
+- **Type:** Secondary
+- **Actors:** Community Member, Freelancer, Client
+- **Description:** Any community member, freelancer, or client can create a poll to gather opinions and make decisions regarding various community matters, funding allocation for open-source projects, or strategic decisions within the D-HubXon platform. The poll facilitates active participation and collaboration among community members, promoting a transparent and inclusive decision-making process.
+
+## 4.7 Payment Handling and Escrow Services
+
+**Table 11 Payment and escrow services brief use case**
+- **ID:** UC7
+- **Name:** Payment Handling and Escrow Services
+- **Type:** Secondary
+- **Actors:** Buyers, Sellers, and System
+- **Description:** The platform securely manages digital currency payments, ensuring the safe transfer of funds between buyers and sellers. An escrow service temporarily holds the payments until the successful delivery of the project, providing a secure transaction environment for all parties involved.
+
+## 4.8 Chat
+
+**Table 12 chat brief use case**
+- **ID:** UC8
+- **Name:** Chat
+- **Type:** Secondary
+- **Actors:** Freelancers, Clients
+- **Description:** The chat functionality enables real-time communication between freelancers and clients, allowing them to discuss project details, negotiate terms, and address any concerns promptly.
+
+## 4.9 Notifications
+
+**Table 13 Notifications brief use case**
+- **ID:** UC9
+- **Name:** Notifications
+- **Type:** Primary
+- **Actors:** Freelancers, Clients, System
+- **Description:** The system sends push notifications to users for new job postings, message alerts, important platform announcements, payment updates, and other relevant activities, ensuring timely communication and updates within the D-HubXon platform.
+
+## 4.10 Trust Badge
+
+**Table 14 Trust Badge brief use case**
+- **ID:** UC10
+- **Name:** Trust Badge
+- **Type:** Secondary
+- **Actors:** Verified Users, New Users
+- **Description:** Verified users receive a trust badge that signifies their credibility and reliability within the platform. This feature promotes trust among users and encourages new users to engage with verified profiles, fostering a secure and transparent business environment for all participants.
+
+# 5. Expanded Use Cases
+
+## 5.1 Project Posting
+
+**Table 15 Project Posting Expanded use case**
+- **Use case Name:** Project Posting
+- **Use Case ID:** UC001
+- **Description:** A client posts a project on D-HubXon to find freelancers and service providers who can do the job.
+- **Primary Actors:** Client
+- **Secondary Actors:** Freelancer
+- **Preconditions:** The user must have a registered account on the platform.
+
+**Main Flow:**
+1. The client logs into the D-HubXon platform and accesses the "Project Posting" section.
+2. The client fills out the project details, including the project title, description, requirements, budget range, and project deadline, and submits the form.
+3. The system validates and stores the project details, making the project visible to freelancers and service providers on the platform.
+
+**Post conditions:** Project is successfully posted on the platform and visible to freelancers, allowing the client to manage incoming proposals.
+
+**Alternative Flows:**
+1. System prompts the client to rectify missing or invalid information.
+2. System notifies the client of network or system issues during submission.
+3. If the client attaches any files that are too large, they will be prompted to compress them or upload them to a cloud storage service.
+
+## 5.2 Project Funding
+
+**Table 16 Project Funding Expanded use case**
+- **Use case Name:** Project Funding
+- **Use Case ID:** UC002
+- **Description:** A freelancer or client can create a poll to get funding for their open-source project from other community members.
+- **Primary Actors:** Freelancer, Client
+- **Secondary Actors:** Community members
+- **Preconditions:** The freelancer or client must have a registered account on D-HubXon.
+
+**Main Flow:**
+1. The freelancer or client navigates to the "Create Poll" page.
+2. The freelancer or client enters the poll details, such as the poll title, description, and funding goal.
+3. The freelancer or client clicks the "Create Poll" button.
+4. Community members review the project proposal and contribute funds through the platform's funding feature.
+5. The system collects the money contributed by people until either enough money is gathered to reach the target or the time for collecting money for the project ends.
+
+**Post conditions:** The freelancer or client has received the funds to support their open-source project.
+
+**Alternative Flows:**
+1. If the project proposed by the freelancer does not meet the validity criteria during the community review, it will be rejected, and the system will notify the freelancer about the rejection.
+2. If the funding goal is not reached within the specified time frame, the system automatically refunds the contributed funds to the community members.
+
+## 5.3 Course Purchase and Download
+
+**Table 17 Course Purchase and Download Expanded use case**
+- **Use case Name:** Course Purchase and Download
+- **Use Case ID:** UC003
+- **Description:** This use case outlines the process of a user purchasing and downloading a course from the Education Hub.
+- **Primary Actors:** Freelancer, Client
+- **Secondary Actors:** None
+- **Preconditions:** The user must be registered on D-HubXon and have a valid payment method linked to their account.
+
+**Main Flow:**
+1. The user browses the Education Hub and selects a desired course.
+2. The user initiates the purchase and payment is deducted from their wallet.
+3. Upon successful payment, the user gains access to the course and can download it for offline access.
+
+**Post conditions:** The user has successfully purchased and downloaded the selected course for personal or professional development.
+
+**Alternative Flows:**
+- If the payment fails, the user is notified of the failure and prompted to use an alternate payment method.
+- In the case of a slow network, the download may take longer than usual, but the user is informed of the progress.
+
+## 5.4 Subscription Management
+
+**Table 18 Subscription Management Expanded use case**
+- **Use case Name:** Subscription Management
+- **Use Case ID:** UC004
+- **Description:** A freelancer subscribes to a subscription plan to access certain features and benefits of the platform.
+- **Primary Actors:** Freelancer
+- **Secondary Actors:** System
+- **Preconditions:** Freelancers must have a registered account on D-HubXon. Sufficient funds should be available in the freelancer's wallet to subscribe to the service.
+
+**Main Flow:**
+1. The freelancer navigates to the "Subscription" page.
+2. The freelancer selects a subscription plan and clicks the "Subscribe" button.
+3. The freelancer enters their payment information and confirms the payment.
+4. The freelancer's subscription is activated.
+
+**Post conditions:** The subscription plan is successfully managed, and funds are accessible as per the chosen plan.
+
+**Alternative Flows:**
+- If the freelancer does not have enough funds in their wallet, they will be prompted to add funds before they can subscribe to a plan.
+- If the freelancer's payment is declined, they will be prompted to enter a different payment method.
+
+
 
