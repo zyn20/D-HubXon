@@ -4,7 +4,7 @@ function App() {
   return (
 <>
 <h1>
-  Zain Ul Abideen
+  D-HubXon- A decentralized Marketplace for Serivces and Products
 </h1>
 </>
   );
