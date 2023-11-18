@@ -5,7 +5,7 @@ function App() {
   return (
 <>
 <h1>
-  zain
+  Zain Ul Abideen
 </h1>
 </>
   );
