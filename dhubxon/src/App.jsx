@@ -1,6 +1,5 @@
 
 import './App.css';
-
 function App() {
   return (
 <>
@@ -10,5 +9,4 @@ hjjg
 </>
   );
 }
-
 export default App;
