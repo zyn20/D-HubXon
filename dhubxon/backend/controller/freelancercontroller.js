@@ -11,7 +11,6 @@ var user_={}
 
 
 
-
 const signIn = async (req, res) => {
   try {
     await sequelize.sync();
