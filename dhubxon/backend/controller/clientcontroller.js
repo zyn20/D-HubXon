@@ -185,6 +185,28 @@ const update_password = async (req, res) => {
 
 
 
+const Postproject = async (req, res) => {
+    try {
+        var post = {
+            ClientID: 1,
+            Title:req.body.title,
+            Description: req.body.description,
+            Price: req.body.price,
+            Keywords: req.body.keyword
+        };
+
+        const newUser = await Post.create({
+            ...post
+        });
+
+        console.log(post);
+
+        res.status(201).send('Project posted successfully'); 
+    } catch (error) {
+        console.error("Error in Postproject: ", error);
+        res.status(500).send(error.message);
+    }
+};
 
 
 
@@ -195,5 +217,5 @@ const update_password = async (req, res) => {
     forgetpassword,
     verifypassword,
     update_password,
-    
+     Postproject
 };
