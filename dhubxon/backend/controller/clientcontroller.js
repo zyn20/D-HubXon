@@ -86,7 +86,7 @@ const signIn = async (req, res) => {
       }
   
       console.log(data);
-      // const token = jwtToken.sign({ Role : "user"}, 'dfghjk')
+     
       return res.status(200).send("Data found");
   
     } catch (error) {
@@ -96,6 +96,95 @@ const signIn = async (req, res) => {
   };
   
   
+const forgetpassword=async (req,res)=>{
+try{
+
+var  verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+temporaryUsersrecord={
+    code:verificationCode,
+    email:req.body.email
+}
+console.log(verificationCode);
+
+await sendVerificationEmail(req.body.email,verificationCode);
+
+res.status(200).send("Forget password work correctly");
+console.log("Forget password work correctly")
+
+}
+catch(error){
+    console.error("can not send forget password: ", error);
+    res.status(500).send(error.message);
+}
+}
+
+const verifypassword = async (req, res) => {
+    try {
+        const verificationCode = req.body.code;
+        console.log(verificationCode);
+
+        if (verificationCode != temporaryUsersrecord.code) {
+            return res.status(400).send('Invalid verification code');
+        }
+        else{
+
+        // What should be done now?
+       
+
+
+        }
+        res.send('Verification Code matched');
+    } catch (error) {
+        console.error("Error in verifyUser: ", error);
+        res.status(500).send(error.message);
+    }
+
+};
+
+
+const update_password = async (req, res) => {
+    try {
+       
+        const oldData = await Client.findOne({
+            where: {
+                Email: temporaryUsersrecord.email, 
+            },
+        });
+
+       
+        console.log("Old Data:", oldData);
+
+      d
+        const newData = {
+            UserID: oldData.UserID,
+            Name: oldData.Name,
+            Email: oldData.Email,
+            Password: req.body.password, 
+        };
+
+        // Log the new data
+        console.log("New Data:", newData);
+
+        
+        await Client.update(newData, {
+            where: {
+                Email: temporaryUsersrecord.email, 
+            },
+        });
+
+        console.log("Password Changed");
+        res.status(200).send("Password Changed"); 
+    } catch (error) {
+        console.error("Error in updatePassword:", error);
+        res.status(500).send(error.message);
+    }
+};
+
+
+
+
+
+
 
 
 
@@ -103,4 +192,8 @@ const signIn = async (req, res) => {
     signIn,
     signUp,
     verify,
-  }
+    forgetpassword,
+    verifypassword,
+    update_password,
+    
+};

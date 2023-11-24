@@ -2,7 +2,7 @@ const Freelancer = require("../models/freelancermodel");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
 
-// const jwtToken = require("jsonwebtoken");
+
 const sequelize = require("../config");
 let temporaryAdminrecord = {};
 var user_={}
@@ -29,7 +29,7 @@ const signIn = async (req, res) => {
     }
 
     console.log(data);
-    // const token = jwtToken.sign({ Role: "freelancer" }, "rtyui");
+   
     res.status(200).send("Sign in");
 
   } catch (error) {
@@ -147,36 +147,36 @@ const forgetpassword=async (req,res)=>{
     
     const update_password = async (req, res) => {
         try {
-            // Find the client with the specified email
+            
             const oldData = await Freelancer.findOne({
                 where: {
-                    Email: temporaryUsersrecord.email, // Replace with req.body.email if needed
+                    Email: temporaryUsersrecord.email, 
                 },
             });
     
-            // Log the old data
+       
             console.log("Old Data:", oldData);
     
-            // Prepare new data with the updated password
+            
             const newData = {
                 AdminID: oldData.AdminID,
                 Name: oldData.Name,
                 Email: oldData.Email,
-                Password: req.body.password, // Assuming the new password is sent in the request body
+                Password: req.body.password, 
             };
     
-            // Log the new data
+         
             console.log("New Data:", newData);
     
-            // Update the client's information with the new data
+            
             await Freelancer.update(newData, {
                 where: {
-                    Email: temporaryUsersrecord.email, // Assuming you have temporaryUsersrecord defined
+                    Email: temporaryUsersrecord.email, 
                 },
             });
     
             console.log("Password Changed");
-            res.status(200).send("Password Changed"); // Send a response if needed
+            res.status(200).send("Password Changed"); 
         } catch (error) {
             console.error("Error in updatePassword:", error);
             res.status(500).send(error.message);
