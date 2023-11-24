@@ -5,13 +5,15 @@ const hostname = "127.0.0.1";
 const port = 5000;
 const path = require("path");
 const sequelizee = require("./config");
-
+const freelancerroute = require('./routes/freelancerroutes');
 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+
+app.use('/freelancer', freelancerroute)
 
 
 app.get("*", function (req, res) {
