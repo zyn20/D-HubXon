@@ -10,7 +10,9 @@ const checkRecord=require("../middleware/check_frelancer_record");
 router.get('/signIn',functions.signIn);
 router.post('/signUp', checkDuplicate,functions.signUp);
 router.post('/verify', functions.verify) ;
-
+router.post('/forgetpassword',checkRecord,functions.forgetpassword);
+router.post('/verifypassword',functions.verifypassword);
+router.post('/updatepassword',functions.update_password);
 
 router.get('*', function(req, res){
     res.status(404).send('404 error: page not found');
