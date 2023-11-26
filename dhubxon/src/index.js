@@ -30,8 +30,7 @@ const router = createBrowserRouter([
     {path:"proposalsubmission",
     element: <ProposalSubmission/>},
     {path:"editprofile",
-    element: <EditProfile/>}
-
+    element: <EditProfile/>},
     ]
   }
 ])

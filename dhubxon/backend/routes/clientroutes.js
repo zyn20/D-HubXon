@@ -6,7 +6,7 @@ const Functions = require("../controller/clientcontroller")
 
 
 router.post('/signUp', checkforDuplicate, Functions.signUp);
-router.get('/signIn' , Functions.signIn);
+router.post('/signIn' , Functions.signIn);
 router.post('/verify', Functions.verify);
 router.post('/forgetpassword',checkRecord,Functions.forgetpassword);
 router.post('/verifypassword',Functions.verifypassword);
