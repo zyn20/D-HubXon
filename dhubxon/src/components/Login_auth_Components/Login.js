@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import axios from 'axios'
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { loginFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
 import Input from "./Input";
-import Swal from 'sweetalert2'
-
-
+import Swal from 'sweetalert2';
 
 const fields = loginFields;
-let fieldsState = {};
-fields.forEach(field => (fieldsState[field.id] = ''));
+const initialLoginState = fields.reduce((acc, field) => {
+  acc[field.id] = '';
+  return acc;
+}, {});
 
-export default function Login(){
-    const [loginState,setLoginState]=useState(fieldsState);
-    const navigate = useNavigate();
+export default function Login() {
+  const [loginState, setLoginState] = useState(initialLoginState);
+  const navigate = useNavigate();
 
 
     const handleChange=(e)=>{
@@ -98,9 +98,8 @@ export default function Login(){
             }
         </div>
 
-        <FormExtra/>
-        <FormAction handleSubmit={handleSubmit}    text="Login"/>
-
-      </form>
-    )
+      <FormExtra />
+      <FormAction handleSubmit={handleSubmit} text="Login" />
+    </form>
+  );
 }

@@ -68,7 +68,7 @@ res.send("ok");
 
 const verify= async (req, res) => {
     try {
-// console.log(req.body.code);
+        console.log(req.body.code);
         const  verificationCode  = req.body.code;
         console.log(verificationCode);
 

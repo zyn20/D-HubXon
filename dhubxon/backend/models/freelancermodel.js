@@ -3,10 +3,7 @@ const sequelize = require("../config");
 
 //------create table with feilds--------
 const Freelancer = sequelize.define("Freelancer", {
-  // AdminID: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  // },
+
   Name: {
     type: DataTypes.STRING,
     allowNull: false,
