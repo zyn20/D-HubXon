@@ -1,13 +1,14 @@
 const Client = require("../models/clientmodel");  
+const Freelancer = require("../models/freelancermodel");  
 
 const checkDuplicate = (req, res, next) => {
-  Client.findOne({
+  Freelancer.findOne({
       where: {
-          Name: req.body.name
+          Name: req.body.email
       }
     }).then(rs => {
       if (rs) {
-        res.status(400).send({message: "Failed Username is already  exist"});
+        res.status(400).send({message: "Failed email is already  exist"});
         return;
       }
       Client.findOne({

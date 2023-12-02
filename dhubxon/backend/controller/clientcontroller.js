@@ -30,6 +30,7 @@ user_={
 
 
 console.log(user_);
+res.send("verification code sent");
 
 
     } catch (error) {
@@ -54,7 +55,7 @@ else{
     }
 
 
-        res.send('User verified and registered successfully');
+        res.status(200).send('User verified and registered successfully');
     } catch (error) {
         console.error("Error in verifyUser: ", error);
         res.status(500).send(error.message);
@@ -85,7 +86,8 @@ const signIn = async (req, res) => {
   
       console.log(data);
      
-      return res.status(200).send("Data found");
+    //   return res.status(200).send("Data found");
+      return res.status(200).json({ message: "Data found", data: data });
   
     } catch (error) {
       console.error("Failed to sign in:", error);

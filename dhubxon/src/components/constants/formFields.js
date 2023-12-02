@@ -13,7 +13,7 @@ const loginFields=[
         labelText:"Password",
         labelFor:"password",
         id:"password",
-        name:"password",
+        name:"pass",
         type:"password",
         autoComplete:"current-password",
         isRequired:true,
