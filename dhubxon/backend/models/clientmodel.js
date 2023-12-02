@@ -2,10 +2,7 @@ const sequelize = require("../config")
 const { Sequelize, DataTypes } = require("sequelize");
 
 const Client = sequelize.define("client", {
-    UserID: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+ 
     Name: {
       type: DataTypes.STRING,
       allowNull: false

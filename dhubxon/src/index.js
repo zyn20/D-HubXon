@@ -11,10 +11,12 @@ import ProposalSubmission from './pages/ProposalSubmission';
 import SetupProfile from './pages/SetupProfile';
 import FreelancerDashboard from './pages/FreelancerDashboard';
 import EditProfile from './pages/EditProfile';
-import LoginPage from './pages/Login';
+import Login from './pages/Login';
 import LLogin_ from './pages/LLogin';
+import PostProject from './pages/PostProject'
 
 import SignupPage from './pages/Signup';
+import MainPage from './pages/mainPage'
 import Check_ from './pages/Check_user';
 const router = createBrowserRouter([
   {
@@ -39,7 +41,7 @@ const router = createBrowserRouter([
     element:<FreelancerDashboard/>},
     ,
     {path:"login",
-    element:<LoginForm/>},
+    element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
     {path:"proposalsubmission",

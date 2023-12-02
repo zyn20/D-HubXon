@@ -20,6 +20,7 @@ function Login() {
         if(userType==="freelancer"){ 
         
           console.log("Freeeeeeeeeeeeee");
+          console.log(code);
             response = await axios.post('http://127.0.0.1:5000/freelancer/verify', { code });}
   
              else{  response = await axios.post('http://127.0.0.1:5000/client/verify', { code});}
@@ -27,7 +28,7 @@ function Login() {
         if(response.status === 200){
             console.log("---------------------------------");
             console.log(response.data);
-            navigate('/jobview')
+            navigate('/')
         }
     }
 

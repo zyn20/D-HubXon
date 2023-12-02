@@ -5,12 +5,10 @@ const app = express();
 const hostname = "127.0.0.1";
 const port = 5000;
 const path = require("path");
-const cors = require('cors');
 const sequelizee = require("./config");
 const freelancerroute = require('./routes/freelancerroutes');
 const clientroute = require('./routes/clientroutes');
 
-app.use(cors());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
