@@ -3,53 +3,67 @@ import { loginFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
 import Input from "./Input";
+import axios from 'axios';
 
-const fields=loginFields;
+const fields = loginFields;
 let fieldsState = {};
-fields.forEach(field=>fieldsState[field.id]='');
+fields.forEach(field => (fieldsState[field.id] = ''));
 
-export default function Login(){
-    const [loginState,setLoginState]=useState(fieldsState);
+export default function Login() {
+  const [loginState, setLoginState] = useState(fieldsState);
 
-    const handleChange=(e)=>{
-        setLoginState({...loginState,[e.target.id]:e.target.value})
+  const handleChange = (e) => {
+    setLoginState({ ...loginState, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await authenticateUser(loginState);
+      console.log(response.data); // Log the API response
+      // Handle successful login, redirection, etc.
+    } catch (error) {
+      console.error('Error authenticating user:', error.message);
+      // Handle login error (display error message, etc.)
     }
+  };
 
-    const handleSubmit=(e)=>{
-        e.preventDefault();
-        authenticateUser();
+  // Handle Login API Integration here
+  const authenticateUser = async (userData) => {
+    try {
+      const apiUrl = 'http://127.0.0.1:5000/freelancer/signIn'; // Update with your API endpoint
+      const response = await axios.post(apiUrl, {
+        email: userData['email-address'], // Assuming your field ID is 'email-address'
+        pass: userData['password'] // Assuming your field ID is 'password'
+      });
+
+      return response;
+    } catch (error) {
+      throw error;
     }
+  };
 
-    //Handle Login API Integration here
-    const authenticateUser = () =>{
+  return (
+    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="-space-y-px">
+        {fields.map((field) => (
+          <Input
+            key={field.id}
+            handleChange={handleChange}
+            value={loginState[field.id]}
+            labelText={field.labelText}
+            labelFor={field.labelFor}
+            id={field.id}
+            name={field.name}
+            type={field.type}
+            isRequired={field.isRequired}
+            placeholder={field.placeholder}
+          />
+        ))}
+      </div>
 
-    }
-
-    return(
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-        <div className="-space-y-px">
-            {
-                fields.map(field=>
-                        <Input
-                            key={field.id}
-                            handleChange={handleChange}
-                            value={loginState[field.id]}
-                            labelText={field.labelText}
-                            labelFor={field.labelFor}
-                            id={field.id}
-                            name={field.name}
-                            type={field.type}
-                            isRequired={field.isRequired}
-                            placeholder={field.placeholder}
-                    />
-                
-                )
-            }
-        </div>
-
-        <FormExtra/>
-        <FormAction handleSubmit={handleSubmit} text="Login"/>
-
-      </form>
-    )
+      <FormExtra />
+      <FormAction handleSubmit={handleSubmit} text="Login" />
+    </form>
+  );
 }

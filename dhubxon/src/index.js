@@ -11,8 +11,11 @@ import ProposalSubmission from './pages/ProposalSubmission';
 import SetupProfile from './pages/SetupProfile';
 import FreelancerDashboard from './pages/FreelancerDashboard';
 import EditProfile from './pages/EditProfile';
-import LoginPage from './pages/Login';
+import LoginForm from './pages/Login';
+
 import SignupPage from './pages/Signup';
+import MainPage from './pages/mainPage';
+import PostProject from './pages/PostProject';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -25,13 +28,17 @@ const router = createBrowserRouter([
 
       {path:"jobview",
     element:<Fullviewjob/>},
+    {path:"/homepage",
+    element:<MainPage/>},
+    {path:"/postproject",
+    element:<PostProject/>},
     {path:"setprofile",
     element:<SetupProfile/>},
     {path:"dash",
     element:<FreelancerDashboard/>},
     ,
     {path:"login",
-    element:<LoginPage/>},
+    element:<LoginForm/>},
     {path:"signup",
     element:<SignupPage/>},
     {path:"proposalsubmission",

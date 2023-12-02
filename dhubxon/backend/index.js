@@ -1,5 +1,6 @@
 const bodyParser = require("body-parser");
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const hostname = "127.0.0.1";
 const port = 5000;
@@ -8,7 +9,7 @@ const sequelizee = require("./config");
 const freelancerroute = require('./routes/freelancerroutes');
 const clientroute = require('./routes/clientroutes');
 
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));

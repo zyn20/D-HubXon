@@ -7,7 +7,7 @@ const checkRecord=require("../middleware/check_frelancer_record");
 
 
 
-router.get('/signIn',functions.signIn);
+router.post('/signIn',functions.signIn);
 router.post('/signUp', checkDuplicate,functions.signUp);
 router.post('/verify', functions.verify) ;
 router.post('/forgetpassword',checkRecord,functions.forgetpassword);

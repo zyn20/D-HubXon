@@ -14,7 +14,6 @@ var user_={}
 const signIn = async (req, res) => {
   try {
     await sequelize.sync();
-
     const data = await Freelancer.findOne({
       where: {
         Password: req.body.pass,
