@@ -9,9 +9,9 @@ import Swal from 'sweetalert2'
 
 
 
-const fields=loginFields;
+const fields = loginFields;
 let fieldsState = {};
-fields.forEach(field=>fieldsState[field.id]='');
+fields.forEach(field => (fieldsState[field.id] = ''));
 
 export default function Login(){
     const [loginState,setLoginState]=useState(fieldsState);
