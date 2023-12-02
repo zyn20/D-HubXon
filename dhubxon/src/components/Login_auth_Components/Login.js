@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 import { loginFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
 import Input from "./Input";
+import Swal from 'sweetalert2'
+
+
 
 const fields=loginFields;
 let fieldsState = {};
@@ -10,6 +15,8 @@ fields.forEach(field=>fieldsState[field.id]='');
 
 export default function Login(){
     const [loginState,setLoginState]=useState(fieldsState);
+    const navigate = useNavigate();
+
 
     const handleChange=(e)=>{
         setLoginState({...loginState,[e.target.id]:e.target.value})
@@ -20,10 +27,60 @@ export default function Login(){
         authenticateUser();
     }
 
-    //Handle Login API Integration here
-    const authenticateUser = () =>{
+   
+    const authenticateUser = async () => {
+        var email, pass;
+        email = loginState['email-address'];
+        pass = loginState['password'];
 
-    }
+
+
+
+        
+    
+        // try {
+        //     const clientResponse = await axios.post('http://127.0.0.1:5000/client/signIn', { email, pass });
+    
+        //     if (clientResponse.status == 200) {
+        //         console.log("Client Sign-in successful!");
+        //         Swal.fire("Sign in Successfully!");
+        //         navigate('/jobview');
+        //         return;
+        //     }
+    
+        //     const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
+    
+        //     if (freelancerResponse.status === 200) {
+        //         console.log("Freelancer Sign-in successful!");
+        //         Swal.fire("Sign in Successfully!");
+        //         navigate('/freelancerdashboard');
+        //     } else {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: "Oops...",
+        //             text: "User Not Found!",
+        //             footer: <a href="/signup">Create a new account</a>,
+        //         });
+        //         navigate('/login');
+        //     }
+        // } catch (error) {
+        //     console.error("Error during authentication:", error);
+    
+        //     if (error.response) {
+        //         console.error("Server responded with non-2xx status:", error.response.data);
+        //         console.error("Status code:", error.response.status);
+        //     } else if (error.request) {
+        //         console.error("No response received from the server:", error.request);
+        //     } else {
+        //         console.error("Error setting up the request:", error.message);
+        //     }
+    
+        //     window.alert('Sign-in Failed');
+        //     navigate('/login');
+        // }
+    };
+    
+    
 
     return(
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -48,7 +105,7 @@ export default function Login(){
         </div>
 
         <FormExtra/>
-        <FormAction handleSubmit={handleSubmit} text="Login"/>
+        <FormAction handleSubmit={handleSubmit}    text="Login"/>
 
       </form>
     )

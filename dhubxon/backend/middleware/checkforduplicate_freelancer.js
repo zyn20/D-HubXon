@@ -4,7 +4,7 @@ const checkDuplicate = (req, res, next) => {
   console.log("i am in check function");
     Freelancer.findOne({
       where: {
-          Name: req.body.name
+          Name: req.body.email
       }
     }).then(rs => {
       if (rs) {
