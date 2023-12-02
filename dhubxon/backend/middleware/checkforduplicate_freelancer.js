@@ -1,8 +1,10 @@
 const Freelancer = require("../models/freelancermodel");  
+const Client = require("../models/clientmodel");  
+
 
 const checkDuplicate = (req, res, next) => {
   console.log("i am in check function");
-    Freelancer.findOne({
+    Client.findOne({
       where: {
           Name: req.body.email
       }
