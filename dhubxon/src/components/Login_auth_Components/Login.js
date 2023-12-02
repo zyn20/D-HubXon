@@ -28,57 +28,7 @@ export default function Login(){
     }
 
    
-    // const authenticateUser = async () => {
-    //     var email, pass;
-    //     email = loginState['email-address'];
-    //     pass = loginState['password'];
-
-
-
-
-        
     
-    //     try {
-    //         const clientResponse = await axios.post('http://127.0.0.1:5000/client/signIn', { email, pass });
-    
-    //         if (clientResponse.status == 200) {
-    //             console.log("Client Sign-in successful!");
-    //             Swal.fire("Sign in Successfully!");
-    //             navigate('/jobview');
-    //             return;
-    //         }
-    
-    //         const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
-    
-    //         if (freelancerResponse.status === 200) {
-    //             console.log("Freelancer Sign-in successful!");
-    //             Swal.fire("Sign in Successfully!");
-    //             navigate('/freelancerdashboard');
-    //         } else {
-    //             Swal.fire({
-    //                 icon: "error",
-    //                 title: "Oops...",
-    //                 text: "User Not Found!",
-    //                 footer: <a href="/signup">Create a new account</a>,
-    //             });
-    //             navigate('/login');
-    //         }
-    //     } catch (error) {
-    //         console.error("Error during authentication:", error);
-    
-    //         if (error.response) {
-    //             console.error("Server responded with non-2xx status:", error.response.data);
-    //             console.error("Status code:", error.response.status);
-    //         } else if (error.request) {
-    //             console.error("No response received from the server:", error.request);
-    //         } else {
-    //             console.error("Error setting up the request:", error.message);
-    //         }
-    
-    //         window.alert('Sign-in Failed');
-    //         navigate('/login');
-    //     }
-    // };
 
 
 
