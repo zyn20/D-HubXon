@@ -2,9 +2,9 @@ import React from 'react';
 
 const PostProject = () => {
   return (
-    <section className="py-20 bg-gray-100 bg-opacity-50 h-screen">
+    <section className="py-20 bg-gray-100 bg-opacity-50 h-[70%]">
       <div className="mx-auto container max-w-2xl md:w-3/4 shadow-md">
-        <div className="bg-gray-100 p-4 border-t-2 bg-opacity-5 border-indigo-400 rounded-t">
+        <div className="bg-gray-100 p-4 bg-opacity-5 border-indigo-400 rounded-t">
           <div className="max-w-sm mx-auto md:w-full md:mx-0">
             <div className="inline-flex items-center space-x-4">
               <img
@@ -143,19 +143,8 @@ const PostProject = () => {
           <hr />
           <div className="w-full p-2 text-right text-gray-500 flex items-center justify-center">
           <button className="text-white  rounded-md text-center bg-indigo-400 py-2 px-8 inline-flex items-center focus:outline-none">
-            <svg
-              fill="none"
-              className="w-4 text-white mr-2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
+      
+           
             Post
           </button>
         </div>
