@@ -12,7 +12,7 @@ import SetupProfile from './pages/SetupProfile';
 import FreelancerDashboard from './pages/FreelancerDashboard';
 import EditProfile from './pages/EditProfile';
 import Login from './pages/Login';
-import LLogin_ from './pages/LLogin';
+import VerifyOTP from './pages/Verify';
 import PostProject from './pages/PostProject'
 
 import SignupPage from './pages/Signup';
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
     {path:"check",
     element: <Check_/>},
     {path:"verify",
-    element: <LLogin_/>}
+    element: <VerifyOTP/>}
 
     ]
   }
