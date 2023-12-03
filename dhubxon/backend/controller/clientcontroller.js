@@ -1,8 +1,10 @@
 const Client = require("../models/clientmodel");
+const Project =require("../models/project");
 const sequelize = require("../config");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
 const { Console } = require("console");
+
 
 
 
@@ -186,27 +188,37 @@ const update_password = async (req, res) => {
 
 
 const Postproject = async (req, res) => {
+
+console.log("------------------------------");
+    console.log(req.body.title);
     try {
-        var post = {
-            ClientID: 1,
-            Title:req.body.title,
-            Description: req.body.description,
-            Price: req.body.price,
-            Keywords: req.body.keyword
-        };
+      const post = {
+       
+        title: req.body.title,
+        description: req.body.description,
+        skillRequired: req.body.skillRequired,
+        projectDuration: req.body.projectDuration,
+        pricingType: req.body.pricingType,
+        projectDeadline: req.body.projectDeadline,
+        budget: req.body.budget,
+      };
 
-        const newUser = await Post.create({
-            ...post
-        });
 
-        console.log(post);
-
-        res.status(201).send('Project posted successfully'); 
+    
+  
+      const newPost = await Project.create({
+        ...post,
+      });
+  
+      console.log(post);
+  
+      res.status(201).send('Project posted successfully');
     } catch (error) {
-        console.error("Error in Postproject: ", error);
-        res.status(500).send(error.message);
+      console.error('Error in Postproject: ', error);
+      res.status(500).send(error.message);
     }
-};
+  };
+  
 
 
 

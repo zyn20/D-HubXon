@@ -9,6 +9,17 @@ const sequelizee = require("./config");
 const freelancerroute = require('./routes/freelancerroutes');
 const clientroute = require('./routes/clientroutes');
 
+
+
+
+
+
+
+
+
+
+
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
