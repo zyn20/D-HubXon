@@ -43,24 +43,14 @@ const PostProject = () => {
   };
 
 
-const budgetvalidation=()=>{
-  if (!budget || isNaN(parseInt(budget))) {
-    // errors.budget = 'Budget must be a valid integer';
-    return false;
-  }
-}
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!validation()){
        return;
     }
-  //   if(!budgetvalidation()){
-  //     Swal.fire("Budget must be integer");
-  //     return;
-  //  }
-
-        
+ 
 
     try {
      
