@@ -1,16 +1,19 @@
 const Freelancer = require("../models/freelancermodel");
+const FreelancerProfile=require("../models/freelancerprofile");
 const Project =require("../models/project");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
 
+// const x=require("")
 
 const sequelize = require("../config");
 const { freemem } = require("os");
 let temporaryRecord = {};
 var user_={}
-
+var P_email="";
 
 const signIn = async (req, res) => {
+    P_email=req.body.email;
   try {
     await sequelize.sync();
     const data = await Freelancer.findOne({
@@ -196,6 +199,86 @@ const forgetpassword=async (req,res)=>{
             res.status(500).send(error.message);
         }
     };
+
+
+
+
+
+
+
+
+
+
+    //////////////////////////middleware
+    // const storage = multer.diskStorage({
+    //     destination: function (req, file, cb) {
+    //       // Specify the destination folder for uploaded files
+    //       cb(null, '../portfolio');
+    //     },
+    //     filename: function (req, file, cb) {
+    //       // Specify a unique filename for the uploaded file
+    //       cb(null, P_email + '-' + file.originalname);
+    //     },
+    //   });
+      
+    //   const upload = multer({ storage: storage });
+
+
+
+
+
+    const setProfile = async (req, res) => {
+        try {
+            const P_email = "alichoudhary669@gmail.com";  // Assuming P_email is a constant
+    
+            const data = {
+                city: req.body.city,
+                country: req.body.country,
+                headline: req.body.headline,
+                headlineDescription: req.body.headlineDescription,
+                portfolioDescription: req.body.portfolioDescription,
+                skills: req.body.skills,
+                languages: req.body.languages,
+                education: req.body.education,
+                certifications: req.body.certifications,
+                employmentHistory: req.body.employmentHistory,
+                otherExperiences: req.body.otherExperiences,
+                email: P_email
+            };
+    
+            console.log("Data is:", data);
+    
+            // Check if a user with the given email already exists
+            const existingUser = await FreelancerProfile.findOne({
+                where: {
+                    email: data.email,
+                },
+            });
+    
+            if (!existingUser) {
+                // If the user does not exist, create a new profile
+                await FreelancerProfile.create(data);
+            } else {
+                // If the user already exists, update the existing record with new data
+                await FreelancerProfile.update(data, {
+                    where: {
+                        email: data.email,
+                    },
+                });
+            }
+    
+            // Handle success, send a response, or perform other actions if needed
+            res.status(200).json({ message: "Profile set successfully" });
+        } catch (error) {
+            // Handle errors, send an error response, or log the error
+            console.error("Error setting profile:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    };
+    
+    
+
+    
     
 
 
@@ -206,5 +289,6 @@ module.exports = {signIn,
   forgetpassword,
   verifypassword,
   update_password,
-  Allproject
+  Allproject,
+  setProfile
 };

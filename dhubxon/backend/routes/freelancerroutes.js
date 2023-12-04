@@ -14,6 +14,7 @@ router.post('/forgetpassword',checkRecord,functions.forgetpassword);
 router.post('/verifypassword',functions.verifypassword);
 router.post('/updatepassword',functions.update_password);
 router.post('/AllProjects',functions.Allproject);
+router.post('/setprofile',functions.setProfile);
 
 router.get('*', function(req, res){
     res.status(404).send('404 error: page not found');
