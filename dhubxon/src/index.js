@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+// import App from './App';
 import Root from './Root'
 
 import reportWebVitals from './reportWebVitals';
@@ -51,8 +51,6 @@ const router = createBrowserRouter([
     element:<Complete_products/>},
     {path:"/postproject",
     element:<PostProject/>},
-
-
     {path:"setprofile",
     element:<SetupProfile/>},
     {path:"dash",
