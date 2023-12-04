@@ -1,4 +1,5 @@
 const Freelancer = require("../models/freelancermodel");
+const Project =require("../models/project");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
 
@@ -180,11 +181,30 @@ const forgetpassword=async (req,res)=>{
     
 
 
+    const Allproject = async (req, res) => {
+        try {
+            // Retrieve all projects
+            const allProjects = await Project.findAll();
+    
+            // Log the retrieved projects (optional)
+            console.log(allProjects);
+    
+            // Send the retrieved projects as the response
+            res.status(200).json(allProjects);
+        } catch (error) {
+            console.error('Error in Allproject: ', error);
+            res.status(500).send(error.message);
+        }
+    };
+    
+
+
 
 module.exports = {signIn,
   signUp,
   verify,
   forgetpassword,
   verifypassword,
-  update_password
+  update_password,
+  Allproject
 };
