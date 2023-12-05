@@ -1,13 +1,30 @@
 import React, { useState } from "react";
 import Jobcard from "../Jobcard";
+import axios from 'axios';
+
 
 import Fullviewjob from "./Fullviewjob";
 
 const Cards = () => {
+  const [most_recent, setMostRecent] = useState([]);
   const [activeTab, setActiveTab] = useState("best-match"); // Initial active tab
+
+  const fetch_recent=async ()=>{
+    const response = await axios.post('http://127.0.0.1:5000/freelancer/AllProjects');
+    setMostRecent(response.data);
+    console.log(response.data);
+    console.log("-----------------------------");
+    console.log("This is most recent data",most_recent);
+  }
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
+
+if(tabId==="most-recent"){
+fetch_recent()
+}
+
+
   };
 
 
@@ -120,6 +137,7 @@ const Cards = () => {
 
 />
 
+
 <Jobcard
   title="Looking for React Developer"
   description="Need a React Developer for updating forms and adding CRUD operations in our existing application. The project is nearly complete, requiring only maintenance."
@@ -157,143 +175,74 @@ const Cards = () => {
   keywords={["WordPress", "SEO", "Performance", "Customization"]}
   onClick={handleJobClick}
  
-/>
-          {/* Add more JobCard components as needed */}
-        </div>
 
-        {/* Services Tab Content */}
-        <div
-          className={`p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800 ${
-            activeTab === "most-recent" ? "" : "hidden"
-          }`}
-          id="most-recent"
-          role="tabpanel"
-          aria-labelledby="most-recent-tab"
-        >
-          {/* Services content here */}
-          <h2 className="text-2xl font-bold mb-4">Most Recent </h2>
-          {/* Placeholder for Job Cards */}
-          <Jobcard
-  title="Angular Developer Needed"
-  description="Seeking an Angular expert for a healthcare web application. Focus on building user-centric interfaces and integrating with REST APIs."
-  projectType="Long Term"
-  price="$350"
-  projectTime="4 hours ago"
-  location="Remote"
-  budget="$1500 - $2000"
-  keywords={["Angular", "REST API", "Healthcare"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Python Developer for Data Analysis Project"
-  description="Looking for a Python Developer with experience in data analysis and machine learning. Project involves analyzing large datasets."
-  projectType="Short Term"
-  price="$400"
-  projectTime="1 day ago"
-  location="Remote"
-  budget="$800 - $1200"
-  keywords={["Python", "Data Analysis", "Machine Learning"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Node.js Backend Developer"
-  description="Need a Node.js Developer for building and maintaining the backend of a fintech platform. Must have experience with microservices architecture."
-  projectType="Long Term"
-  price="$450"
-  projectTime="2 days ago"
-  location="Remote"
-  budget="$2000 - $2500"
-  keywords={["Node.js", "Microservices", "Fintech"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Freelance Graphic Designer"
-  description="Graphic designer needed for creating engaging designs for digital marketing. Experience with Adobe Creative Suite required."
-  projectType="Freelance"
-  price="$200"
-  projectTime="3 hours ago"
-  location="Remote"
-  budget="$300 - $600"
-  keywords={["Graphic Design", "Adobe Creative Suite", "Digital Marketing"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="SEO Specialist for E-commerce Website"
-  description="E-commerce startup seeking an SEO Specialist to improve website traffic and search rankings. Knowledge of Google Analytics is a must."
-  projectType="Short Term"
-  price="$250"
-  projectTime="5 days ago"
-  location="Remote"
-  budget="$500 - $1000"
-  keywords={["SEO", "Google Analytics", "E-commerce"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="iOS App Developer for Social Media Startup"
-  description="Social media startup looking for an iOS Developer to build a new, innovative mobile application. Must be skilled in Swift and UX design."
-  projectType="Long Term"
-  price="$500"
-  projectTime="1 week ago"
-  location="Remote"
-  budget="$2500 - $3500"
-  keywords={["iOS", "Swift", "Social Media"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Blockchain Developer for NFT Project"
-  description="Innovative NFT project searching for a Blockchain Developer with Ethereum and smart contract experience."
-  projectType="Project-based"
-  price="$600"
-  projectTime="6 hours ago"
-  location="Remote"
-  budget="$3000 - $5000"
-  keywords={["Blockchain", "Ethereum", "NFT", "Smart Contracts"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Cybersecurity Expert Required"
-  description="Seeking a Cybersecurity Expert to enhance the security of our online platforms. Experience with network security and ethical hacking preferred."
-  projectType="Consultancy"
-  price="$400"
-  projectTime="2 weeks ago"
-  location="On-site, London"
-  budget="$1500 - $2500"
-  keywords={["Cybersecurity", "Network Security", "Ethical Hacking"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Digital Marketing Specialist"
-  description="Digital marketing specialist needed to strategize and execute campaigns across various online platforms. Experience with social media marketing is essential."
-  projectType="Medium Term"
-  price="$350"
-  projectTime="3 days ago"
-  location="Remote or Hybrid"
-  budget="$1000 - $2000"
-  keywords={["Digital Marketing", "Social Media", "Campaign Management"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Content Writer for Tech Blog"
-  description="Tech company seeks a creative Content Writer to produce engaging, high-quality blog posts on current tech trends and products."
-  projectType="Freelance"
-  price="$100 per article"
-  projectTime="1 day ago"
-  location="Remote"
-  budget="$100 - $300 per article"
-  keywords={["Content Writing", "Blogging", "Tech"]}
-  onClick={handleJobClick}
-/>
 
  
+/>
+
+
+<Jobcard
+  title="WordPress Expert Wanted"
+  description="Urgently looking for a WordPress Expert to optimize and enhance an existing website. Focus on SEO, performance improvements, and theme customization."
+  projectType="Short Term"
+  price="$150"
+  projectTime="5 hours ago"
+  location="Remote"
+  budget="$300 - $500"
+  keywords={["WordPress", "SEO", "Performance", "Customization"]}
+  onClick={handleJobClick}
+ 
+
+
+ 
+/>
+
+
+{/*  */}
+
+
+
+
+{/* Add more JobCard components as needed */}
+</div>
+
+{/* Services Tab Content */}
+<div
+  className={`p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800 ${
+    activeTab === "most-recent" ? "" : "hidden"
+  }`}
+  id="most-recent"
+  role="tabpanel"
+  aria-labelledby="most-recent-tab"
+>
+  {/* Services content here */}
+  <h2 className="text-2xl font-bold mb-4">Most Recent </h2>
+  {/* Placeholder for Job Cards */}
+
+
+
+  {most_recent.map((project) => (
+    <Jobcard
+      // key={index}
+      title={project.title}
+      description={project.description}
+      skillRequired={project.skillRequired}
+      projectDuration={project.projectDuration}
+      pricingType={project.pricingType}
+      projectDeadline={project.projectDeadline}
+      budget={project.budget}
+      onClick={handleJobClick}
+    />
+  ))}
+
+
+
+
+
+  
+
+{/*  */}
+
           {/* Add more JobCard components as needed */}
         </div>
 

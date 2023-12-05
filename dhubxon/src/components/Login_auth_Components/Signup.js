@@ -16,7 +16,7 @@ let fieldsState = {};
 fields.forEach(field => fieldsState[field.id] = '');
 
 export default function Signup() {
-  const navigate = useNavigate();
+  const navigate = useNavigate();        
 
   const [signupState, setSignupState] = useState(fieldsState);
   const [userType, setUserType] = useState(''); // State to track selected user type

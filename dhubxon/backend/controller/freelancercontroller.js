@@ -1,38 +1,58 @@
 const Freelancer = require("../models/freelancermodel");
+const FreelancerProfile=require("../models/freelancerprofile");
+const Project =require("../models/project");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
-
+const jwt = require('jsonwebtoken');
 
 const sequelize = require("../config");
 const { freemem } = require("os");
 let temporaryRecord = {};
 var user_={}
-
+var P_email="";
 
 const signIn = async (req, res) => {
-  try {
-    await sequelize.sync();
-    const data = await Freelancer.findOne({
-      where: {
-        Password: req.body.pass,
-        Email: req.body.email,
-      },
-    });
+    const { email, pass } = req.body;
 
-    if (!data) {
-      console.error("Failed to sign in: Freelancer not found");
-      return res.status(404).send("Login failed");
+    try {
+        // Ensure that required parameters are provided
+        if (!email || !pass) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Sync with the database
+        await sequelize.sync();
+
+        // Find a Freelancer by email and password
+        const freelancer = await Freelancer.findOne({
+            where: {
+                Password: pass,
+                Email: email,
+            },
+        });
+
+        
+        if (!freelancer) {
+            console.error('Failed to sign in: Freelancer not found');
+            return res.status(404).json({ error: 'Login failed' });
+        }
+
+        console.log('Freelancer sign-in API');
+        console.log(freelancer);
+
+        
+        const token = jwt.sign({ role: 'freelancer' }, 'NATIONAL UNIVERSITY', { expiresIn: '1h' });
+
+        
+        res.status(200).json({ token, message: 'Sign in successful' });
+
+    } catch (error) {
+        console.error('Error in Sign in:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-console.log("i am in freelancer signin APi");
-    console.log(data);
-   
-    res.status(200).send("Sign in");
-
-  } catch (error) {
-    console.error("Error in Sign in:", error);
-    res.status(500).send(error.message);
-  }
 };
+
+module.exports = signIn;
 
 
 
@@ -180,11 +200,92 @@ const forgetpassword=async (req,res)=>{
     
 
 
+    const Allproject = async (req, res) => {
+        try {
+            // Retrieve all projects
+            const allProjects = await Project.findAll();
+    
+            // Log the retrieved projects (optional)
+            console.log(allProjects);
+    
+            // Send the retrieved projects as the response
+            res.status(200).json(allProjects);
+        } catch (error) {
+            console.error('Error in Allproject: ', error);
+            res.status(500).send(error.message);
+        }
+    };
+
+
+
+
+
+
+
+
+
+    const setProfile = async (req, res) => {
+        try {
+            const P_email = "alichoudhary669@gmail.com";  // Assuming P_email is a constant
+    
+            const data = {
+                city: req.body.city,
+                country: req.body.country,
+                headline: req.body.headline,
+                headlineDescription: req.body.headlineDescription,
+                portfolioDescription: req.body.portfolioDescription,
+                skills: req.body.skills,
+                languages: req.body.languages,
+                education: req.body.education,
+                certifications: req.body.certifications,
+                employmentHistory: req.body.employmentHistory,
+                otherExperiences: req.body.otherExperiences,
+                email: P_email
+            };
+    
+            console.log("Data is:", data);
+    
+            // Check if a user with the given email already exists
+            const existingUser = await FreelancerProfile.findOne({
+                where: {
+                    email: data.email,
+                },
+            });
+    
+            if (!existingUser) {
+                // If the user does not exist, create a new profile
+                await FreelancerProfile.create(data);
+            } else {
+                // If the user already exists, update the existing record with new data
+                await FreelancerProfile.update(data, {
+                    where: {
+                        email: data.email,
+                    },
+                });
+            }
+    
+            // Handle success, send a response, or perform other actions if needed
+            res.status(200).json({ message: "Profile set successfully" });
+        } catch (error) {
+            // Handle errors, send an error response, or log the error
+            console.error("Error setting profile:", error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    };
+    
+    
+
+    
+    
+
+
 
 module.exports = {signIn,
   signUp,
   verify,
   forgetpassword,
   verifypassword,
-  update_password
+  update_password,
+  Allproject,
+  setProfile
 };

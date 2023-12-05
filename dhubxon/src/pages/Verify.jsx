@@ -13,33 +13,57 @@ function Login() {
   const searchParams = new URLSearchParams(location.search);
   const userType = searchParams.get('userType');
 
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
     
 
-    const handleSubmit = async (e) => {
-      var response;
-        e.preventDefault();
-        if(userType==="freelancer"){ 
-        
-          // console.log("Freeeeeeeeeeeeee");
-          console.log(code);
-            response = await axios.post('http://127.0.0.1:5000/freelancer/verify', { code });}
-  
-             else{  response = await axios.post('http://127.0.0.1:5000/client/verify', { code});}
-        console.log(response);
-        if(response.status === 200){
-            console.log("---------------------------------");
-            console.log(response.data);
-            navigate('/')
-        }
-        else{
-          Swal.fire({
-            icon: 'error',
-            title: 'Incorrect Code',
-            html: "Please Insert Correct Code",
-          });
-        }
+  const handleSubmit = async (e) => {
+
+    if (code === '') {
+      Swal.fire("Please Enter Code");
+      
+      return;
     }
+  
+    try {
+      e.preventDefault();
+  
+      let response;
+  
+      if (userType === "freelancer") {
+        response = await axios.post('http://127.0.0.1:5000/freelancer/verify', { code });
+      } else {
+        response = await axios.post('http://127.0.0.1:5000/client/verify', { code });
+      }
+  
+      console.log(response);
+  
+      if (response.status === 200) {
+        console.log("---------------------------------");
+        console.log(response.data);
+        navigate('/');
+      } else {
+        // Handle other status codes if needed
+        Swal.fire({
+          icon: 'error',
+          title: 'Incorrect Code',
+          html: "Please Insert Correct Code",
+        });
+      }
+    } catch (error) {
+      // Handle any other errors that might occur during the request
+      console.error("An error occurred:", error);
+  
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        html: "Incorrect Code.",
+      });
+    }
+  };
+  
 
   return (
     <div>
