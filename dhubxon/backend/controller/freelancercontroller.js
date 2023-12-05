@@ -3,8 +3,7 @@ const FreelancerProfile=require("../models/freelancerprofile");
 const Project =require("../models/project");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
-
-// const x=require("")
+const jwt = require('jsonwebtoken');
 
 const sequelize = require("../config");
 const { freemem } = require("os");
@@ -13,30 +12,47 @@ var user_={}
 var P_email="";
 
 const signIn = async (req, res) => {
-    P_email=req.body.email;
-  try {
-    await sequelize.sync();
-    const data = await Freelancer.findOne({
-      where: {
-        Password: req.body.pass,
-        Email: req.body.email,
-      },
-    });
+    const { email, pass } = req.body;
 
-    if (!data) {
-      console.error("Failed to sign in: Freelancer not found");
-      return res.status(404).send("Login failed");
+    try {
+        // Ensure that required parameters are provided
+        if (!email || !pass) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Sync with the database
+        await sequelize.sync();
+
+        // Find a Freelancer by email and password
+        const freelancer = await Freelancer.findOne({
+            where: {
+                Password: pass,
+                Email: email,
+            },
+        });
+
+        
+        if (!freelancer) {
+            console.error('Failed to sign in: Freelancer not found');
+            return res.status(404).json({ error: 'Login failed' });
+        }
+
+        console.log('Freelancer sign-in API');
+        console.log(freelancer);
+
+        
+        const token = jwt.sign({ role: 'freelancer' }, 'NATIONAL UNIVERSITY', { expiresIn: '1h' });
+
+        
+        res.status(200).json({ token, message: 'Sign in successful' });
+
+    } catch (error) {
+        console.error('Error in Sign in:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-console.log("i am in freelancer signin APi");
-    console.log(data);
-   
-    res.status(200).send("Sign in");
-
-  } catch (error) {
-    console.error("Error in Sign in:", error);
-    res.status(500).send(error.message);
-  }
 };
+
+module.exports = signIn;
 
 
 
@@ -203,25 +219,6 @@ const forgetpassword=async (req,res)=>{
 
 
 
-
-
-
-
-
-
-    //////////////////////////middleware
-    // const storage = multer.diskStorage({
-    //     destination: function (req, file, cb) {
-    //       // Specify the destination folder for uploaded files
-    //       cb(null, '../portfolio');
-    //     },
-    //     filename: function (req, file, cb) {
-    //       // Specify a unique filename for the uploaded file
-    //       cb(null, P_email + '-' + file.originalname);
-    //     },
-    //   });
-      
-    //   const upload = multer({ storage: storage });
 
 
 
