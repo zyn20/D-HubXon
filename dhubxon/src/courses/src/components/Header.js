@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { SidebarContext } from "../contexts/SidebarContext";
 import { CartContext } from "../contexts/CartContext";
 import { Link } from "react-router-dom";
-import Logo from "../img/logo.svg";
-import { BsBag } from "react-icons/bs";
+import Logo from "../img/logo3.png";
+// import { BsBag } from "react-icons/bs";
+import Logo3 from "../img/new_cart.png";
 import Profile from "../profile1.jpg";
-
+// <BsBag className="text-2xl" />
 const Header = () => {
   // header state
   const [isActive, setIsActive] = useState(false);
@@ -42,7 +43,9 @@ const Header = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="cursor-pointer flex relative ml-auto"
       >
-        <BsBag className="text-2xl" />
+        
+      <img src={Logo3} alt="" style={{ height: '40px', width: '40px' }} />
+
         <div className="bg-red-500 absolute -right-2 -bottom-2 text-[12px] w-[18px] h-[18px] text-white rounded-full flex justify-center items-center">
           {itemAmount}
         </div>

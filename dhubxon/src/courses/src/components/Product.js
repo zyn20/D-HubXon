@@ -12,7 +12,7 @@ const Product = ({ product }) => {
   const { id, image, category, title, price } = product;
   return (
     <div>
-      <div className="border border-[#e4e4e4] h-[300px] mb-4 relative overflow-hidden group transition">
+      <div className="border border-[#e4e4e4] h-[300px] mb-4 relative overflow-hidden group transition text-blue-500">
         <div className="w-full h-full flex justify-center items-center">
           {/* image */}
           <div className="w-[200px] mx-auto flex justify-center items-center">
@@ -32,7 +32,7 @@ const Product = ({ product }) => {
           </button>
           <Link
             to={`/product/${id}`}
-            className="w-12 h-12 bg-white flex justify-center items-center text-primary drop-shadow-xl"
+            className="w-12 h-12 bg-white flex justify-center items-center text-blue-500 drop-shadow-xl"
           >
             <BsEyeFill />
           </Link>
@@ -40,12 +40,12 @@ const Product = ({ product }) => {
       </div>
       {/* category, title & price */}
       <div>
-        <div className="tex-sm capitalize text-gray-500 mb-1">{category}</div>
+        <div className="tex-sm capitalize text-blue-500 mb-1">{category}</div>
         <Link to={`/product/${id}`}>
-          <h2 className="font-semibold mb-1">{title}</h2>
+          <h2 className="font-semibold mb-1 text-blue-500">{title}</h2>
         </Link>
 
-        <h2 className="font-semibbold">$ {price}</h2>
+        <h2 className="font-semibbold text-blue-500">$ {price}</h2>
       </div>
     </div>
   );
