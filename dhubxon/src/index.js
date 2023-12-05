@@ -16,7 +16,7 @@ import Login from './pages/Login';
 import VerifyOTP from './pages/Verify';
 import PostProject from './pages/PostProject'
 
-
+import Protected from './components/Auth/Protected';
 
 import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
@@ -42,31 +42,33 @@ const router = createBrowserRouter([
         element: <Complete_home/>
       },
       {path:"freelancerdashboard",
-      element:<FreelancerHome/>},
+      element: <Protected  component={<FreelancerHome/>}/> },
       {path:"jobview",
-    element:<Fullviewjob/>},
+      element: <Protected  component={<Fullviewjob/>}/> },
     {path:"/homepage",
-    element:<MainPage/>},
+    element: <Protected  component={<MainPage/>}/> },
     {path:"/product/:id",
-    element:<Complete_products/>},
-    {path:"/postproject",
-    element:<PostProject/>},
+    element: <Protected  component={<Complete_products/>}/> },
+   
+    {path: "/postproject", element: <Protected  component={<PostProject/>}/> },
+
+
     {path:"setprofile",
-    element:<SetupProfile/>},
+    element: <Protected  component={<SetupProfile/>}/> },
     {path:"dash",
-    element:<FreelancerDashboard/>},
+    element: <Protected  component={<FreelancerDashboard/>}/> },
     {path:"login",
     element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
     {path:"proposalsubmission",
-    element: <ProposalSubmission/>},
+    element: <Protected  component={<ProposalSubmission/>}/> },
     {path:"editprofile",
-    element: <EditProfile/>},
+    element: <Protected  component={<EditProfile/>}/> },
     {path:"check",
-    element: <Check_/>},
+    element: <Protected  component={<Check_/>}/> },
     {path:"verify",
-    element: <VerifyOTP/>}
+    element: <Protected  component={<VerifyOTP/>}/> },
 
     ]
   }

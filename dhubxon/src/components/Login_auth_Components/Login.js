@@ -6,6 +6,10 @@ import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
 import Input from "./Input";
 import Swal from 'sweetalert2';
+// import jwt_decode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
+
+
 
 const fields = loginFields;
 const initialLoginState = fields.reduce((acc, field) => {
@@ -38,31 +42,50 @@ export default function Login() {
     
         try {
             const clientResponse = await axios.post('http://127.0.0.1:5000/client/signIn', { email, pass });
-    
+        
             if (clientResponse.status === 200) {
                 console.log("Client Sign-in successful!");
                 Swal.fire("Sign in Successfully!");
+        
+                // Save the token to local storage
+                localStorage.setItem('token', clientResponse.data.token);
+                console.log(clientResponse);
+                console.log(clientResponse.data.token)
+        
                 navigate('/jobview');
                 return;
             }
         } catch (clientError) {
             console.error("Client Authentication Error:", clientError);
         }
-    
+        
         // If client login fails, try freelancer login
         try {
             const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
-    
+        
             if (freelancerResponse.status === 200) {
                 console.log("Freelancer Sign-in successful!");
                 Swal.fire("Sign in Successfully!");
+        
+                // Save the token to local storage
+                localStorage.setItem('token', freelancerResponse.data.token);
+                // Retrieve the token from local storage
+const token = localStorage.getItem('token');
+
+// Decode the token
+const decodedToken = jwtDecode(token);
+
+// Access the role from the decoded token
+const userRole = decodedToken.role;
+console.log(userRole);
+        
                 navigate('/freelancerdashboard');
                 return;
             }
         } catch (freelancerError) {
             console.error("Freelancer Authentication Error:", freelancerError);
         }
-    
+        
         // If both client and freelancer login fail
         Swal.fire({
             icon: "error",  

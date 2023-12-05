@@ -4,6 +4,7 @@ const sequelize = require("../config");
 const crypto = require('crypto');
 const { sendVerificationEmail } = require('./nodemailer/email');
 const { Console } = require("console");
+const jwt = require('jsonwebtoken');
 
 
 
@@ -70,33 +71,52 @@ else{
 
 const signIn = async (req, res) => {
     try {
-      await sequelize.sync();
-  console.log(req.body.pass);
-  console.log(req.body.email);
+        await sequelize.sync();
+        console.log(req.body.pass);
+        console.log(req.body.email);
 
-      const data = await Client.findOne({
-        where: {
-          Password: req.body.pass,
-          Email: req.body.email,
-        },
-      });
+        const clientData = await Client.findOne({
+            where: {
+                Password: req.body.pass,
+                Email: req.body.email,
+            },
+        });
 
-      if (!data) {
-        console.error("Failed to sign in: User not found");
-        return res.status(404).send("Login failed");
-      }
-  
-      console.log(data);
-     
-    //   return res.status(200).send("Data found");
-      return res.status(200).json({ message: "Data found", data: data });
-  
+        if (!clientData) {
+            console.error("Failed to sign in: User not found");
+            return res.status(404).send("Login failed");
+        }
+
+        console.log(clientData);
+        
+        // Include client data in the JWT payload
+        const payload = {
+            role: 'client',
+            clientData: {
+                id: clientData.id,
+                name: clientData.Name,
+                email:clientData.Email
+                // Add any other client data you want to include
+            },
+        };
+
+        // Sign the JWT with the payload
+        const token = jwt.sign(payload, 'NATIONAL UNIVERSITY', { expiresIn: '1h' });
+        console.log(token);
+
+        // Include additional client data in the response
+        res.status(200).json({
+            token,
+            message: 'Sign in successful',
+            clientData: payload.clientData,
+        });
+
     } catch (error) {
-      console.error("Failed to sign in:", error);
-      return res.status(500).send(error.message);
+        console.error("Failed to sign in:", error);
+        return res.status(500).send(error.message);
     }
-  };
-  
+};
+
   
 const forgetpassword=async (req,res)=>{
 try{

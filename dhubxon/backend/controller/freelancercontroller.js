@@ -31,7 +31,6 @@ const signIn = async (req, res) => {
             },
         });
 
-        
         if (!freelancer) {
             console.error('Failed to sign in: Freelancer not found');
             return res.status(404).json({ error: 'Login failed' });
@@ -40,11 +39,22 @@ const signIn = async (req, res) => {
         console.log('Freelancer sign-in API');
         console.log(freelancer);
 
-        
-        const token = jwt.sign({ role: 'freelancer' }, 'NATIONAL UNIVERSITY', { expiresIn: '1h' });
+        // Create a payload with additional data
+        const payload = {
+            role: 'freelancer',
+            freelancerData: {
+                id: freelancer.id,
+                name: freelancer.Name,
+                email: freelancer.Email,
+                // Add any other freelancer data you want to include
+            },
+        };
 
-        
-        res.status(200).json({ token, message: 'Sign in successful' });
+        // Sign the JWT with the payload
+        const token = jwt.sign(payload, 'NATIONAL UNIVERSITY', { expiresIn: '1h' });
+
+        // Send the token and additional data in the response
+        res.status(200).json({ token, freelancerData: payload.freelancerData, message: 'Sign in successful' });
 
     } catch (error) {
         console.error('Error in Sign in:', error);
@@ -52,7 +62,8 @@ const signIn = async (req, res) => {
     }
 };
 
-module.exports = signIn;
+
+// module.exports =;
 
 
 
