@@ -15,8 +15,6 @@ const Community = () => {
         </div>
         <RightBar/>
     </div>
-
-
     </>
   )
 }
