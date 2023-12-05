@@ -76,15 +76,15 @@ const PostProject = () => {
   return (
     <form onSubmit={handleSubmit} className="py-20 bg-gray-100 bg-opacity-50 h-[70%]">
       <div className="mx-auto container max-w-2xl md:w-3/4 shadow-md">
-        <div className="bg-gray-100 p-4 bg-opacity-5 border-indigo-400 rounded-t">
+        <div className="bg-gray-100 p-4 bg-opacity-5 border-green-400 rounded-t">
           <div className="max-w-sm mx-auto md:w-full md:mx-0">
             <div className="inline-flex items-center space-x-4">
               <img
                 className="w-10 h-10 object-cover rounded-full"
                 alt="User avatar"
-                src="https://avatars3.githubusercontent.com/u/72724639?s=400&u=964a4803693899ad66a9229db55953a3dbaad5c6&v=4"
+                src="https://example.com/client-avatar.jpg" // Change the client's avatar URL
               />
-              <h1 className="text-gray-600">Charly Olivas</h1>
+              <h1 className="text-green-600">Client's Name</h1>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ const PostProject = () => {
             </div>
           </div>
           <hr />
-
+  
           {/* Detailed Info Section */}
           <div className="md:inline-flex space-y-4 md:space-y-0 w-full p-4 text-gray-500 items-center">
             <h2 className="md:w-1/3 mx-auto max-w-sm">Detailed info</h2>
@@ -146,9 +146,9 @@ const PostProject = () => {
                     onChange={(e) => setSkillRequired(e.target.value)}
                   >
                     <option value="" selected>Select an option</option>
-                    <option value="Full Stack Developer">Full Stack Developer</option>
                     <option value="Graphic Design">Graphic Design</option>
-                    <option value="Writing tutoring">Writing tutoring</option>
+                    <option value="Content Writing">Content Writing</option>
+                    <option value="Project Management">Project Management</option>
                   </select>
                 </div>
               </div>
@@ -169,7 +169,7 @@ const PostProject = () => {
             </div>
           </div>
           <hr />
-
+  
           {/* Pricing Info Section */}
           <div className="md:inline-flex space-y-4 md:space-y-0 w-full p-4 text-gray-500 items-center">
             <h2 className="md:w-1/3 mx-auto max-w-sm">Pricing info</h2>
@@ -182,8 +182,8 @@ const PostProject = () => {
                     onChange={(e) => setPricingType(e.target.value)}
                   >
                     <option value="" selected>Select an option</option>
-                    <option value="Milestone">Milestone</option>
                     <option value="Fixed">Fixed</option>
+                    <option value="Hourly">Hourly</option>
                   </select>
                 </div>
               </div>
@@ -198,25 +198,25 @@ const PostProject = () => {
                 </div>
               </div>
               <div>
-  <label className="text-sm text-gray-400">Budget</label>
-  <div className="w-full inline-flex border">
-    <input
-      onChange={(e) => setBudget(e.target.value)}
-      value={budget}
-      type="text"
-      className="w-11/12 focus:outline-none focus:text-gray-600 p-2"
-    />
-  </div>
-</div>
-
+                <label className="text-sm text-gray-400">Budget</label>
+                <div className="w-full inline-flex border">
+                  <input
+                    onChange={(e) => setBudget(e.target.value)}
+                    value={budget}
+                    type="text"
+                    className="w-11/12 focus:outline-none focus:text-gray-600 p-2"
+                    placeholder="Enter your budget"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-
+  
           <hr />
           <div className="w-full p-2 text-right text-gray-500 flex items-center justify-center">
             <button
               type="submit"
-              className="text-white rounded-md text-center bg-indigo-400 py-2 px-8 inline-flex items-center focus:outline-none"
+              className="text-white rounded-md text-center bg-green-400 py-2 px-8 inline-flex items-center focus:outline-none"
             >
               Post
             </button>
@@ -225,6 +225,7 @@ const PostProject = () => {
       </div>
     </form>
   );
+  
 };
 
 export default PostProject;
