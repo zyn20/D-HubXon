@@ -2,6 +2,7 @@ import { Navigate } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import EditClientProfile from './pages/ClientEditProfile';
 
 import Root from './Root'
 import Community from './community/pages/Community';
@@ -19,6 +20,7 @@ import PostProject from './pages/PostProject'
 import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
+import ClientDashboard from './pages/ClientDashboard';
 
 import SignupPage from './pages/Signup';
 import MainPage from './pages/mainPage'
@@ -76,7 +78,11 @@ const router = createBrowserRouter([
     {path:"verify",
     element: <VerifyOTP/>},
     {path:"/community",
-    element: <Community/>}
+    element: <Community/>},
+    {path:"cd",
+    element: <ClientDashboard/>},
+    {path:"edt",
+    element: <EditClientProfile/>},
 
     ]
   }
