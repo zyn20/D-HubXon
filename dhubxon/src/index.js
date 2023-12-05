@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+// import App from './App';
 import Root from './Root'
+
 import reportWebVitals from './reportWebVitals';
 import FreelancerHome from './pages/Home';
 import { RouterProvider , createBrowserRouter, createRoutesFromElements,Route} from 'react-router-dom';
@@ -12,12 +13,25 @@ import SetupProfile from './pages/SetupProfile';
 import FreelancerDashboard from './pages/FreelancerDashboard';
 import EditProfile from './pages/EditProfile';
 import Login from './pages/Login';
-import LLogin_ from './pages/LLogin';
+import VerifyOTP from './pages/Verify';
 import PostProject from './pages/PostProject'
+
+
+
+import ProductProvider from "./courses/src/contexts/ProductContext";
+import SidebarProvider from "./courses/src/contexts/SidebarContext";
+import CartProvider from "./courses/src/contexts/CartContext";
 
 import SignupPage from './pages/Signup';
 import MainPage from './pages/mainPage'
 import Check_ from './pages/Check_user';
+import Complete_home from "./courses/src/complete_home";
+import Complete_products from "./courses/src/complete_products";
+
+
+
+
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -25,7 +39,7 @@ const router = createBrowserRouter([
     children:[
       {
         path:"",
-        element: <FreelancerHome/>
+        element: <Complete_home/>
       },
       {path:"freelancerdashboard",
       element:<FreelancerHome/>},
@@ -33,13 +47,14 @@ const router = createBrowserRouter([
     element:<Fullviewjob/>},
     {path:"/homepage",
     element:<MainPage/>},
+    {path:"/product/:id",
+    element:<Complete_products/>},
     {path:"/postproject",
     element:<PostProject/>},
     {path:"setprofile",
     element:<SetupProfile/>},
     {path:"dash",
     element:<FreelancerDashboard/>},
-    ,
     {path:"login",
     element:<Login/>},
     {path:"signup",
@@ -51,7 +66,7 @@ const router = createBrowserRouter([
     {path:"check",
     element: <Check_/>},
     {path:"verify",
-    element: <LLogin_/>}
+    element: <VerifyOTP/>}
 
     ]
   }
@@ -62,10 +77,21 @@ const router = createBrowserRouter([
 
 
 
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-   <RouterProvider router={router}/>
+    <ProductProvider>
+      <SidebarProvider>
+        <CartProvider>
+          <RouterProvider router={router}>
+            <Root />
+          </RouterProvider>
+        </CartProvider>
+      </SidebarProvider>
+    </ProductProvider>
   </React.StrictMode>
 );
 reportWebVitals();
+

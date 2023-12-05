@@ -65,7 +65,7 @@ export default function Login() {
     
         // If both client and freelancer login fail
         Swal.fire({
-            icon: "error",
+            icon: "error",  
             title: "Oops...",
             text: "User Not Found!",
             footer: <a href="/signup">Create a new account</a>,
