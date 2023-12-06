@@ -38,6 +38,7 @@ const signIn = async (req, res) => {
 
         console.log('Freelancer sign-in API');
         console.log(freelancer);
+        user_=freelancer;
 
         // Create a payload with additional data
         const payload = {
@@ -62,8 +63,6 @@ const signIn = async (req, res) => {
     }
 };
 
-
-// module.exports =;
 
 
 
@@ -237,8 +236,8 @@ const forgetpassword=async (req,res)=>{
 
     const setProfile = async (req, res) => {
         try {
-            const P_email = "alichoudhary669@gmail.com";  // Assuming P_email is a constant
-    
+            const P_email = user_.Email;;  // Assuming P_email is a constant
+    console.log(P_email);
             const data = {
                 city: req.body.city,
                 country: req.body.country,
@@ -284,7 +283,42 @@ const forgetpassword=async (req,res)=>{
         }
     };
     
-    
+    const fetchprofiledata = async (req, res) => {
+        const data = {
+            city: '',
+            country: '',
+            headline: '',
+            headlineDescription: '',
+            portfolioDescription: '',  
+            skills: '',
+            languages: '',
+            education: '',
+            certifications: '',
+            employmentHistory: '',
+            otherExperiences: '',
+        };
+      
+        try {
+          const existingUser = await FreelancerProfile.findOne({
+            where: {
+            //   email: user_.Email,
+              email: "alichoudhary669@gmail.com",
+            },
+          });
+      
+          console.log(existingUser);
+      
+          if (existingUser) {
+            res.send(existingUser);
+          } else {
+            res.send(data);
+          }
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+          res.status(500).send("Internal Server Error");
+        }
+      };
+      
 
     
     
@@ -298,5 +332,6 @@ module.exports = {signIn,
   verifypassword,
   update_password,
   Allproject,
-  setProfile
+  setProfile,
+  fetchprofiledata
 };

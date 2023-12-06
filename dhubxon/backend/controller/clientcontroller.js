@@ -1,4 +1,5 @@
 const Client = require("../models/clientmodel");
+const ClientProfile=require("../models/clientprofile");
 const Project =require("../models/project");
 const sequelize = require("../config");
 const crypto = require('crypto');
@@ -8,8 +9,6 @@ const jwt = require('jsonwebtoken');
 
 
 
-
-////---------------------ADD----------------
 var old_data={};
 let temporaryUsersrecord = {};
 var user_={};
@@ -88,6 +87,7 @@ const signIn = async (req, res) => {
         }
 
         console.log(clientData);
+        user_=clientData;
         
         // Include client data in the JWT payload
         const payload = {
@@ -240,6 +240,86 @@ console.log("------------------------------");
   };
   
 
+  const setProfile = async (req, res) => {
+    try {
+        const P_email = user_.Email;  // Assuming P_email is a constant
+
+        const data = {
+            companyname: req.body.companyname,
+            industry: req.body.industry,
+            contactperson: req.body.contactperson,
+            contactemail: req.body.contactemail,
+            contactphone: req.body.contactphone,
+            companydescription: req.body.companydescription,
+            projectposted: req.body.projectposted,
+            email: P_email
+        };
+
+        console.log("Data is:", data);
+
+        // Check if a user with the given email already exists
+        const existingUser = await ClientProfile.findOne({
+            where: {
+                email: data.email,
+            },
+        });
+
+        if (!existingUser) {
+            // If the user does not exist, create a new profile
+            await ClientProfile.create(data);
+        } else {
+            // If the user already exists, update the existing record with new data
+            await ClientProfile.update(data, {
+                where: {
+                    email: data.email,
+                },
+            });
+        }
+
+        // Handle success, send a response, or perform other actions if needed
+        res.status(200).json({ message: "Profile set successfully" });
+    } catch (error) {
+        // Handle errors, send an error response, or log the error
+        console.error("Error setting profile:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
+
+const fetchprofiledata = async (req, res) => {
+    const data = {
+      companyname: " ",
+      industry: " ",
+      contactperson: " ",
+      contactemail: " ",
+      contactphone: " ",
+      companydescription: "",
+      projectposted: " ",
+    };
+  
+    try {
+      const existingUser = await ClientProfile.findOne({
+        where: {
+          email: user_.Email,
+        },
+      });
+  
+      console.log(existingUser);
+  
+      if (existingUser) {
+        res.send(existingUser);
+      } else {
+        res.send(data);
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  };
+  
+
+
 
 
   module.exports = {
@@ -249,5 +329,7 @@ console.log("------------------------------");
     forgetpassword,
     verifypassword,
     update_password,
-     Postproject
+     Postproject,
+     setProfile,
+     fetchprofiledata
 };

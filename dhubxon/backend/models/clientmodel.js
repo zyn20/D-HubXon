@@ -15,9 +15,7 @@ const Client = sequelize.define("client", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    // verificationCode: DataTypes.STRING,
-    // verificationCodeExpiry: DataTypes.DATE,
-    // isVerified: DataTypes.BOOLEAN
+  
  });
 
  module.exports = Client

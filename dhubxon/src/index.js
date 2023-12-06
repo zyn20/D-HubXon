@@ -52,43 +52,42 @@ const router = createBrowserRouter([
     children:[
       {
         path:"",
-        element: <Complete_home/>
+        element: <MainPage/>
       },
+     
       {path:"freelancerdashboard",
-      element: <Protected  component={<FreelancerHome/>}/> },
+      element: <Protected  component={<FreelancerHome/>}  allowableuser="freelancer" /> },
       {path:"jobview",
-      element: <Protected  component={<Fullviewjob/>}/> },
-    {path:"/homepage",
-    element: <Protected  component={<MainPage/>}/> },
+      element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
+    
     {path:"/product/:id",
-    element: <Protected  component={<Complete_products/>}/> },
+    element: <Protected  component={<Complete_products/>} allowableuser="client"/> },
    
-    {path: "/postproject", element: <Protected  component={<PostProject/>}/> },
+    {path: "/freelancer/postproject", element: <Protected  component={<PostProject/>} allowableuser="freelancer"/> },
 
 
-    {path:"setprofile",
-    element: <Protected  component={<SetupProfile/>}/> },
-    {path:"dash",
-    element: <Protected  component={<FreelancerDashboard/>}/> },
+    {path:"/freelancer/setprofile",
+    element: <Protected  component={<SetupProfile/>}allowableuser="freelancer"/> },
+    {path:"/freelancer/dashboard",
+    element: <Protected  component={<FreelancerDashboard/>}allowableuser="freelancer"/> },
     {path:"login",
     element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
-    {path:"proposalsubmission",
-    element: <Protected  component={<ProposalSubmission/>}/> },
-    {path:"editprofile",
-    element: <Protected  component={<EditProfile/>}/> },
+    {path:"/freelancer/proposalsubmission",
+    element: <Protected  component={<ProposalSubmission/>}allowableuser="freelancer"/> },
+    
     {path:"check",
     element: <Protected  component={<Check_/>}/> },
     {path:"verify",
     element: <Protected  component={<VerifyOTP/>}/> },
   
-    {path:"/community",
-    element: <Community/>},
-    {path:"cd",
-    element: <ClientDashboard/>},
-    {path:"edt",
-    element: <EditClientProfile/>},
+    {path:"/freelancer/community",
+    element: <Protected  component={<Community/>}allowableuser="freelancer"/> },
+    {path:"/client/dashboard",
+    element: <Protected  component={<ClientDashboard/>}allowableuser="client"/> },
+    {path:"/client/setprofile",
+    element: <Protected  component={<EditClientProfile/>}allowableuser="client"/> },
 
     ]
   }

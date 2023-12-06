@@ -1,4 +1,3 @@
-// Check.js
 
 import React from 'react';
 

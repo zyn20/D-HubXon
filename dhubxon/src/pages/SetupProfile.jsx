@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios'
 
 
@@ -17,6 +17,22 @@ const SetupProfile = () => {
     employmentHistory: '',
     otherExperiences: '',
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofiledata');
+        
+        const fetchedData = response.data; // Modify this based on the actual response structure
+        setFormData({ ...fetchedData });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Call the async function inside useEffect
+
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -44,8 +60,6 @@ const education=formData.education;
 const certifications=formData.certifications;
 const employmentHistory=formData.employmentHistory;
 const otherExperiences=formData.otherExperiences;
-
-console.log("other Experiences",otherExperiences);
 
 
     e.preventDefault();

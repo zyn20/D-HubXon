@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 
 const EditClientProfile = () => {
+
+  const navigate=useNavigate();
+
   const [formData, setFormData] = useState({
-    companyName: '',
+    companyname: '',
     industry: '',
-    projectsPosted: '',
-    contactPerson: '',
-    contactEmail: '',
-    contactPhone: '',
-    companyDescription: '',
+    projectposted: '',
+    contactperson: '',
+    contactemail: '',
+    contactphone: '',
+    companydescription: '',
   });
 
   useEffect(() => {
-    // Fetch and populate existing client data here
-    // Example: setFormData({ ...fetchedData });
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/client/fetchprofiledata');
+        
+        const fetchedData = response.data; // Modify this based on the actual response structure
+        setFormData({ ...fetchedData });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Call the async function inside useEffect
+
   }, []);
 
   const handleChange = (e) => {
@@ -25,7 +43,59 @@ const EditClientProfile = () => {
     e.preventDefault();
     console.log('Client Profile updated:', formData);
     // Handle form submission logic here
+if(!validation()){
+  return;
+}
+else{
+    submission();
+}
   };
+
+const validation=()=>{
+  if (
+    !formData.companyname ||
+    !formData.industry ||
+    !formData.contactperson ||
+    !formData.contactemail ||
+    !formData.contactphone ||
+    isNaN(parseInt(formData.contactphone)) ||
+    parseInt(formData.contactphone) < 0 ||
+    !formData.companydescription ||
+    !formData.projectposted ||
+    isNaN(parseInt(formData.projectposted)) ||
+    parseInt(formData.projectposted) < 0
+  ) {
+    Swal.fire("Please fill in all fields, ensure 'Projects Posted Must a positive Num' and Contact Phone Must be in Correct Format.");
+    return false;
+  }
+  return true;
+}
+
+
+  const submission=async()=>{
+const companyname=formData.companyname;
+const industry=formData.industry;
+const contactperson=formData.contactperson;
+const contactemail=formData.contactemail;
+const contactphone=formData.contactphone;
+const companydescription=formData.companydescription;
+const projectposted=formData.projectposted;
+
+try {
+  const response = await axios.post('http://127.0.0.1:5000/client/setprofile',{ companyname,industry,contactperson,contactemail,contactphone,companydescription,projectposted});
+  // Handle the response, e.g., show a success message or redirect
+  console.log('Response:', response.data);
+  Swal.fire("Profile Edited Successfully");
+  navigate("/clientdashboard");
+
+} catch (error) {
+  // Handle errors, e.g., show an error message
+  console.error('Error submitting form:', error);
+  Swal.fire("Error Occur");
+}
+
+
+  }
 
   return (
     <div className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-md p-6 mt-10 bg-green-100 mb-8">
@@ -34,23 +104,23 @@ const EditClientProfile = () => {
         {/* Basic Information Section */}
         <div className="md:col-span-2">
           <SectionHeader title="Basic Information" />
-          <InputField label="Company Name" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Enter your company name" />
-          <InputField label="Industry" name="industry" value={formData.industry} onChange={handleChange} placeholder="Enter your industry" />
+          <InputField label="Company Name" name="companyname" value={formData.companyname} onChange={handleChange} placeholder="Enter your company name" />
+          <InputField label="industry" name="industry" value={formData.industry} onChange={handleChange} placeholder="Enter your industry" />
         </div>
 
         {/* Contact Information */}
         <div className="md:col-span-2">
           <SectionHeader title="Contact Information" />
-          <InputField label="Contact Person" name="contactPerson" value={formData.contactPerson} onChange={handleChange} placeholder="Enter contact person's name" />
-          <InputField label="Contact Email" name="contactEmail" value={formData.contactEmail} onChange={handleChange} placeholder="Enter contact email" />
-          <InputField label="Contact Phone" name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="Enter contact phone number" />
+          <InputField label="Contact Person" name="contactperson" value={formData.contactperson} onChange={handleChange} placeholder="Enter contact person's name" />
+          <InputField label="Contact Email" name="contactemail" value={formData.contactemail} onChange={handleChange} placeholder="Enter contact email" />
+          <InputField label="Contact Phone" name="contactphone" value={formData.contactphone} onChange={handleChange} placeholder="Enter contact phone number" />
         </div>
 
         {/* Company Details */}
         <div className="md:col-span-2">
           <SectionHeader title="Company Details" />
-          <TextareaField label="Company Description" name="companyDescription" value={formData.companyDescription} onChange={handleChange} placeholder="Describe your company..." />
-          <InputField label="Projects Posted" name="projectsPosted" value={formData.projectsPosted} onChange={handleChange} placeholder="Number of projects posted" />
+          <TextareaField label="Company Description" name="companydescription" value={formData.companydescription} onChange={handleChange} placeholder="Describe your company..." />
+          <InputField label="Projects Posted" name="projectposted" value={formData.projectposted} onChange={handleChange} placeholder="Number of projects posted" />
         </div>
 
         {/* Submit Button */}

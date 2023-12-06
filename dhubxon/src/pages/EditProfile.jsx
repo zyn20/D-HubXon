@@ -8,10 +8,11 @@ const EditProfile = () => {
     country: '',
     headline: '',
     headlineDescription: '',
-    portfolio: {
-      file: null,
-      description: '',
-    },
+    // portfolio: {
+    //   file: null,
+    //   description: '',
+    // },
+    description:'',
     skills: '',
     languages: '',
     education: '',
@@ -60,8 +61,8 @@ const EditProfile = () => {
       {/* Portfolio */}
       <div className="md:col-span-2">
         <SectionHeader title="Portfolio" />
-        <FileField label="Portfolio File" name="portfolioFile" onChange={handleChange} />
-        <TextareaField label="Portfolio Description" name="portfolioDescription" value={formData.portfolio.description} onChange={handleChange} placeholder="Describe your portfolio..." />
+        {/* <FileField label="Portfolio File" name="portfolioFile" onChange={handleChange} /> */}
+        <TextareaField label="Portfolio Description" name="portfolioDescription" value={formData.description} onChange={handleChange} placeholder="Describe your portfolio..." />
       </div>
 
       {/* Skills and Languages */}

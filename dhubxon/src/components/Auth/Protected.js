@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
+import { all } from 'axios';
 
-function Protected({ component: Component }) {
-  console.log('i am in protected.js');
+function Protected({ component: Component,allowableuser }) {
+  console.log('I am in protected.js');
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,20 +13,25 @@ function Protected({ component: Component }) {
 
     if (!token) {
       navigate('/login');
-      return;
     }
 
+    // Optionally, you can check the validity of the token here
     try {
       const decodedToken = jwtDecode(token);
       const userRole = decodedToken.role;
-      console.log(userRole);
+      console.log('User Role:', userRole);
+      console.log("allowable",allowableuser)
+      if(userRole!=allowableuser){
+        if(userRole==="client"){navigate("/client/dashboard")}
+        if(userRole==="freelancer"){navigate("/freelancer/dashboard")}
+      }
     } catch (error) {
-      console.error('Invalid token specified: must be a string');
+      console.error('Error decoding token:', error);
       navigate('/login');
     }
-  }, [navigate]); // Include navigate in the dependency array
+  }, [navigate]);
 
-  return Component;
+  return Component ;
 }
 
 export default Protected;
