@@ -1,0 +1,46 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    height: 50px;
+    border-bottom: 1px solid lightgray;
+    position: sticky;
+    top: 0;
+    background-color: white;
+
+    .left {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+
+        .search {
+            display: flex;
+            align-items: center;
+
+            input {
+                border: none;
+                width: 500px;
+            }
+        }
+    }
+
+    .right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+
+        .user {
+            display: flex;
+            align-items: center;
+
+            img {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+    }
+}

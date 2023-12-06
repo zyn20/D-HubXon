@@ -6,9 +6,9 @@ import Footer from './components/Freelancer/Footer'
 const Layout = () => {
   return (
     <>
-    <Navbar/>
+    {/* <Navbar/> */}
     <Outlet/>
-    <Footer/>
+    {/* <Footer/> */}
     </>
   )
 }

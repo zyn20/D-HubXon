@@ -1,9 +1,11 @@
+import { Navigate } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-// import App from './App';
-import Root from './Root'
+import EditClientProfile from './pages/ClientEditProfile';
 
+import Root from './Root'
+import Community from './community/pages/Community';
 import reportWebVitals from './reportWebVitals';
 import FreelancerHome from './pages/Home';
 import { RouterProvider , createBrowserRouter, createRoutesFromElements,Route} from 'react-router-dom';
@@ -21,6 +23,7 @@ import Protected from './components/Auth/Protected';
 import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
+import ClientDashboard from './pages/ClientDashboard';
 
 import SignupPage from './pages/Signup';
 import MainPage from './pages/mainPage'
@@ -28,14 +31,24 @@ import Check_ from './pages/Check_user';
 import Complete_home from "./courses/src/complete_home";
 import Complete_products from "./courses/src/complete_products";
 
+const currentUser = true;
 
-
-
+const ProtectedRoute = ({ children }) => {
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
+  return children;
+};
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element:<Root/>,
+    element:(
+      <ProtectedRoute>
+        <Root/>
+      </ProtectedRoute>
+    )
+   ,
     children:[
       {
         path:"",
@@ -69,6 +82,13 @@ const router = createBrowserRouter([
     element: <Protected  component={<Check_/>}/> },
     {path:"verify",
     element: <Protected  component={<VerifyOTP/>}/> },
+  
+    {path:"/community",
+    element: <Community/>},
+    {path:"cd",
+    element: <ClientDashboard/>},
+    {path:"edt",
+    element: <EditClientProfile/>},
 
     ]
   }
