@@ -53,7 +53,7 @@ const router = createBrowserRouter([
       },
       {path:"freelancerdashboard",
       element:<FreelancerHome/>},
-      {path:"jobview",
+      {path:"freelancer/viewjob",
     element:<Fullviewjob/>},
     {path:"/homepage",
     element:<MainPage/>},
