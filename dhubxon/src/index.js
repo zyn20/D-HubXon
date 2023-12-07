@@ -21,7 +21,7 @@ import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
 import ClientDashboard from './pages/ClientDashboard';
-
+import AddCourses from "./pages/AddCourses"
 import SignupPage from './pages/Signup';
 import MainPage from './pages/mainPage'
 import Check_ from './pages/Check_user';
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
     children:[
       {
         path:"",
-        element: <Complete_home/>
+        element: <AddCourses/>
       },
       {path:"freelancerdashboard",
       element:<FreelancerHome/>},
@@ -83,6 +83,10 @@ const router = createBrowserRouter([
     element: <ClientDashboard/>},
     {path:"edt",
     element: <EditClientProfile/>},
+
+    ,
+    {path:"cm",
+    element: <Complete_home/>},
 
     ]
   }

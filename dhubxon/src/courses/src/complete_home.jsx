@@ -10,7 +10,7 @@ const Complete_home = () => {
       <Header />
               <Home />
           <Sidebar />
-          <Footer />
+          
         
       </div>
     );
