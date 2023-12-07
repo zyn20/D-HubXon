@@ -57,16 +57,14 @@ const router = createBrowserRouter([
      
       {path:"freelancerdashboard",
       element: <Protected  component={<FreelancerHome/>}  allowableuser="freelancer" /> },
-      {path:"jobview",
-      element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
-    
-      // element:<FreelancerHome/>},
       {path:"freelancer/viewjob",
-    element:<Fullviewjob/>},
+      element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
     {path:"/homepage",
     element:<MainPage/>},
     {path:"/product/:id",
     element: <Protected  component={<Complete_products/>} allowableuser="client"/> },
+    {path:"/client/explore-courses",
+    element: <Protected  component={<Complete_home/>} allowableuser="client"/> },
    
     {path: "/freelancer/postproject", element: <Protected  component={<PostProject/>} allowableuser="freelancer"/> },
 
