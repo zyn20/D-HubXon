@@ -4,7 +4,7 @@ function App() {
   return (
 <>
 <h1>
-  Lets Start guys
+  Dummy App dot js
 </h1>
 </>
   );
