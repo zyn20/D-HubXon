@@ -3,7 +3,7 @@
 
 
 import React, { useState } from 'react';
-import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';dasd
+import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 
 const ProductForm = () => {
