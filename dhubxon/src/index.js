@@ -85,7 +85,7 @@ const router = createBrowserRouter([
     element: <EditClientProfile/>},
 
     ,
-    {path:"cm",
+    {path:"freealancer/home",
     element: <Complete_home/>},
 
     ]
