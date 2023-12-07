@@ -1,10 +1,12 @@
 import React from 'react';
 import CarouselComponent from '../components/Freelancer/separate_components/CarouselComponent';
 import Cards from '../components/Freelancer/separate_components/Cards';
+import Navbar from '../components/Freelancer/Navbar'
 
 const Home = () => {
   return (
     <>
+    <Navbar/>
       <div>
         <CarouselComponent />
       </div>

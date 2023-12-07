@@ -1,6 +1,7 @@
 import React from 'react';
 import image from '../assets/1.png';
 
+
 const cardData = [
   { title: 'Ongoing Projects', content: '5' },
   { title: 'Completed Projects', content: '15' },
@@ -12,6 +13,7 @@ const cardData = [
 const ClientDashboard = () => {
   const renderProjectOverview = () => {
     return (
+
       <div className="p-4 bg-white rounded-lg shadow flex justify-around items-center">
         <div className="text-center">
           <span className="block text-2xl font-bold text-blue-500">5</span>
@@ -134,6 +136,7 @@ const ClientDashboard = () => {
         </div>
 
         <div className="mt-5 w-full max-w-[1400px] space-y-4">
+       
           {renderProjectOverview()}
           {renderRecentActivityFeed()}
           {renderProjectManagementSection()}
