@@ -3,8 +3,9 @@ const router = express.Router()
 const checkforDuplicate = require("../middleware/checkforduplicate_client")
 const checkRecord=require("../middleware/check_client_record")
 const Functions = require("../controller/clientcontroller")
+const courseController = require('../controller/coursescontroller');
 
-
+router.get('/courses', courseController.getAllCourses);
 router.post('/signUp', checkforDuplicate, Functions.signUp);
 router.post('/signIn' , Functions.signIn);
 router.post('/verify', Functions.verify);

@@ -8,7 +8,7 @@ const ProductProvider = ({ children }) => {
   // fetch products
   useEffect(() => {
     const fetchProducts = async () => {
-      const response = await fetch("https://fakestoreapi.com/products");
+      const response = await fetch("http://127.0.0.1:5000/client/courses");
       const data = await response.json();
       setProducts(data);
     };

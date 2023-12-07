@@ -24,7 +24,7 @@ import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
 import ClientDashboard from './pages/ClientDashboard';
-
+import AddCourses from "./pages/AddCourses"
 import SignupPage from './pages/Signup';
 import MainPage from './pages/mainPage'
 import Check_ from './pages/Check_user';
@@ -88,6 +88,10 @@ const router = createBrowserRouter([
     element: <Protected  component={<ClientDashboard/>}allowableuser="client"/> },
     {path:"/client/setprofile",
     element: <Protected  component={<EditClientProfile/>}allowableuser="client"/> },
+
+    ,
+    {path:"cm",
+    element: <Complete_home/>},
 
     ]
   }
