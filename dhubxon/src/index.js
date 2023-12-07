@@ -60,6 +60,11 @@ const router = createBrowserRouter([
       {path:"jobview",
       element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
     
+      // element:<FreelancerHome/>},
+      {path:"freelancer/viewjob",
+    element:<Fullviewjob/>},
+    {path:"/homepage",
+    element:<MainPage/>},
     {path:"/product/:id",
     element: <Protected  component={<Complete_products/>} allowableuser="client"/> },
    
@@ -90,7 +95,7 @@ const router = createBrowserRouter([
     element: <Protected  component={<EditClientProfile/>}allowableuser="client"/> },
 
     ,
-    {path:"cm",
+    {path:"freealancer/home",
     element: <Complete_home/>},
 
     ]
