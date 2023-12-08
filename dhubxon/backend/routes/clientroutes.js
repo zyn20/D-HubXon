@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const checkforDuplicate = require("../middleware/checkforduplicate_client")
+const checkforDuplicate = require("../middleware/checkforduplicate");
 const checkRecord=require("../middleware/check_client_record")
 const Functions = require("../controller/clientcontroller")
 const courseController = require('../controller/coursescontroller');

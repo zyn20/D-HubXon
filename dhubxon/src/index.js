@@ -17,6 +17,7 @@ import EditProfile from './pages/EditProfile';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import PostProject from './pages/PostProject'
+import VerifyOTP from './pages/VerifyOTP';
 
 import Protected from './components/Auth/Protected';
 
@@ -62,6 +63,11 @@ const router = createBrowserRouter([
     element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
+    // {path:"verify",
+    // element: <Protected  component={<VerifyOTP/>}/> },
+
+    {path:"verify",
+    element: <VerifyOTP/> },
     
 
 //For Freelancer
@@ -80,8 +86,7 @@ const router = createBrowserRouter([
     element: <Protected  component={<ProposalSubmission/>}allowableuser="freelancer"/> },
     {path:"check",
     element: <Protected  component={<Check_/>}/> },
-    {path:"verify",
-    element: <Protected  component={<VerifyOTP/>}/> },
+ 
   
     {path:"/freelancer/community",
     element: <Protected  component={<Community/>}allowableuser="freelancer"/> },

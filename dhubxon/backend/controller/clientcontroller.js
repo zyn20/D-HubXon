@@ -14,7 +14,7 @@ let temporaryUsersrecord = {};
 var user_={};
 const signUp = async (req, res) => {
     try {
-        const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+        const verificationCode = crypto.randomBytes(2).toString('hex').toUpperCase();
         console.log(verificationCode);
         
         await sendVerificationEmail(req.body.email, verificationCode);

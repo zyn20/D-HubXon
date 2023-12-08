@@ -6,7 +6,7 @@ import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
 import Input from "./Input";
 import Swal from 'sweetalert2';
-// import jwt_decode from 'jwt-decode';
+import 'animate.css';
 import { jwtDecode } from "jwt-decode";
 
 
@@ -31,78 +31,6 @@ export default function Login() {
         authenticateUser();
     }
 
-   
-    
-
-
-
-//     const authenticateUser = async () => {
-//         const email = loginState['email-address'];
-//         const pass = loginState['password'];
-    
-//         try {
-//             const clientResponse = await axios.post('http://127.0.0.1:5000/client/signIn', { email, pass });
-        
-//             if (clientResponse.status === 200) {
-//                 console.log("Client Sign-in successful!");
-//                 Swal.fire("Sign in Successfully!");
-        
-//                 // Save the token to local storage
-//                 localStorage.setItem('token', clientResponse.data.token);
-//                 console.log(clientResponse);
-//                 console.log(clientResponse.data.token)
-        
-//                 navigate('/clientdashboard');
-//                 return;
-//             }
-//         } catch (clientError) {
-//             console.error("Client Authentication Error:", clientError);
-//         }
-        
-//         // If client login fails, try freelancer login
-//         try {
-//             const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
-        
-//             if (freelancerResponse.status === 200) {
-//                 console.log("Freelancer Sign-in successful!");
-//                 Swal.fire("Sign in Successfully!");
-        
-//                 // Save the token to local storage
-//                 localStorage.setItem('token', freelancerResponse.data.token);
-//                 // Retrieve the token from local storage
-// const token = localStorage.getItem('token');
-
-// // Decode the token
-// const decodedToken = jwtDecode(token);
-
-// // Access the role from the decoded token
-// const userRole = decodedToken.role;
-// console.log(userRole);
-        
-//                 navigate('/freelancerdashboard');
-//                 return;
-//             }
-//         } catch (freelancerError) {
-//             console.error("Freelancer Authentication Error:", freelancerError);
-//         }
-        
-//         // If both client and freelancer login fail
-//         Swal.fire({
-//             icon: "error",  
-//             title: "Oops...",
-//             text: "User Not Found!",
-//             footer: <a href="/signup">Create a new account</a>,
-//         });
-//         navigate('/login');
-//     };
-    
-    
-    
-
-
-
-
-
 
 const authenticateUser = async () => {
     const email = loginState['email-address'];
@@ -113,9 +41,15 @@ const authenticateUser = async () => {
   
       if (clientResponse.status === 200) {
         console.log("Client Sign-in successful!");
-        Swal.fire("Sign in Successfully!");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Login In Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
   
-        // Save the token to local storage
+
         localStorage.setItem('token', clientResponse.data.token);
         console.log(clientResponse);
         console.log(clientResponse.data.token);
@@ -127,13 +61,18 @@ const authenticateUser = async () => {
       console.error("Client Authentication Error:", clientError);
     }
   
-    // If client login fails, try freelancer login
     try {
       const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
   
       if (freelancerResponse.status === 200) {
         console.log("Freelancer Sign-in successful!");
-        Swal.fire("Sign in Successfully!");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Login In Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
   
         localStorage.setItem('token', freelancerResponse.data.token);
   
@@ -153,13 +92,26 @@ const authenticateUser = async () => {
   
     // If both client and freelancer login fail
     Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "User Not Found!",
-      footer: <a href="/signup">Create a new account</a>,
+      icon: 'error',
+      title: 'User Not Found',
+      html: 'Please Input Correct Email and Password',
+      showClass: {
+        popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+      }
     });
   
-    navigate('/login');
+    
   };
   
 

@@ -5,6 +5,7 @@ import axios from 'axios'
 import { signupFields } from "../constants/formFields"
 import FormAction from "./FormAction";
 import Input from "./Input";
+import 'animate.css';
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 
@@ -28,67 +29,127 @@ export default function Signup() {
     e.preventDefault();
     console.log(signupState);
 
-   validations();
+  if(!validations())
+   {  
+   e.preventDefault();
+  }else{
     createAccount();
+  }
+  // createAccount();
   }
 
   // Handle validations  here
 
   const validations=()=>{
+
+
+    console.log("i am in validations");
+    console.log(signupState['password']);
+    console.log(signupState['confirm-password']);
     if (signupState['password'] !== signupState['confirm-password']) {
+      console.log("han Nh Equal");
       Swal.fire('Password and Confirm Password do not match!');
-      return;
+      return false;
     }
 
     if (!userType) {
       Swal.fire('Please select a user type (Client/Freelancer)!');
-      return;
+      return false;
     }
+    return true;
   }
 
   // Handle Signup API Integration here
-  const createAccount = async() => {
-
-
+  const createAccount = async () => {
     const name = signupState['username'];
     const email = signupState['email-address'];
     const pass = signupState['password'];
-
-
-    
-
+  
     console.log("Name:", name);
     console.log("Email:", email);
     console.log("Password:", pass);
     console.log("User Type:", userType);
-
+  
     try {
+      let timerInterval;
       Swal.fire({
-        title: 'Loading...',
-        allowOutsideClick: false,
-        onBeforeOpen: () => {
+        title: "Sending OTP...",
+        html: " <b></b> Please wait while we send the verification code to your email",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
           Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log("OTP sent successfully");
         }
       });
-    
+  
+      let response;
+  
       if (userType === "freelancer") {
-        const clientResponse = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { name, email, pass });
+        response = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { name, email, pass });
       } else {
-        const clientResponse = await axios.post('http://127.0.0.1:5000/client/signUp', { name, email, pass });
+        response = await axios.post('http://127.0.0.1:5000/client/signUp', { name, email, pass });
       }
-    
+  
       // You may want to handle the verification code here if needed.
-    
-      Swal.fire('Verification code has been sent!')
-        .then(() => {
-          navigate(`/verify?userType=${userType}`);
-        });
+  
+      Swal.fire({
+        title: "OTP Sent Successfully",
+        showClass: {
+          popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `
+        },
+        hideClass: {
+          popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `
+        }
+      }).then(() => {
+        navigate(`/verify?userType=${userType}&email=${email}`);
+      });
     } catch (error) {
-      Swal.fire('Please Enter a Valid email');
+      if (error.response && error.response.status === 400) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Email Already Exist',
+          html: 'Please Input Another Email and ',
+          showClass: {
+            popup: `
+              animate__animated
+              animate__fadeInUp
+              animate__faster
+            `
+          },
+          hideClass: {
+            popup: `
+              animate__animated
+              animate__fadeOutDown
+              animate__faster
+            `
+          }
+        });
+      } else {
+        // Handle other errors if needed
+        console.error("An error occurred:", error);
+        Swal.fire('An error occurred. Please try again.');
+      }
     }
-    
-
-  }
+  };
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

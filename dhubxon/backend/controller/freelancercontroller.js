@@ -70,7 +70,7 @@ const signUp = async (req, res) => {
     try {
       
 
-        const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+        const verificationCode = crypto.randomBytes(2).toString('hex').toUpperCase();
         console.log(verificationCode);
         
         await sendVerificationEmail(req.body.email, verificationCode);
@@ -96,12 +96,39 @@ res.send("ok");
     }
 };
 
+
+
+const Re_send_OTP = async (req,res) => {
+    try {
+      const verificationCode = crypto.randomBytes(2).toString('hex').toUpperCase();
+      console.log(verificationCode);
+  const email=req.body.Email;
+  console.log("Again Email:",email);
+      await sendVerificationEmail(email, verificationCode);
+  
+      temporaryRecord = {
+        code: verificationCode,
+        email: email,
+      };
+  
+      // Optionally, you may want to return a success message or handle the response as needed.
+      return { success: true, message: 'OTP sent successfully' };
+    } catch (error) {
+      console.error('Error in resending OTP:', error);
+      return { success: false, message: 'Error sending OTP' };
+    }
+  };
+  
+
+
+
 const verify= async (req, res) => {
     try {
+        console.log("-----------------------------")
         console.log(req.body.code);
-        const  verificationCode  = req.body.code;
+        const  verificationCode  = req.body.verificationCode;
         console.log(verificationCode);
-
+        
         if (verificationCode!=temporaryRecord.code) {
             return res.status(400).send('Invalid verification code');
         }
@@ -333,5 +360,6 @@ module.exports = {signIn,
   update_password,
   Allproject,
   setProfile,
-  fetchprofiledata
+  fetchprofiledata,
+  Re_send_OTP
 };
