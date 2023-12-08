@@ -15,6 +15,8 @@ function Protected({ component: Component,allowableuser }) {
       navigate('/login');
     }
 
+    
+
     // Optionally, you can check the validity of the token here
     try {
       const decodedToken = jwtDecode(token);

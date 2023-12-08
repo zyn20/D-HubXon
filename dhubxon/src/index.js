@@ -83,7 +83,7 @@ const router = createBrowserRouter([
     {path:"check",
     element: <Protected  component={<Check_/>}/> },
     {path:"verify",
-    element: <Protected  component={<VerifyOTP/>}/> },
+    element: <VerifyOTP/> },
   
     {path:"/freelancer/community",
     element: <Protected  component={<Community/>}allowableuser="freelancer"/> },

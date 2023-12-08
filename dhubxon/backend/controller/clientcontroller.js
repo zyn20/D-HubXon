@@ -51,6 +51,9 @@ const verify = async (req, res) => {
             return res.status(400).send('Invalid verification code');
         }
 else{
+
+             
+
         const newUser = await Client.create({
             ...user_
         });
