@@ -43,7 +43,7 @@ function Login() {
       if (response.status === 200) {
         console.log("---------------------------------");
         console.log(response.data);
-        navigate('/');
+        navigate('/login');
       } else {
         // Handle other status codes if needed
         Swal.fire({

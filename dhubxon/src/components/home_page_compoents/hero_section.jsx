@@ -34,12 +34,12 @@ const HeroSection = () => {
              forging a decentralized hub for limitless possibilities
             </h3>
             <div className="mt-10 flex flex-col sm:flex-row justify-center md:justify-start">
+             <a href="/login">
               <button className="w-full sm:w-40 px-4 py-3 rounded font-semibold text-md bg-blue-500 text-white border-2 border-blue-500">
                 Get started
               </button>
-              <button className="w-full mt-4 sm:mt-0 sm:ml-4 sm:w-40 px-4 py-3 rounded font-semibold text-md bg-white text-blue-500 border-2 border-gray-500">
-                Watch a Demo
-              </button>
+              </a>
+             
             </div>
    {/* New div for Trusted by section */}
    <div className="mt-12 text-center md:text-left">

@@ -15,7 +15,7 @@ import SetupProfile from './pages/SetupProfile';
 import FreelancerDashboard from './pages/FreelancerDashboard';
 import EditProfile from './pages/EditProfile';
 import Login from './pages/Login';
-import VerifyOTP from './pages/Verify';
+import Home from './pages/Home';
 import PostProject from './pages/PostProject'
 
 import Protected from './components/Auth/Protected';
@@ -55,46 +55,54 @@ const router = createBrowserRouter([
         element: <MainPage/>
       },
      
-      {path:"freelancerdashboard",
-      element: <Protected  component={<FreelancerHome/>}  allowableuser="freelancer" /> },
-      {path:"freelancer/viewjob",
-      element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
-    {path:"/homepage",
+//For All
+      {path:"/homepage",
     element:<MainPage/>},
-    {path:"/product/:id",
-    element: <Protected  component={<Complete_products/>} allowableuser="client"/> },
-    {path:"/client/explore-courses",
-    element: <Protected  component={<Complete_home/>} allowableuser="client"/> },
-   
-    {path: "/freelancer/postproject", element: <Protected  component={<PostProject/>} allowableuser="freelancer"/> },
-
-
-    {path:"/freelancer/setprofile",
-    element: <Protected  component={<SetupProfile/>}allowableuser="freelancer"/> },
-    {path:"/freelancer/dashboard",
-    element: <Protected  component={<FreelancerDashboard/>}allowableuser="freelancer"/> },
     {path:"login",
     element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
+    
+
+//For Freelancer
+      {path:"freelancerdashboard",
+      element: <Protected  component={<FreelancerHome/>}  allowableuser="freelancer" /> },
+      {path:"/freelancer/addcourse",
+      element: <Protected  component={<AddCourses/>}  allowableuser="freelancer" /> },
+      {path:"freelancer/viewjob",
+      element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
+    {path: "/freelancer/postproject", element: <Protected  component={<PostProject/>} allowableuser="freelancer"/> },
+    {path:"/freelancer/setprofile",
+    element: <Protected  component={<SetupProfile/>}allowableuser="freelancer"/> },
+    {path:"/freelancer/dashboard",
+    element: <Protected  component={<FreelancerDashboard/>}allowableuser="freelancer"/> },
     {path:"/freelancer/proposalsubmission",
     element: <Protected  component={<ProposalSubmission/>}allowableuser="freelancer"/> },
-    
     {path:"check",
     element: <Protected  component={<Check_/>}/> },
     {path:"verify",
-    element: <VerifyOTP/> },
+    element: <Protected  component={<VerifyOTP/>}/> },
   
     {path:"/freelancer/community",
     element: <Protected  component={<Community/>}allowableuser="freelancer"/> },
+    {path:"freelancer/home",
+    element: <Home/> },
+
+
+
+
+
+
+//For Client
+    {path:"/product/:id",
+    element: <Protected  component={<Complete_products/>} allowableuser="client"/>  },
+    {path:"/client/explore-courses",
+    element: <Protected  component={<Complete_home/>} allowableuser="client"/>  },
     {path:"/client/dashboard",
     element: <Protected  component={<ClientDashboard/>}allowableuser="client"/> },
-    {path:"/client/setprofile",
-    element: <Protected  component={<EditClientProfile/>}allowableuser="client"/> },
-
-    ,
-    {path:"freealancer/home",
-    element: <Complete_home/>},
+    {path:"/client/postproject",
+    element: <Protected  component={<PostProject/>}allowableuser="client"/> },
+   
 
     ]
   }

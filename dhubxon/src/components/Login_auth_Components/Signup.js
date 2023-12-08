@@ -62,23 +62,32 @@ export default function Signup() {
     console.log("Password:", pass);
     console.log("User Type:", userType);
 
-     try {
-      if(userType==="freelancer"){ 
-       
-         const clientResponse = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { name,email, pass });}
+    try {
+      Swal.fire({
+        title: 'Loading...',
+        allowOutsideClick: false,
+        onBeforeOpen: () => {
+          Swal.showLoading();
+        }
+      });
+    
+      if (userType === "freelancer") {
+        const clientResponse = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { name, email, pass });
+      } else {
+        const clientResponse = await axios.post('http://127.0.0.1:5000/client/signUp', { name, email, pass });
+      }
+    
+      // You may want to handle the verification code here if needed.
+    
+      Swal.fire('Verification code has been sent!')
+        .then(() => {
+          navigate(`/verify?userType=${userType}`);
+        });
+    } catch (error) {
+      Swal.fire('Please Enter a Valid email');
+    }
+    
 
-           else{ const clientResponse = await axios.post('http://127.0.0.1:5000/client/signUp', { name,email, pass });}
-          //  Swal.fire("Verification code has been send!");
-
-          //  navigate(`/verify?userType=${userType}`);
-
-          Swal.fire('Verification code has been sent!')
-          .then(() => {
-            navigate(`/verify?userType=${userType}`);
-          });
-     }catch(error){
-      Swal.fire('Please Enter Valid email');
-     }
   }
 
   return (
