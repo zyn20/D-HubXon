@@ -8,6 +8,7 @@ const path = require("path");
 const sequelizee = require("./config");
 const freelancerroute = require('./routes/freelancerroutes');
 const clientroute = require('./routes/clientroutes');
+const check_record=require("./middleware/check_existing_record");
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -17,6 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use('/freelancer', freelancerroute)
 app.use('/client', clientroute)
+app.use('/forgetpassword',check_record)
 
 app.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");

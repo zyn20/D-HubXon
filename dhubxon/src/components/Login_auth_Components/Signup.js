@@ -71,27 +71,27 @@ export default function Signup() {
     console.log("User Type:", userType);
   
     try {
-      let timerInterval;
-      Swal.fire({
-        title: "Sending OTP...",
-        html: " <b></b> Please wait while we send the verification code to your email",
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-          const timer = Swal.getPopup().querySelector("b");
-          timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-          }, 100);
-        },
-        willClose: () => {
-          clearInterval(timerInterval);
-        }
-      }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) {
-          console.log("OTP sent successfully");
-        }
-      });
+        let timerInterval;
+        Swal.fire({
+          title: "Sending OTP...",
+          html: " <b></b> Please wait while we send the verification code to your email",
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+              timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          }
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("OTP sent successfully");
+          }
+        });
   
       let response;
   
@@ -101,29 +101,11 @@ export default function Signup() {
         response = await axios.post('http://127.0.0.1:5000/client/signUp', { name, email, pass });
       }
   
-      // You may want to handle the verification code here if needed.
-  
-      Swal.fire({
-        title: "OTP Sent Successfully",
-        showClass: {
-          popup: `
-            animate__animated
-            animate__fadeInUp
-            animate__faster
-          `
-        },
-        hideClass: {
-          popup: `
-            animate__animated
-            animate__fadeOutDown
-            animate__faster
-          `
-        }
-      }).then(() => {
+      Swal.fire("OTP Sent Successfully!", "", "success").then(() => {
         navigate(`/verify?userType=${userType}&email=${email}`);
       });
     } catch (error) {
-      if (error.response && error.response.status === 400) {
+      if (error.response && error.response.status === 409) {
         Swal.fire({
           icon: 'info',
           title: 'Email Already Exist',

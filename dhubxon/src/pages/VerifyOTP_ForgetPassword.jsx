@@ -19,6 +19,7 @@ function Login() {
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
   const RESENDOTP = async () => {
+    alert();
     console.log("Email Sent SuccessFully:", Email);
     var response;
     if (userType === "freelancer") {
@@ -57,12 +58,38 @@ function Login() {
     }
   };
 
+
+  const alert=()=>{
+    let timerInterval;
+    Swal.fire({
+        title: "Sending OTP...",
+        html: "<b></b> Please wait while we send the verification code to your email",
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log("I was closed by the timer");
+        }
+      })
+  }
+
   const handleSubmit = async (e) => {
     let response;
-    const verificationCode = code1 + code2 + code3 + code4;
-    console.log("verification Code is:", verificationCode);
+    const code = code1 + code2 + code3 + code4;
+    console.log("verification Code is:", code);
 
-    if (verificationCode.length !== 4) {
+    if (code.length !== 4) {
       Swal.fire("Please input in Proper Format");
       e.preventDefault();
       return;
@@ -72,14 +99,14 @@ function Login() {
       e.preventDefault();
       const email = Email;
       if (userType === "freelancer") {
-        response = await axios.post("http://127.0.0.1:5000/freelancer/verify", {
-          verificationCode,
+        response = await axios.post("http://127.0.0.1:5000/freelancer/verify_forgetpass_OTP", {
+          code,
           email,
         });
         console.log(response);
       } else {
-        response = await axios.post("http://127.0.0.1:5000/client/verify", {
-          verificationCode,
+        response = await axios.post("http://127.0.0.1:5000/client/verify_forgetpass_OTP", {
+          code,
           email,
         });
         console.log(response);
@@ -88,14 +115,9 @@ function Login() {
       if (response.status === 200) {
         console.log("---------------------------------");
         console.log(response.status);
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Account Created SuccessFully",
-          showConfirmButton: false,
-          timer: 1500,
-        }).then(() => {
-          navigate("/login");
+        Swal.fire("PIN MATCH!", "", "success").then(() => {
+            console.log("Before update password navigate");
+          navigate(`/update_password?userType=${userType}&email=${email}`);
         });
       } else if (response.status === 400) {
         console.log("---------------------------------");

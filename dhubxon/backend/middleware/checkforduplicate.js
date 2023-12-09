@@ -10,7 +10,7 @@ const checkDuplicate = (req, res, next) => {
       }
     }).then(rs => {
       if (rs) {
-        res.status(400).send({message: "Failed Email is already  exist"});
+        res.status(409).send({message: "Failed Email is already  exist"});
         return;
       }
       Freelancer.findOne({
@@ -19,7 +19,7 @@ const checkDuplicate = (req, res, next) => {
         }
       }).then(rs => {
         if (rs) {
-          res.status(400).send({message: "Failed Email is already exist"});
+          res.status(409).send({message: "Failed Email is already exist"});
           return;
         }
 
