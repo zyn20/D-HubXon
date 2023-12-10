@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import EditClientProfile from './pages/ClientEditProfile';
-
+import CardPage from './components/Freelancer/courses_cards/Cards_page';
 import Root from './Root'
 import Community from './community/pages/Community';
 import reportWebVitals from './reportWebVitals';
@@ -57,6 +57,10 @@ const router = createBrowserRouter([
     element:<Fullviewjob/>},
     {path:"/homepage",
     element:<MainPage/>},
+    {path:"/course_card",
+    element:<CardPage/>},
+
+
     {path:"/product/:id",
     element:<Complete_products/>},
     {path:"/postproject",
