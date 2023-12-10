@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <nav className="bg-gray-100 border-gray-200 dark:bg-gray-900 font-poppins navbar-with-shadow py-4">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto">
-        <NavLink to="/" className="flex items-center">
+        <NavLink to="#" className="flex items-center">
           
           <img src={logo} className="h-6 mr-3 sm:h-9" alt="Logo" />
        
@@ -51,7 +51,7 @@ const Navbar = () => {
             </li>
             {/* Chat NavLink */}
             <li className="flex items-center">
-              <NavLink to="/chat" activeClassName="font-semibold" className="nav-link flex items-center">
+              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link flex items-center">
                 <FaComments className="mr-1" /> Chat
               </NavLink>
             </li>

@@ -31,6 +31,7 @@ import Check_ from './pages/Check_user';
 import Complete_home from "./courses/src/complete_home";
 import Complete_products from "./courses/src/complete_products";
 import MyJobs from './components/Freelancer/Myjobs';
+import Chat from './pages/Chat'
 
 const currentUser = true;
 
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
     element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
+
+    
+    {path:"freelancer/chat",
+    element:<Chat/>},
     
     
 

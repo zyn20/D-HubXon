@@ -21,7 +21,7 @@ const FreelancerDashboard = () => {
     const renderStatisticsOverview = () => {
         return (
           <>
-       <div className="right-8 flex flex-col space-y-4">
+       <div className=" flex flex-col mx-4 space-y-1">
   {/* Freelance Courses Button */}
   <button
     className="flex items-center px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors"
