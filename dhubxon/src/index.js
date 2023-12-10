@@ -32,6 +32,7 @@ import Complete_home from "./courses/src/complete_home";
 import Complete_products from "./courses/src/complete_products";
 import MyJobs from './components/Freelancer/Myjobs';
 import Chat from './pages/Chat'
+import Progress from './pages/Progress';
 
 const currentUser = true;
 
@@ -72,6 +73,8 @@ const router = createBrowserRouter([
     
 
 //For Freelancer
+{path:"/freelancer/set-profile",
+element: <EditProfile/>},
       {path:"freelancerdashboard",
       element: <FreelancerHome/>},
       {path:"/freelancer/courses",
@@ -99,15 +102,24 @@ const router = createBrowserRouter([
 
 
 
-//For Client
+//For Client/
     {path:"/product/:id",
     element: <Complete_products/> },
     {path:"/client/explore-courses",
     element: <Complete_home/>  },
-    {path:"/client/dashboard",
+    {path:"/client/",
     element: <ClientDashboard/> },
     {path:"/client/postproject",
     element: <PostProject/>},
+    ,
+    {path:"/client/set-profile",
+    element: <EditClientProfile/>},
+    ,
+    {path:"/client/chat",
+    element: <Chat/>},
+    ,
+    {path:"/client/progress",
+    element: <Progress/>},
    
 
     ]

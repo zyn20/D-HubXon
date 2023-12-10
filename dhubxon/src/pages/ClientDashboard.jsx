@@ -1,6 +1,9 @@
 import React from 'react';
 import image from '../assets/1.png';
-
+import Navbar_Client from '../components/client/Navbar'
+import { useNavigate } from 'react-router-dom';
+import { faGraduationCap, faLaptopCode } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const cardData = [
   { title: 'Ongoing Projects', content: '5' },
@@ -11,8 +14,31 @@ const cardData = [
 ];
 
 const ClientDashboard = () => {
+  const navigate = useNavigate();
   const renderProjectOverview = () => {
     return (
+<>
+
+<div className=" flex flex-col mx-4 space-y-1">
+  {/* Freelance Courses Button */}
+  <button
+    className="flex items-center px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors"
+    onClick={() => navigate('/client/explore-courses')}
+  >
+    <FontAwesomeIcon icon={faGraduationCap} className="mr-2" />
+    Explore Courses Offered by our Experienced Freelancer
+  </button>
+
+  {/* Software Products Button */}
+  <button
+    className="flex items-center px-4 py-2 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
+    onClick={() => navigate('/freelancer/softwares')}
+  >
+    <FontAwesomeIcon icon={faLaptopCode} className="mr-2" />
+    Explore Software Products Marketplace
+  </button>
+</div>
+
 
       <div className="p-4 bg-white rounded-lg shadow flex justify-around items-center">
         <div className="text-center">
@@ -28,6 +54,7 @@ const ClientDashboard = () => {
           <span className="text-gray-600">Pending Proposals</span>
         </div>
       </div>
+      </>
     );
   };
 
@@ -110,7 +137,10 @@ const ClientDashboard = () => {
   };
 
   return (
+    <>
+    <Navbar_Client />
     <div className="flex flex-col items-center bg-gray-100">
+     
       {/* Banner Section */}
       <div className="w-full max-w-[1400px] h-[200px] bg-green-700 rounded-xl overflow-hidden flex justify-center items-center my-10">
         <div className="z-10 text-white text-center">
@@ -145,6 +175,7 @@ const ClientDashboard = () => {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import Navbar_Client from '../components/client/Navbar'
 
 const EditClientProfile = () => {
 
@@ -98,6 +98,8 @@ try {
   }
 
   return (
+    <>
+      <Navbar_Client />
     <div className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-md p-6 mt-10 bg-green-100 mb-8">
       <h2 className='text-2xl font-poppins font-bold text-center mb-5'>Edit Your Client Profile</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -127,6 +129,7 @@ try {
         <button type="submit" className="bg-green-700 hover:bg-green-800 text-white font-medium py-2.5 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent mt-6 md:col-span-2">Update Profile</button>
       </form>
     </div>
+    </>
   );
 };
 

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
   return (
-    <footer className="bg-blue-900 py-12 mt-auto fixed-bottom w-full">
+    <footer className="bg-gray-800 py-12 mt-auto fixed-bottom w-full">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-between">
           <div className="w-full lg:w-6/12 px-4 mb-8 lg:mb-0">
