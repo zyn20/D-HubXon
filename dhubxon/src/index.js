@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import EditClientProfile from './pages/ClientEditProfile';
-
+import CardPage from './components/Freelancer/courses_cards/Cards_page';
 import Root from './Root'
 import Community from './community/pages/Community';
 import reportWebVitals from './reportWebVitals';
@@ -23,16 +23,22 @@ import Protected from './components/Auth/Protected';
 import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
+import ProductProvid from "./software_products/courses/src/contexts/ProductContext";
+import SidebarProvid from "./software_products/courses/src/contexts/SidebarContext";
+import CartProvid from "./software_products/courses/src/contexts/CartContext";
+
 import ClientDashboard from './pages/ClientDashboard';
 import AddCourses from "./pages/AddCourses"
 import SignupPage from './pages/Signup';
-import MainPage from './pages/mainPage'
+import MainPage from './pages/mainPage';
 import Check_ from './pages/Check_user';
 import Complete_home from "./courses/src/complete_home";
 import Complete_products from "./courses/src/complete_products";
 import MyJobs from './components/Freelancer/Myjobs';
 import Chat from './pages/Chat'
 import Progress from './pages/Progress';
+import Software_home from "./software_products/courses/src/complete_home";
+import Software_products from "./software_products/courses/src/complete_products";
 
 const currentUser = true;
 
@@ -61,7 +67,22 @@ const router = createBrowserRouter([
 //For All
       {path:"/homepage",
     element:<MainPage/>},
-    {path:"login",
+    // {path:"login",
+    // {path:"/course_card",
+    // element:<CardPage/>},
+    {path:"/softwareproducts",
+    element:<Software_home/>},
+    {path:"/softwareproductsone/:id",
+    element:<Software_products/>},
+    {path:"/product/:id",
+    element:<Complete_products/>},
+    {path:"/postproject",
+    element:<PostProject/>},
+    {path:"setprofile",
+    element:<SetupProfile/>},
+    {path:"dash",
+    element:<FreelancerDashboard/>},
+    {path:"/login",
     element:<Login/>},
     {path:"signup",
     element:<SignupPage/>},
@@ -121,6 +142,8 @@ element: <EditProfile/>},
     {path:"/client/progress",
     element: <Progress/>},
    
+    {path:"freealancer/home",
+    element: <Complete_home/>},
 
     ]
   }
@@ -137,14 +160,21 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ProductProvider>
+    <ProductProvid>
       <SidebarProvider>
+      <SidebarProvid>
         <CartProvider>
+        <CartProvid>
           <RouterProvider router={router}>
             <Root />
           </RouterProvider>
+          </CartProvid>
         </CartProvider>
+        </SidebarProvid>
       </SidebarProvider>
+      </ProductProvid>
     </ProductProvider>
+    
   </React.StrictMode>
 );
 reportWebVitals();
