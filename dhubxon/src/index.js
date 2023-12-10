@@ -1,81 +1,3 @@
-// import { Navigate } from "react-router-dom";
-// import React from "react";
-// import ReactDOM from "react-dom/client";
-// import "./index.css";
-// import EditClientProfile from "./pages/ClientEditProfile";
-
-// import Root from "./Root";
-// import Community from "./community/pages/Community";
-// import reportWebVitals from "./reportWebVitals";
-// import FreelancerHome from "./pages/Home";
-// import {
-//   RouterProvider,
-//   createBrowserRouter,
-//   createRoutesFromElements,
-//   Route,
-// } from "react-router-dom";
-// import Fullviewjob from "./components/Freelancer/separate_components/Fullviewjob";
-// import ProposalSubmission from "./pages/ProposalSubmission";
-// import SetupProfile from "./pages/SetupProfile";
-// import FreelancerDashboard from "./pages/FreelancerDashboard";
-// import EditProfile from "./pages/EditProfile";
-// import Login from "./pages/Login";
-// import Home from "./pages/Home";
-// import Forget_Pass from "./pages/Forget_Pass";
-// import PostProject from "./pages/PostProject";
-// import VerifyOTP from "./pages/VerifyOTP";
-// import VerifyOTP_forgetpassword from "./pages/VerifyOTP_ForgetPassword";
-// import { Navigate } from 'react-router-dom';
-// import React from 'react';
-// import ReactDOM from 'react-dom/client';
-// import './index.css';
-// import EditClientProfile from './pages/ClientEditProfile';
-// import CardPage from './components/Freelancer/courses_cards/Cards_page';
-// import Root from './Root'
-// import Community from './community/pages/Community';
-// import reportWebVitals from './reportWebVitals';
-// import FreelancerHome from './pages/Home';
-// import { RouterProvider , createBrowserRouter, createRoutesFromElements,Route} from 'react-router-dom';
-// import Fullviewjob from './components/Freelancer/separate_components/Fullviewjob';
-// import ProposalSubmission from './pages/ProposalSubmission';
-// import SetupProfile from './pages/SetupProfile';
-// import FreelancerDashboard from './pages/FreelancerDashboard';
-// import EditProfile from './pages/EditProfile';
-// import Login from './pages/Login';
-// import Home from './pages/Home';
-// import PostProject from './pages/PostProject'
-
-// import Protected from "./components/Auth/Protected";
-// import GeneralProtected from "./components/Auth/GeneralProtected"
-
-// import ProductProvider from "./courses/src/contexts/ProductContext";
-// import SidebarProvider from "./courses/src/contexts/SidebarContext";
-// import CartProvider from "./courses/src/contexts/CartContext";
-// import ClientDashboard from "./pages/ClientDashboard";
-// import AddCourses from "./pages/AddCourses";
-// import SignupPage from "./pages/Signup";
-// import MainPage from "./pages/mainPage";
-// import Check_ from "./pages/Check_user";
-// import Complete_home from "./courses/src/complete_home";
-// import Complete_products from "./courses/src/complete_products";
-// import UpdatePassword from "./pages/UpdatePassword";
-// import ProductProvid from "./software_products/courses/src/contexts/ProductContext";
-// import SidebarProvid from "./software_products/courses/src/contexts/SidebarContext";
-// import CartProvid from "./software_products/courses/src/contexts/CartContext";
-
-// import ClientDashboard from './pages/ClientDashboard';
-// import AddCourses from "./pages/AddCourses"
-// import SignupPage from './pages/Signup';
-// import MainPage from './pages/mainPage';
-// import Check_ from './pages/Check_user';
-// import Complete_home from "./courses/src/complete_home";
-// import Complete_products from "./courses/src/complete_products";
-// import MyJobs from './components/Freelancer/Myjobs';
-// import Chat from './pages/Chat'
-// import Progress from './pages/Progress';
-// import Software_home from "./software_products/courses/src/complete_home";
-// import Software_products from "./software_products/courses/src/complete_products";
-
 
 
 import React from "react";
@@ -93,7 +15,7 @@ import {
 } from "react-router-dom";
 import Fullviewjob from "./components/Freelancer/separate_components/Fullviewjob";
 import ProposalSubmission from "./pages/ProposalSubmission";
-import SetupProfile from "./pages/SetupProfile";
+import EditFreelancerProfile from "./pages/EditFreelancerProfile";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import EditProfile from "./pages/EditProfile";
 import Login from "./pages/Login";
@@ -155,67 +77,9 @@ const router = createBrowserRouter([
       { path: "/forgetPassword", element: <Forget_Pass /> },//general Path
       { path: "verify", element: <VerifyOTP /> },//general Path
       { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> }, //general Path
+
+
       
-      
-      // { path: "update_password", element: <UpdatePassword /> },
-     
-//For All
-      {path:"/homepage",
-    element:<MainPage/>},
-    // {path:"login",
-    // {path:"/course_card",
-    // element:<CardPage/>},
-    {path:"/softwareproducts",
-    element:<Software_home/>},
-    {path:"/softwareproductsone/:id",
-    element:<Software_products/>},
-    {path:"/product/:id",
-    element:<Complete_products/>},
-    {path:"/postproject",
-    element:<PostProject/>},
-    {path:"setprofile",
-    element:<SetupProfile/>},
-    {path:"dash",
-    element:<FreelancerDashboard/>},
-    {path:"/login",
-    element:<Login/>},
-    {path:"signup",
-    element:<SignupPage/>},
-
-    
-    {path:"freelancer/chat",
-    element:<Chat/>},
-    
-    
-
-//For Freelancer
-{path:"/freelancer/set-profile",
-element: <EditProfile/>},
-      {path:"freelancerdashboard",
-      element: <FreelancerHome/>},
-      {path:"/freelancer/courses",
-      element: <AddCourses/> },
-      {path:"freelancer/viewjob",
-      element: <Fullviewjob/>},
-    {path: "/freelancer/postproject", element: <PostProject/> },
-    {path:"/freelancer/setprofile",
-    element: <SetupProfile/> },
-    {path:"/freelancer/",
-    element: <FreelancerDashboard/> },
-    {path:"/freelancer/proposalsubmission",
-    element: <ProposalSubmission/> },
-    {path:"check",
-    element:<Check_/> },
-    {path:"/freelancer/community",
-    element: <Community/> },
-    {path:"freelancer/my-jobs",
-    element: <MyJobs/> },
-    {path:"freelancer/search-jobs",
-    element: <Home/> },
-
-
-
-
       //For Only One Time Accessable
       {
         path: "update_password",
@@ -226,89 +90,153 @@ element: <EditProfile/>},
         ),
       },
 
+      
+      
+      // { path: "update_password", element: <UpdatePassword /> },
+     
 
-      //For Freelancer
-      {
-        path: "freelancerdashboard",
-        element: (
-          <Protected
-            component={<FreelancerHome />}
-            allowableuser="freelancer"
-          />
-        ),
-      },
-      {
-        path: "/freelancer/addcourse",
-        element: (
-          <Protected component={<AddCourses />} allowableuser="freelancer" />
-        ),
-      },
-      {
-        path: "freelancer/viewjob",
-        element: (
-          <Protected component={<Fullviewjob />} allowableuser="freelancer" />
-        ),
-      },
-      {
-        path: "/freelancer/postproject",
-        element: (
-          <Protected component={<PostProject />} allowableuser="freelancer" />
-        ),
-      },
-      {
-        path: "/freelancer/setprofile",
-        element: (
-          <Protected component={<SetupProfile />} allowableuser="freelancer" />
-        ),
-      },
-      {
-        path: "/freelancer/dashboard",
-        element: (
-          <Protected
-            component={<FreelancerDashboard />}
-            allowableuser="freelancer"
-          />
-        ),
-      },
-      {
-        path: "/freelancer/proposalsubmission",
-        element: (
-          <Protected
-            component={<ProposalSubmission />}
-            allowableuser="freelancer"
-          />
-        ),
-      },
-      { path: "check", element: <Protected component={<Check_ />} /> },
-//For Client/
-    {path:"/product/:id",
-    element: <Complete_products/> },
-    {path:"/client/explore-courses",
-    element: <Complete_home/>  },
-    {path:"/client/",
-    element: <ClientDashboard/> },
-    {path:"/client/postproject",
-    element: <PostProject/>},
-    ,
-    {path:"/client/set-profile",
-    element: <EditClientProfile/>},
-    ,
-    {path:"/client/chat",
-    element: <Chat/>},
-    ,
+    {path:"/softwareproducts",
+    element:<Software_home/>},
+    {path:"/softwareproductsone/:id",
+    element:<Software_products/>},
+ 
+
+    
+    
+    
+
+//////////////////////////////////////////////////For Freelancer/////////////////////////////////////////////////////////////////
+
+
+{
+  path: "freelancer/chat",
+  element: (
+    <Protected component={<Chat />} allowableuser="freelancer" />
+  ),
+},
+
+
+{
+  path: "/freelancer/set-profile",
+  element: (
+    <Protected component={<EditFreelancerProfile />} allowableuser="freelancer" />
+  ),
+},
+   
+
+{
+  path: "/freelancer/courses",
+  element: (
+    <Protected component={<AddCourses />} allowableuser="freelancer" />
+  ),
+},
+{
+  path: "freelancer/viewjob",
+  element: (
+    <Protected component={<Fullviewjob />} allowableuser="freelancer" />
+  ),
+},
+   
+    
+    {
+      path: "/freelancer/",
+      element: (
+        <Protected
+          component={<FreelancerDashboard />}
+          allowableuser="freelancer"
+        />
+      ),
+    },
+
+    {
+      path: "/freelancer/proposalsubmission",
+      element: (
+        <Protected
+          component={<ProposalSubmission />}
+          allowableuser="freelancer"
+        />
+      ),
+    },
+
+    {
+      path: "/freelancer/community",
+      element: (
+        <Protected
+          component={<Community />}
+          allowableuser="freelancer"
+        />
+      ),
+    },
+
+    {
+      path: "freelancer/my-jobs",
+      element: (
+        <Protected
+          component={<MyJobs />}
+          allowableuser="freelancer"
+        />
+      ),
+    },
+    {
+      path: "freelancer/search-jobs",
+      element: (
+        <Protected
+          component={<Home />}
+          allowableuser="freelancer"
+        />
+      ),
+    },
+
+    {path:"freelancer/search-jobs",
+    element: <Home/> },
+
+   
+/////////////////////////////////////////////////////////////////For Client/
+{
+  path: "/client/explore-courses",
+  element: (
+    <Protected component={<Complete_home />} allowableuser="client" />
+  ),
+},
+
+{
+  path: "/client/",
+  element: (
+    <Protected component={<ClientDashboard />} allowableuser="client" />
+  ),
+},
+{
+  path: "/client/postproject",
+  element: (
+    <Protected component={<PostProject />} allowableuser="client" />
+  ),
+} ,
+
+
+{
+  path: "/client/set-profile",
+  element: (
+    <Protected component={<EditClientProfile />} allowableuser="client" />
+  ),
+},
+{
+  path: "/client/chat",
+  element: (
+    <Protected component={<Chat />} allowableuser="client" />
+  ),
+},
+
+{
+  path: "/client/progress",
+  element: (
+    <Protected component={<Progress />} allowableuser="client" />
+  ),
+},
+    
     {path:"/client/progress",
     element: <Progress/>},
-   
-    {path:"freealancer/home",
-    element: <Complete_home/>},
 
-      {
-        path: "/freelancer/community",
-        element: (
-          <Protected component={<Community />} allowableuser="freelancer" />
-        ),
-      },
-      { path: "freelancer/home", element: <Home /> },
+
 
       //For Client
       {
@@ -323,18 +251,8 @@ element: <EditProfile/>},
           <Protected component={<Complete_home />} allowableuser="client" />
         ),
       },
-      {
-        path: "/client/dashboard",
-        element: (
-          <Protected component={<ClientDashboard />} allowableuser="client" />
-        ),
-      },
-      {
-        path: "/client/postproject",
-        element: (
-          <Protected component={<PostProject />} allowableuser="client" />
-        ),
-      },
+     
+      
     ],
   },
 ]);

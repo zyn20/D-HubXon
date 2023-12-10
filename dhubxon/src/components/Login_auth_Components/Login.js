@@ -54,7 +54,7 @@ const authenticateUser = async () => {
         console.log(clientResponse);
         console.log(clientResponse.data.token);
   
-        navigate('/client/dashboard');
+        navigate('/client/');
         return;
       }
     } catch (clientError) {
@@ -83,7 +83,7 @@ const authenticateUser = async () => {
         const userRole = decodedToken.role;
         console.log(userRole);
   
-        navigate('/freelancer/dashboard');
+        navigate('/freelancer/');
         return;
       }
     } catch (freelancerError) {
