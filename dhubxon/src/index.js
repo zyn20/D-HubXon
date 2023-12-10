@@ -27,6 +27,7 @@ import VerifyOTP from "./pages/VerifyOTP";
 import VerifyOTP_forgetpassword from "./pages/VerifyOTP_ForgetPassword";
 
 import Protected from "./components/Auth/Protected";
+import GeneralProtected from "./components/Auth/GeneralProtected"
 
 import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
@@ -63,13 +64,28 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
 
-      { path: "/homepage", element: <MainPage /> },
-      { path: "login", element: <Login /> },
-      { path: "signup", element: <SignupPage /> },
-      { path: "/forgetPassword", element: <Forget_Pass /> },
-      { path: "verify", element: <VerifyOTP /> },
-      { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> },
-      { path: "update_password", element: <UpdatePassword /> },
+      { path: "/homepage", element: <MainPage /> },//general Path
+      { path: "login", element: <Login /> },//general Path
+      { path: "signup", element: <SignupPage /> },//general Path
+      { path: "/forgetPassword", element: <Forget_Pass /> },//general Path
+      { path: "verify", element: <VerifyOTP /> },//general Path
+      { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> }, //general Path
+      
+      
+      // { path: "update_password", element: <UpdatePassword /> },
+
+
+
+
+      //For Only One Time Accessable
+      {
+        path: "update_password",
+        element: (
+          <GeneralProtected
+            component={<UpdatePassword />}
+          />
+        ),
+      },
 
 
       //For Freelancer

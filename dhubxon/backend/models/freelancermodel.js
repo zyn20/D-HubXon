@@ -15,7 +15,15 @@ const Freelancer = sequelize.define("Freelancer", {
   Password: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
+  OTP: {
+    type: DataTypes.STRING,
+    allowNull: false
+},
+Isverified:{
+  type:DataTypes.BOOLEAN,
+  allowNull:false
+}
 });
 
 module.exports = Freelancer;

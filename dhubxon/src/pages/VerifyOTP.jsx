@@ -14,7 +14,7 @@ function Login() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const userType = searchParams.get("userType");
-  const Email = searchParams.get("email");
+  const Email = searchParams.get("Email");
 
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
@@ -70,17 +70,17 @@ function Login() {
 
     try {
       e.preventDefault();
-      const email = Email;
+      // const email = Email;
       if (userType === "freelancer") {
         response = await axios.post("http://127.0.0.1:5000/freelancer/verify", {
           verificationCode,
-          email,
+          Email,
         });
         console.log(response);
       } else {
         response = await axios.post("http://127.0.0.1:5000/client/verify", {
           verificationCode,
-          email,
+          Email,
         });
         console.log(response);
       }

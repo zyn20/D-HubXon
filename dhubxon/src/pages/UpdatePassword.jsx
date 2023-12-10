@@ -69,6 +69,9 @@ return true;
           }
       
           if (response && response.status === 200) {
+            // Remove the token from localStorage
+localStorage.removeItem('token');
+console.log("Token has been Removed");
             Swal.fire("Password has been changed");
             navigate("/login");
           }

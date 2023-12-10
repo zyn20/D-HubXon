@@ -101,19 +101,21 @@ function Login() {
       if (userType === "freelancer") {
         response = await axios.post("http://127.0.0.1:5000/freelancer/verify_forgetpass_OTP", {
           code,
-          email,
+          Email,
         });
         console.log(response);
       } else {
         response = await axios.post("http://127.0.0.1:5000/client/verify_forgetpass_OTP", {
           code,
-          email,
+          Email,
         });
         console.log(response);
       }
 
       if (response.status === 200) {
         console.log("---------------------------------");
+        localStorage.setItem('token', response.data.token);
+        console.log("token is:",response.data.token);
         console.log(response.status);
         Swal.fire("PIN MATCH!", "", "success").then(() => {
             console.log("Before update password navigate");

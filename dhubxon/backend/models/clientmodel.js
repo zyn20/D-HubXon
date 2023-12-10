@@ -15,6 +15,14 @@ const Client = sequelize.define("client", {
         type: DataTypes.STRING,
         allowNull: false
     },
+    OTP: {
+      type: DataTypes.STRING,
+      allowNull: false
+  },
+  Isverified:{
+    type:DataTypes.BOOLEAN,
+    allowNull:false
+  }
   
  });
 

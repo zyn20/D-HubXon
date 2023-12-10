@@ -2,37 +2,41 @@ const Freelancer = require("../models/freelancermodel");
 const Client = require("../models/clientmodel");
 
 const checkDuplicate = async (req, res, next) => {
-    console.log("I am in the check 2 function");
+    console.log("I am in the check 2 function",req.body.Email);
 
     try {
 
         const freelancerUser = await Freelancer.findOne({
             where: {
-                Email: req.body.email
+                Email: req.body.Email,
+                Isverified:true
             }
         });
 
         const clientUser = await Client.findOne({
             where: {
-                Email: req.body.email
+                Email: req.body.Email,
+                Isverified:true
+
             }
         });
         console.log("client response:",clientUser)
 
-        // const freelancerUser = await Freelancer.findOne({
-        //     where: {
-        //         Email: req.body.email
-        //     }
-        // });
+       
         console.log("Freelancer response:",freelancerUser)
 
-        if(clientUser){res.status(200).send({clientUser,type:"client"});return}
-        else if (freelancerUser){res.status(200).send({freelancerUser,type:"freelancer"});return}
 
-        if (!clientUser || !freelancerUser) {
-            res.status(409).send({ message: "Failed. User does not exist in both tables." });
-            return;
+        if (!clientUser && !freelancerUser) {
+           return  res.status(400).send({ message: "User Found" });
+
+            next();
         }
+        console.log("Going outside  check 2 function");
+
+        if(clientUser){return res.status(200).send({ message: "User Found" ,userType:"client" });}
+        if(freelancerUser){return res.status(200).send({ message: "User Found" ,userType:"freelancer" });}
+
+
 
         // User exists in both tables, proceed with the request
        

@@ -10,6 +10,27 @@ const { freemem } = require("os");
 let temporaryRecord = {};
 var user_ = {};
 var P_email = "";
+const SECRETKEY="NATIONAL UNIVERSITY";
+
+
+// Encryption function
+function encrypt(text, secretKey) {
+  const cipher = crypto.createCipher('aes-256-cbc', secretKey);
+  let encrypted = cipher.update(text, 'utf-8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+
+// Decryption function
+function decrypt(encryptedText, secretKey) {
+  const decipher = crypto.createDecipher('aes-256-cbc', secretKey);
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf-8');
+  decrypted += decipher.final('utf-8');
+  return decrypted;
+}
+
+
+
 
 const signIn = async (req, res) => {
   const { email, pass } = req.body;
@@ -22,12 +43,14 @@ const signIn = async (req, res) => {
 
     // Sync with the database
     await sequelize.sync();
+    const EncryptedPassword=encrypt(pass,SECRETKEY);
 
     // Find a Freelancer by email and password
     const freelancer = await Freelancer.findOne({
       where: {
-        Password: pass,
+        Password: EncryptedPassword,
         Email: email,
+        Isverified:true
       },
     });
 
@@ -70,119 +93,145 @@ const signIn = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const verificationCode = crypto
-      .randomBytes(2)
-      .toString("hex")
-      .toUpperCase();
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
     console.log(verificationCode);
+    console.log("Email is:",req.body.Email)
 
-    await sendVerificationEmail(req.body.email, verificationCode);
-    temporaryRecord = {
-      code: verificationCode,
-      email: req.body.email,
-    };
-
-    user_ = {
-      Name: req.body.name,
-      Email: req.body.email,
-      Password: req.body.pass,
-    };
+    await sendVerificationEmail(req.body.Email, verificationCode);
+const EncryptedPassword=encrypt(req.body.Pass,SECRETKEY);
+    const TemporaryRecord={
+      Name: req.body.Name,
+      Email: req.body.Email,
+      Password: EncryptedPassword,
+      OTP:verificationCode,
+      Isverified:false
+    }
+    const newUser = await Freelancer.create({
+      ...TemporaryRecord,
+    });
+   
 
     console.log(user_);
-    res.send("ok");
+    res.send("verification code sent");
   } catch (error) {
-    console.error("can not added Freelancer: ", error);
+    console.error("can not added user: ", error);
     res.status(500).send(error.message);
   }
 };
 
+
+
 const Re_send_OTP = async (req, res) => {
   try {
-    const verificationCode = crypto
-      .randomBytes(2)
-      .toString("hex")
-      .toUpperCase();
-    console.log(verificationCode);
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    console.log("New Verification Code:", verificationCode);
+    
     const email = req.body.Email;
-    console.log("Again Email:", email);
+    console.log("Email to resend OTP:", email);
+    
     await sendVerificationEmail(email, verificationCode);
 
-    temporaryRecord = {
-      code: verificationCode,
-      email: email,
-    };
+    const FreelancerData = await Freelancer.findOne({
+      where: {
+        Email: req.body.Email,
+      },
+    });
+
+    await FreelancerData.update({ OTP: verificationCode });
 
     // Optionally, you may want to return a success message or handle the response as needed.
-    return res.status(200).send("Email Sent Sucessfully");
+    return res.status(200).send("Email Sent Successfully");
   } catch (error) {
     console.error("Error in resending OTP:", error);
-    return res.status(400).send("Error While Sending Email");
+    return res.status(500).send("Error While Sending Email");
   }
 };
 
 const verify = async (req, res) => {
   try {
-    console.log("-----------------------------");
-    console.log(req.body.code);
-    const verificationCode = req.body.verificationCode;
-    console.log(verificationCode);
+    const Email=req.body.Email;
+    const  verificationCode  = req.body.verificationCode;
+    console.log("Verification code:", verificationCode);
+  console.log("Email is:",Email)
 
-    if (verificationCode != temporaryRecord.code) {
-      return res.status(400).send("Invalid verification code");
-    } else {
-      const newUser = await Freelancer.create({
-        ...user_,
-      });
+    const FreelancerData = await Freelancer.findOne({
+      where: {
+        Email: Email,
+      },
+    });
+    console.log("Verification code By User:", verificationCode);
+    console.log("Verification code By Database:", FreelancerData.OTP);
+
+
+
+    if (!FreelancerData || FreelancerData.OTP==='0' || verificationCode !== FreelancerData.OTP) {
+      return res.status(400).send("Invalid verification code or user not found");
     }
 
-    res.status(200).send("Freelancer verified and registered successfully");
-  } catch (error) {
-    console.error("Error in verify Freelancer: ", error);
-    res.status(500).send(error.message);
-  }
-};
+    // Update the isverified field
+    await FreelancerData.update({ Isverified: true,OTP:'0' });
 
-const forgetpassword = async (req, res) => {
-  try {
-    var verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
-    temporaryRecord = {
-      code: verificationCode,
-      email: req.body.email,
-    };
-    console.log(verificationCode);
-
-    await sendVerificationEmail(req.body.email, verificationCode);
-
-    res.status(200).send("Forget password work correctly");
-    console.log("Forget password work correctly");
-  } catch (error) {
-    console.error("can not send forget password: ", error);
-    res.status(500).send(error.message);
-  }
-};
-
-const verifypassword = async (req, res) => {
-  try {
-    const verificationCode = req.body.code;
-    console.log(verificationCode);
-
-    if (verificationCode != temporaryRecord.code) {
-      console.log("Invalid verification code")
-       return res.status(400).send("Invalid verification code");
-    } else {
-      // What should be done now?
-      temporaryRecord.code=null;
-       return res.status(200).send("Verification Code matched");
-    }
-  
+    res.status(200).send("User verified and registered successfully");
   } catch (error) {
     console.error("Error in verifyUser: ", error);
     res.status(500).send(error.message);
   }
 };
 
+const forgetpassword = async (req, res) => {
+  try {
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+
+    const freelancerData = await Freelancer.findOne({
+      where: {
+        Email: req.body.email,
+      },
+    });
+
+    await freelancerData.update({ OTP: verificationCode });
+
+    await sendVerificationEmail(req.body.email, verificationCode);
+
+    res.status(200).send("Forget password process completed successfully");
+  } catch (error) {
+    console.error("Error in forget password process: ", error);
+    res.status(500).send("Error while processing forget password request");
+  }
+};
+
+const verifypassword = async (req, res) => {
+  try {
+    const { code, Email } = req.body;
+    console.log("Verification Code from User:", code);
+
+    const FreelancerData = await Freelancer.findOne({
+      where: {
+        Email: Email,
+      },
+    });
+
+    console.log("Verification Code from Database:", FreelancerData.OTP);
+
+    if (!FreelancerData || code !== FreelancerData.OTP ||FreelancerData.OTP==='0') {
+      return res.status(400).send("Invalid verification code or user not found");
+    }
+
+    await FreelancerData.update({ OTP: '0' });
+    // Create a payload with additional data
+    const role = "All";
+    const token = jwt.sign({ role }, "NATIONAL UNIVERSITY", { expiresIn: "1h" });
+    
+    // Send the token in the response
+    return res.status(200).json({ message: "Verification Code matched", token });
+  } catch (error) {
+    console.error("Error in verifyUser: ", error);
+    res.status(500).send("Error while verifying the verification code");
+  }
+};
+
 const update_password = async (req, res) => {
   try {
+    const newPassword=req.body.password;
     const oldData = await Freelancer.findOne({
       where: {
         Email: req.body.email,
@@ -191,19 +240,9 @@ const update_password = async (req, res) => {
 
     console.log("Old Data:", oldData);
 
-    const newData = {
-      Name: oldData.Name,
-      Email: oldData.Email,
-      Password: req.body.password,
-    };
+    await oldData.update({ Password: newPassword });
+    // Log the new data
 
-    console.log("New Data:", newData);
-
-    await Freelancer.update(newData, {
-      where: {
-        Email: temporaryRecord.email,
-      },
-    });
 
     console.log("Password Changed");
     res.status(200).send("Password Changed");
@@ -212,6 +251,7 @@ const update_password = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
 
 const Allproject = async (req, res) => {
   try {
@@ -231,7 +271,7 @@ const Allproject = async (req, res) => {
 
 const setProfile = async (req, res) => {
   try {
-    const P_email = user_.Email; // Assuming P_email is a constant
+    const Email = req.body.Email; // Assuming P_email is a constant
     console.log(P_email);
     const data = {
       city: req.body.city,
@@ -245,7 +285,7 @@ const setProfile = async (req, res) => {
       certifications: req.body.certifications,
       employmentHistory: req.body.employmentHistory,
       otherExperiences: req.body.otherExperiences,
-      email: P_email,
+      email: Email,
     };
 
     console.log("Data is:", data);
@@ -292,12 +332,14 @@ const fetchprofiledata = async (req, res) => {
     employmentHistory: "",
     otherExperiences: "",
   };
+console.log(req.body);
+  console.log("Email in Profile Fetch data API:",req.body.Email);
 
   try {
     const existingUser = await FreelancerProfile.findOne({
       where: {
         //   email: user_.Email,
-        email: "alichoudhary669@gmail.com",
+        email: req.query.Email,
       },
     });
 

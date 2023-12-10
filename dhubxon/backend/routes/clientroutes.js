@@ -8,7 +8,7 @@ const courseController = require("../controller/coursescontroller");
 router.get("/courses", courseController.getAllCourses);
 router.post("/signUp", checkforDuplicate, Functions.signUp);
 router.post("/signIn", Functions.signIn);
-router.post("/verify",checkforDuplicate, Functions.verify);
+router.post("/verify",Functions.verify);
 router.post("/forgetpassword", Functions.forgetpassword);
 router.post("/verify_forgetpass_OTP", Functions.verifypassword);
 router.post("/updatepassword", Functions.update_password);
@@ -22,3 +22,8 @@ router.get("*", function (req, res) {
 });
 
 module.exports = router;
+
+
+
+
+

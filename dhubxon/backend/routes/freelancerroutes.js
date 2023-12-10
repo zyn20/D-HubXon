@@ -9,7 +9,7 @@ const courseController = require('../controller/coursescontroller');
 router.post('/courses', courseController.addCourse);
 router.post('/signIn',functions.signIn);
 router.post('/signUp', checkDuplicate,functions.signUp);
-router.post('/verify', checkDuplicate, functions.verify) ;
+router.post('/verify', functions.verify) ;
 router.post('/forgetpassword',functions.forgetpassword);
 router.post('/verify_forgetpass_OTP',functions.verifypassword);
 router.post('/updatepassword',functions.update_password);

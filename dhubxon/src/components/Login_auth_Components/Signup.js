@@ -61,13 +61,13 @@ export default function Signup() {
 
   // Handle Signup API Integration here
   const createAccount = async () => {
-    const name = signupState['username'];
-    const email = signupState['email-address'];
-    const pass = signupState['password'];
+    const Name = signupState['username'];
+    const Email = signupState['email-address'];
+    const Pass = signupState['password'];
   
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", pass);
+    console.log("Name:", Name);
+    console.log("Email:", Email);
+    console.log("Password:", Pass);
     console.log("User Type:", userType);
   
     try {
@@ -96,13 +96,13 @@ export default function Signup() {
       let response;
   
       if (userType === "freelancer") {
-        response = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { name, email, pass });
+        response = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { Name, Email, Pass });
       } else {
-        response = await axios.post('http://127.0.0.1:5000/client/signUp', { name, email, pass });
+        response = await axios.post('http://127.0.0.1:5000/client/signUp', { Name, Email, Pass });
       }
   
       Swal.fire("OTP Sent Successfully!", "", "success").then(() => {
-        navigate(`/verify?userType=${userType}&email=${email}`);
+        navigate(`/verify?userType=${userType}&Email=${Email}`);
       });
     } catch (error) {
       if (error.response && error.response.status === 409) {

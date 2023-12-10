@@ -10,40 +10,43 @@ function Forget_Pass() {
 const [email,setEmail]=useState('');
 var userType;
 const handleSubmit = async (e) => {
+  const Email=email;
     e.preventDefault();
 // const navigate=useNavigate();
     try {
         console.log(email);
-        const response = await axios.post('http://127.0.0.1:5000/forgetpassword', { email });
-        console.log(response);
+        const response = await axios.post('http://127.0.0.1:5000/forgetpassword', { Email });
+        console.log("Response Is:",response);
         if(response.status===200){
             
 
-            let timerInterval;
-            Swal.fire({
-              title: "Sending OTP...",
-              html: "<b></b> Please wait while we send the verification code to your email",
-              timer: 2000,
-              timerProgressBar: true,
-              didOpen: () => {
-                Swal.showLoading();
-                const timer = Swal.getPopup().querySelector("b");
-                timerInterval = setInterval(() => {
-                  timer.textContent = `${Swal.getTimerLeft()}`;
-                }, 100);
-              },
-              willClose: () => {
-                clearInterval(timerInterval);
-              }
-            }).then((result) => {
-              /* Read more about handling dismissals below */
-              if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("I was closed by the timer");
-              }
-            })
+            // let timerInterval;
+            // Swal.fire({
+            //   title: "Sending OTP...",
+            //   html: "<b></b> Please wait while we send the verification code to your email",
+            //   timer: 2000,
+            //   timerProgressBar: true,
+            //   didOpen: () => {
+            //     Swal.showLoading();
+            //     const timer = Swal.getPopup().querySelector("b");
+            //     timerInterval = setInterval(() => {
+            //       timer.textContent = `${Swal.getTimerLeft()}`;
+            //     }, 100);
+            //   },
+            //   willClose: () => {
+            //     clearInterval(timerInterval);
+            //   }
+            // }).then((result) => {
+            //   /* Read more about handling dismissals below */
+            //   if (result.dismiss === Swal.DismissReason.timer) {
+            //     console.log("I was closed by the timer");
+            //   }
+            // })
 
 
-userType=response.data.type
+userType=response.data.userType
+console.log("Response DataType:",userType);
+
 if(userType==="freelancer"){
 console.log("i am in freelancer usertype")
 

@@ -10,25 +10,48 @@ const jwt = require("jsonwebtoken");
 var old_data = {};
 let temporaryUsersrecord = {};
 var user_ = {};
+
+
+const SECRETKEY="NATIONAL UNIVERSITY";
+
+
+// Encryption function
+function encrypt(text, secretKey) {
+  const cipher = crypto.createCipher('aes-256-cbc', secretKey);
+  let encrypted = cipher.update(text, 'utf-8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+
+// Decryption function
+function decrypt(encryptedText, secretKey) {
+  const decipher = crypto.createDecipher('aes-256-cbc', secretKey);
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf-8');
+  decrypted += decipher.final('utf-8');
+  return decrypted;
+}
+
+
+
 const signUp = async (req, res) => {
   try {
-    const verificationCode = crypto
-      .randomBytes(2)
-      .toString("hex")
-      .toUpperCase();
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
     console.log(verificationCode);
 
-    await sendVerificationEmail(req.body.email, verificationCode);
-    temporaryUsersrecord = {
-      code: verificationCode,
-      email: req.body.email,
-    };
+    await sendVerificationEmail(req.body.Email, verificationCode);
+    const EncryptedPassword=encrypt(req.body.Pass,SECRETKEY);
 
-    user_ = {
-      Name: req.body.name,
-      Email: req.body.email,
-      Password: req.body.pass,
-    };
+    const TemporaryRecord={
+      Name: req.body.Name,
+      Email: req.body.Email,
+      Password: EncryptedPassword,
+      OTP:verificationCode,
+      Isverified:false
+    }
+    const newUser = await Client.create({
+      ...TemporaryRecord,
+    });
+   
 
     console.log(user_);
     res.send("verification code sent");
@@ -40,20 +63,30 @@ const signUp = async (req, res) => {
 
 const verify = async (req, res) => {
   try {
-    const verificationCode = req.body.verificationCode;
-    console.log("verification code:", verificationCode);
-    console.log("Orignal Pin:", temporaryUsersrecord.code);
-    if (verificationCode != temporaryUsersrecord.code) {
-      return res.status(400).send("Invalid verification code");
-    } else {
-      const newUser = await Client.create({
-        ...user_,
-      });
+    const Email=req.body.Email;
+    const  verificationCode  = req.body.verificationCode;
+    console.log("Verification code:", verificationCode);
+  console.log("Email is:",Email)
+
+    const clientData = await Client.findOne({
+      where: {
+        Email: Email,
+      },
+    });
+    console.log("Verification code By User:", verificationCode);
+    console.log("Verification code By Database:", clientData.OTP);
+
+
+
+    if (!clientData ||  clientData.OTP ==='0' || verificationCode !== clientData.OTP) {
+      return res.status(400).send("Invalid verification code or user not found");
     }
-user_.Name='';
-user_.Email='';
-user_.Password='';
-temporaryUsersrecord.code="SECRET KEY";
+
+    
+    await clientData.update({ Isverified: true,OTP: '0' });
+    
+
+
     res.status(200).send("User verified and registered successfully");
   } catch (error) {
     console.error("Error in verifyUser: ", error);
@@ -61,27 +94,30 @@ temporaryUsersrecord.code="SECRET KEY";
   }
 };
 
+
 const Re_send_OTP = async (req, res) => {
   try {
-    const verificationCode = crypto
-      .randomBytes(2)
-      .toString("hex")
-      .toUpperCase();
-    console.log(verificationCode);
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    console.log("New Verification Code:", verificationCode);
+    
     const email = req.body.Email;
-    console.log("Again Email:", email);
+    console.log("Email to resend OTP:", email);
+    
     await sendVerificationEmail(email, verificationCode);
 
-    temporaryUsersrecord = {
-      code: verificationCode,
-      email: email,
-    };
+    const clientData = await Client.findOne({
+      where: {
+        Email: req.body.Email,
+      },
+    });
+
+    await clientData.update({ OTP: verificationCode });
 
     // Optionally, you may want to return a success message or handle the response as needed.
-    return res.status(200).send("Email Sent Sucessfully");
+    return res.status(200).send("Email Sent Successfully");
   } catch (error) {
     console.error("Error in resending OTP:", error);
-    return res.status(400).send("Error While Sending Email");
+    return res.status(500).send("Error While Sending Email");
   }
 };
 
@@ -90,11 +126,14 @@ const signIn = async (req, res) => {
     await sequelize.sync();
     console.log(req.body.pass);
     console.log(req.body.email);
+    const EncryptedPassword=encrypt(req.body.pass,SECRETKEY);
+
 
     const clientData = await Client.findOne({
       where: {
-        Password: req.body.pass,
+        Password: EncryptedPassword,
         Email: req.body.email,
+        Isverified:true
       },
     });
 
@@ -133,47 +172,63 @@ const signIn = async (req, res) => {
   }
 };
 
+
+
 const forgetpassword = async (req, res) => {
   try {
-    var verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
-    temporaryUsersrecord = {
-      code: verificationCode,
-      email: req.body.email,
-    };
-    console.log(verificationCode);
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+
+    const clientData = await Client.findOne({
+      where: {
+        Email: req.body.email,
+      },
+    });
+
+    await clientData.update({ OTP: verificationCode });
 
     await sendVerificationEmail(req.body.email, verificationCode);
 
-    res.status(200).send("Forget password work correctly");
-    // console.log("Forget password work correctly");
+    res.status(200).send("Forget password process completed successfully");
   } catch (error) {
-    console.error("can not send forget password: ", error);
-    res.status(500).send(error.message);
+    console.error("Error in forget password process: ", error);
+    res.status(500).send("Error while processing forget password request");
   }
 };
+
+
 
 const verifypassword = async (req, res) => {
   try {
-    const verificationCode = req.body.code;
-    console.log("verificationCode is:",verificationCode);
+    const { code, Email } = req.body;
+    console.log("Verification Code from User:", code);
 
-    if (verificationCode != temporaryUsersrecord.code) {
-      console.log("Invalid verification code");
-      return  res.status(400).send("Invalid verification code");
-    } else {
-      // What should be done now?
-      temporaryUsersrecord.code=null;
-      return res.send("Verification Code matched");
+    const clientData = await Client.findOne({
+      where: {
+        Email: Email,
+      },
+    });
 
+    console.log("Verification Code from Database:", clientData.OTP);
+
+    if (!clientData || code !== clientData.OTP || clientData.OTP==='0') {
+      return res.status(400).send("Invalid verification code or user not found");
     }
-  } catch (error) {
+    await clientData.update({ OTP: '0' });
+
+    const role = "All";
+    const token = jwt.sign({ role }, "NATIONAL UNIVERSITY", { expiresIn: "1h" });
+    
+    // Send the token in the response
+    return res.status(200).json({ message: "Verification Code matched", token });  } catch (error) {
     console.error("Error in verifyUser: ", error);
-    res.status(500).send(error.message);
+    res.status(500).send("Error while verifying the verification code");
   }
 };
 
+
 const update_password = async (req, res) => {
   try {
+    const newPassword=req.body.password;
     const oldData = await Client.findOne({
       where: {
         Email: req.body.email,
@@ -182,21 +237,9 @@ const update_password = async (req, res) => {
 
     console.log("Old Data:", oldData);
 
-    const newData = {
-      // UserID: oldData.UserID,
-      Name: oldData.Name,
-      Email: oldData.Email,
-      Password: req.body.password,
-    };
-
+    await oldData.update({ Password: newPassword });
     // Log the new data
-    console.log("New Data:", newData);
 
-    await Client.update(newData, {
-      where: {
-        Email: temporaryUsersrecord.email,
-      },
-    });
 
     console.log("Password Changed");
     res.status(200).send("Password Changed");
@@ -235,7 +278,7 @@ const Postproject = async (req, res) => {
 
 const setProfile = async (req, res) => {
   try {
-    const P_email = user_.Email; // Assuming P_email is a constant
+    const Email = req/body.Email; // Assuming P_email is a constant
 
     const data = {
       companyname: req.body.companyname,
@@ -245,7 +288,7 @@ const setProfile = async (req, res) => {
       contactphone: req.body.contactphone,
       companydescription: req.body.companydescription,
       projectposted: req.body.projectposted,
-      email: P_email,
+      email: Email,
     };
 
     console.log("Data is:", data);
@@ -292,7 +335,7 @@ const fetchprofiledata = async (req, res) => {
   try {
     const existingUser = await ClientProfile.findOne({
       where: {
-        email: user_.Email,
+        email: req.query.Email,
       },
     });
 
