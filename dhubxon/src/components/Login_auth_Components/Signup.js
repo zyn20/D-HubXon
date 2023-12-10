@@ -1,66 +1,73 @@
-
-
 import { useState } from 'react';
-import axios from 'axios'
-import { signupFields } from "../constants/formFields"
+import axios from 'axios';
+import { signupFields } from "../constants/formFields";
 import FormAction from "./FormAction";
 import Input from "./Input";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-
-
-const fields = signupFields;
-let fieldsState = {};
-
-
-fields.forEach(field => fieldsState[field.id] = '');
 
 export default function Signup() {
   const navigate = useNavigate();        
 
-  const [signupState, setSignupState] = useState(fieldsState);
-  const [userType, setUserType] = useState(''); // State to track selected user type
+  // Initialize fieldsState
+  let fieldsState = {};
+  signupFields.forEach(field => fieldsState[field.id] = '');
 
-  const handleChange = (e) => setSignupState({ ...signupState, [e.target.id]: e.target.value });
+  const [signupState, setSignupState] = useState(fieldsState);
+  const [userType, setUserType] = useState('');
+  const [errors, setErrors] = useState({});
+
+  // Function to get specific error message
+  const getErrorMessage = (id, value) => {
+    switch(id) {
+      case 'username':
+        return "Username must be 3-15 characters and can include letters, numbers, underscores, and hyphens.";
+      case 'email-address':
+        return "Invalid email format.";
+      case 'password':
+        return "Password must be at least 8 characters and include uppercase, lowercase, and numbers.";
+      case 'confirm-password':
+        return "Passwords do not match.";
+      default:
+        return "Invalid input.";
+    }
+  };
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setSignupState({ ...signupState, [id]: value });
+
+    // Validation logic
+    const fieldValidation = signupFields.find(field => field.id === id)?.pattern;
+    if (fieldValidation && !new RegExp(fieldValidation).test(value)) {
+        setErrors({...errors, [id]: getErrorMessage(id, value)});
+    } else {
+        const newErrors = {...errors};
+        delete newErrors[id];
+        setErrors(newErrors);
+    }
+  };
+
   const handleUserTypeChange = (e) => setUserType(e.target.value);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(signupState);
-
-   validations();
-    createAccount();
-  }
-
-  // Handle validations  here
-
-  const validations=()=>{
+  const validations = () => {
+    let valid = true;
     if (signupState['password'] !== signupState['confirm-password']) {
       Swal.fire('Password and Confirm Password do not match!');
-      return;
+      valid = false;
     }
 
     if (!userType) {
       Swal.fire('Please select a user type (Client/Freelancer)!');
-      return;
+      valid = false;
     }
-  }
+    return valid;
+  };
 
-  // Handle Signup API Integration here
-  const createAccount = async() => {
-
-
+  const createAccount = async () => {
     const name = signupState['username'];
     const email = signupState['email-address'];
     const pass = signupState['password'];
-
-
-    
-
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", pass);
-    console.log("User Type:", userType);
 
     try {
       Swal.fire({
@@ -70,15 +77,10 @@ export default function Signup() {
           Swal.showLoading();
         }
       });
-    
-      if (userType === "freelancer") {
-        const clientResponse = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { name, email, pass });
-      } else {
-        const clientResponse = await axios.post('http://127.0.0.1:5000/client/signUp', { name, email, pass });
-      }
-    
-      // You may want to handle the verification code here if needed.
-    
+
+      const endpoint = userType === "freelancer" ? 'freelancer/signUp' : 'client/signUp';
+      await axios.post(`http://127.0.0.1:5000/${endpoint}`, { name, email, pass });
+
       Swal.fire('Verification code has been sent!')
         .then(() => {
           navigate(`/verify?userType=${userType}`);
@@ -86,16 +88,20 @@ export default function Signup() {
     } catch (error) {
       Swal.fire('Please Enter a Valid email');
     }
-    
+  };
 
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validations()) {
+      createAccount();
+    }
+  };
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="">
-        {
-          fields.map(field =>
-            <Input
+        {signupFields.map(field => (
+          <Input
               key={field.id}
               handleChange={handleChange}
               value={signupState[field.id]}
@@ -106,9 +112,9 @@ export default function Signup() {
               type={field.type}
               isRequired={field.isRequired}
               placeholder={field.placeholder}
-            />
-          )
-        }
+              error={errors[field.id]}
+          />
+        ))}
 
         <div className="flex items-center space-x-4">
           <input
@@ -135,5 +141,5 @@ export default function Signup() {
         <FormAction handleSubmit={handleSubmit} text="Signup" />
       </div>
     </form>
-  )
+  );
 }
