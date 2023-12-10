@@ -1,11 +1,10 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTwitter, faLinkedin, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { FaTwitter, FaLinkedin, FaInstagram, FaEnvelope } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const Footer = () => {
   return (
-    <footer className="bg-blue-900 py-12 mt-auto">
+    <footer className="bg-blue-900 py-12 mt-auto fixed-bottom w-full">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-between">
           <div className="w-full lg:w-6/12 px-4 mb-8 lg:mb-0">
@@ -20,13 +19,16 @@ const Footer = () => {
             >
               {/* Social Media Icons */}
               <a href="#twitter">
-                <FontAwesomeIcon icon={faTwitter} className="text-white text-2xl" />
+                <FaTwitter className="text-white text-2xl" />
               </a>
               <a href="#linkedin">
-                <FontAwesomeIcon icon={faLinkedin} className="text-white text-2xl" />
+                <FaLinkedin className="text-white text-2xl" />
               </a>
               <a href="#instagram">
-                <FontAwesomeIcon icon={faInstagram} className="text-white text-2xl" />
+                <FaInstagram className="text-white text-2xl" />
+              </a>
+              <a href="#email">
+                <FaEnvelope className="text-white text-2xl" />
               </a>
             </motion.div>
           </div>
@@ -34,7 +36,27 @@ const Footer = () => {
             <div className="text-sm text-white font-semibold mb-4">
               &copy; {new Date().getFullYear()} D-HubXon Freelance Marketplace
             </div>
-            {/* Additional Footer Content */}
+            <div className="flex justify-center space-x-6 flex-wrap">
+              {/* Additional Footer Links */}
+              <a href="#find-jobs" className="text-white hover:text-gray-300 mb-2">
+                Find Jobs
+              </a>
+              <a href="#terms-and-conditions" className="text-white hover:text-gray-300 mb-2">
+                Terms and Conditions
+              </a>
+              <a href="#privacy-policy" className="text-white hover:text-gray-300 mb-2">
+                Privacy Policy
+              </a>
+              <a href="#explore-courses" className="text-white hover:text-gray-300 mb-2">
+                Explore Courses
+              </a>
+              <a href="#explore-software-products" className="text-white hover:text-gray-300 mb-2">
+                Explore Software Products
+              </a>
+              <a href="#join-community" className="text-white hover:text-gray-300 mb-2">
+                Join Community
+              </a>
+            </div>
           </div>
         </div>
       </div>
