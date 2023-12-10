@@ -31,7 +31,8 @@ const signupFields = [
         autoComplete: "username",
         isRequired: true,
         placeholder: "Username",
-        pattern: "^[a-zA-Z0-9_-]{3,15}$" // Regex pattern for username
+        pattern: "^[a-zA-Z]+[a-zA-Z0-9_-]*$"
+
     },
     {
         labelText: "Email address",

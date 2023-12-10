@@ -21,7 +21,7 @@ export default function Signup() {
   const getErrorMessage = (id, value) => {
     switch(id) {
       case 'username':
-        return "Username must be 3-15 characters and can include letters, numbers, underscores, and hyphens.";
+        return "Username must start with a letter, be 3-15 characters long, and can include letters, numbers, underscores, and hyphens.";
       case 'email-address':
         return "Invalid email format.";
       case 'password':
