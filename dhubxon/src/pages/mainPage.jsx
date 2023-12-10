@@ -5,11 +5,12 @@ import RatingCards from '../components/home_page_compoents/rating_card';
 import IndexPage from '../components/home_page_compoents/banner';
 import Index from '../components/home_page_compoents/ctoa';
 import Footer from '../components/Freelancer/Footer';
+import Navbar_MainPage from '../components/Freelancer/Navbar_MainPage'
 
 const mainPage = () => {
   return (
     <>
-   
+     <Navbar_MainPage/>
     <HeroSection/>
     <IndexPage/>
     <RatingCards/>

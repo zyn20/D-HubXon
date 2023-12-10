@@ -1,7 +1,7 @@
 import React from 'react';
 import CarouselComponent from '../components/Freelancer/separate_components/CarouselComponent';
 import Cards from '../components/Freelancer/separate_components/Cards';
-import Navbar from '../components/Freelancer/Navbar'
+import Navbar from '../components/Freelancer/Navbar_Freelancer'
 
 const Home = () => {
   return (

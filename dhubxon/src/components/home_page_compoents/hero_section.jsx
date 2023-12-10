@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Imgcrm from "../../assets/Hero_section_img.gif";
+import Imgcrm from "../../assets/crm.png"
 import logo1 from "../../assets/BinanceLogo.png";
 import logo2 from "../../assets/googleLogo.png";
 import logo3 from "../../assets/intelLogo.png";

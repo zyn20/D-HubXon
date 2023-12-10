@@ -47,7 +47,9 @@ const Header = () => {
           className="cursor-pointer flex relative ml-auto"
         >
           <Badge badgeContent={itemAmount} color="error">
-            
+          <ShoppingCartOutlinedIcon
+              style={{ color: "#your-cart-icon-color" }}
+            />
           </Badge>
         </div>
 

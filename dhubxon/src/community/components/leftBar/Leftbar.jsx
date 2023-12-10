@@ -1,50 +1,36 @@
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserFriends, faUsers, faStore, faPlay, faClock, faCalendarAlt, faGamepad, faImages, faVideo, faComments, faHandHoldingUsd, faChalkboardTeacher, faBook, faHandsHelping } from "@fortawesome/free-solid-svg-icons";
+import profilepic from '../../assets/d.jpg';
 import "./leftBar.scss";
-import Friends from "../../assets/1.png";
-import Groups from "../../assets/2.png";
-import Market from "../../assets/3.png";
-import Watch from "../../assets/4.png";
-import Memories from "../../assets/5.png";
-import Events from "../../assets/6.png";
-import Gaming from "../../assets/7.png";
-import Gallery from "../../assets/8.png";
-import Videos from "../../assets/9.png";
-import Messages from "../../assets/10.png";
-import Tutorials from "../../assets/11.png";
-import Courses from "../../assets/12.png";
-import Fund from "../../assets/13.png";
+
 const Leftbar = () => {
-
-
-
   return (
     <div className="leftBar">
       <div className="container">
         <div className="menu">
           <div className="user">
-            <img
-              // src={currentUser.profilePic}
-              alt=""
-            /> 
+            <img src={profilepic} alt="" />
             <span>Zain</span>
           </div>
           <div className="item">
-            <img src={Friends} alt="" />
-            <span>Friends</span>
+            <FontAwesomeIcon icon={faUserFriends} />
+            <span>Freelancers</span>
           </div>
           <div className="item">
-            <img src={Groups} alt="" />
-            <span>Groups</span>
+            <FontAwesomeIcon icon={faUsers} />
+            <span>Collaborations</span>
           </div>
           <div className="item">
-            <img src={Market} alt="" />
+            <FontAwesomeIcon icon={faStore} />
             <span>Marketplace</span>
           </div>
           <div className="item">
-            <img src={Watch} alt="" />
+            <FontAwesomeIcon icon={faPlay} />
             <span>Watch</span>
           </div>
           <div className="item">
-            <img src={Memories} alt="" />
+            <FontAwesomeIcon icon={faClock} />
             <span>Memories</span>
           </div>
         </div>
@@ -52,23 +38,23 @@ const Leftbar = () => {
         <div className="menu">
           <span>Your shortcuts</span>
           <div className="item">
-            <img src={Events} alt="" />
+            <FontAwesomeIcon icon={faCalendarAlt} />
             <span>Events</span>
           </div>
           <div className="item">
-            <img src={Gaming} alt="" />
+            <FontAwesomeIcon icon={faGamepad} />
             <span>Gaming</span>
           </div>
           <div className="item">
-            <img src={Gallery} alt="" />
+            <FontAwesomeIcon icon={faImages} />
             <span>Gallery</span>
           </div>
           <div className="item">
-            <img src={Videos} alt="" />
+            <FontAwesomeIcon icon={faVideo} />
             <span>Videos</span>
           </div>
           <div className="item">
-            <img src={Messages} alt="" />
+            <FontAwesomeIcon icon={faComments} />
             <span>Messages</span>
           </div>
         </div>
@@ -76,16 +62,20 @@ const Leftbar = () => {
         <div className="menu">
           <span>Others</span>
           <div className="item">
-            <img src={Fund} alt="" />
+            <FontAwesomeIcon icon={faHandHoldingUsd} />
             <span>Fundraiser</span>
           </div>
           <div className="item">
-            <img src={Tutorials} alt="" />
+            <FontAwesomeIcon icon={faChalkboardTeacher} />
             <span>Tutorials</span>
           </div>
           <div className="item">
-            <img src={Courses} alt="" />
+            <FontAwesomeIcon icon={faBook} />
             <span>Courses</span>
+          </div>
+          <div className="item">
+            <FontAwesomeIcon icon={faHandsHelping} />
+            <span>Help & Support</span>
           </div>
         </div>
       </div>
