@@ -1,52 +1,137 @@
-import { Navigate } from 'react-router-dom';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import EditClientProfile from './pages/ClientEditProfile';
-import CardPage from './components/Freelancer/courses_cards/Cards_page';
-import Root from './Root'
-import Community from './community/pages/Community';
-import reportWebVitals from './reportWebVitals';
-import FreelancerHome from './pages/Home';
-import { RouterProvider , createBrowserRouter, createRoutesFromElements,Route} from 'react-router-dom';
-import Fullviewjob from './components/Freelancer/separate_components/Fullviewjob';
-import ProposalSubmission from './pages/ProposalSubmission';
-import SetupProfile from './pages/SetupProfile';
-import FreelancerDashboard from './pages/FreelancerDashboard';
-import EditProfile from './pages/EditProfile';
-import Login from './pages/Login';
-import Home from './pages/Home';
-import PostProject from './pages/PostProject'
+// import { Navigate } from "react-router-dom";
+// import React from "react";
+// import ReactDOM from "react-dom/client";
+// import "./index.css";
+// import EditClientProfile from "./pages/ClientEditProfile";
 
+// import Root from "./Root";
+// import Community from "./community/pages/Community";
+// import reportWebVitals from "./reportWebVitals";
+// import FreelancerHome from "./pages/Home";
+// import {
+//   RouterProvider,
+//   createBrowserRouter,
+//   createRoutesFromElements,
+//   Route,
+// } from "react-router-dom";
+// import Fullviewjob from "./components/Freelancer/separate_components/Fullviewjob";
+// import ProposalSubmission from "./pages/ProposalSubmission";
+// import SetupProfile from "./pages/SetupProfile";
+// import FreelancerDashboard from "./pages/FreelancerDashboard";
+// import EditProfile from "./pages/EditProfile";
+// import Login from "./pages/Login";
+// import Home from "./pages/Home";
+// import Forget_Pass from "./pages/Forget_Pass";
+// import PostProject from "./pages/PostProject";
+// import VerifyOTP from "./pages/VerifyOTP";
+// import VerifyOTP_forgetpassword from "./pages/VerifyOTP_ForgetPassword";
+// import { Navigate } from 'react-router-dom';
+// import React from 'react';
+// import ReactDOM from 'react-dom/client';
+// import './index.css';
+// import EditClientProfile from './pages/ClientEditProfile';
+// import CardPage from './components/Freelancer/courses_cards/Cards_page';
+// import Root from './Root'
+// import Community from './community/pages/Community';
+// import reportWebVitals from './reportWebVitals';
+// import FreelancerHome from './pages/Home';
+// import { RouterProvider , createBrowserRouter, createRoutesFromElements,Route} from 'react-router-dom';
+// import Fullviewjob from './components/Freelancer/separate_components/Fullviewjob';
+// import ProposalSubmission from './pages/ProposalSubmission';
+// import SetupProfile from './pages/SetupProfile';
+// import FreelancerDashboard from './pages/FreelancerDashboard';
+// import EditProfile from './pages/EditProfile';
+// import Login from './pages/Login';
+// import Home from './pages/Home';
+// import PostProject from './pages/PostProject'
+
+// import Protected from "./components/Auth/Protected";
+// import GeneralProtected from "./components/Auth/GeneralProtected"
+
+// import ProductProvider from "./courses/src/contexts/ProductContext";
+// import SidebarProvider from "./courses/src/contexts/SidebarContext";
+// import CartProvider from "./courses/src/contexts/CartContext";
+// import ClientDashboard from "./pages/ClientDashboard";
+// import AddCourses from "./pages/AddCourses";
+// import SignupPage from "./pages/Signup";
+// import MainPage from "./pages/mainPage";
+// import Check_ from "./pages/Check_user";
+// import Complete_home from "./courses/src/complete_home";
+// import Complete_products from "./courses/src/complete_products";
+// import UpdatePassword from "./pages/UpdatePassword";
+// import ProductProvid from "./software_products/courses/src/contexts/ProductContext";
+// import SidebarProvid from "./software_products/courses/src/contexts/SidebarContext";
+// import CartProvid from "./software_products/courses/src/contexts/CartContext";
+
+// import ClientDashboard from './pages/ClientDashboard';
+// import AddCourses from "./pages/AddCourses"
+// import SignupPage from './pages/Signup';
+// import MainPage from './pages/mainPage';
+// import Check_ from './pages/Check_user';
+// import Complete_home from "./courses/src/complete_home";
+// import Complete_products from "./courses/src/complete_products";
+// import MyJobs from './components/Freelancer/Myjobs';
+// import Chat from './pages/Chat'
+// import Progress from './pages/Progress';
+// import Software_home from "./software_products/courses/src/complete_home";
+// import Software_products from "./software_products/courses/src/complete_products";
+
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import EditClientProfile from "./pages/ClientEditProfile";
+import Root from "./Root";
+import Community from "./community/pages/Community";
+import reportWebVitals from "./reportWebVitals";
+import FreelancerHome from "./pages/Home";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Route,
+} from "react-router-dom";
+import Fullviewjob from "./components/Freelancer/separate_components/Fullviewjob";
+import ProposalSubmission from "./pages/ProposalSubmission";
+import SetupProfile from "./pages/SetupProfile";
+import FreelancerDashboard from "./pages/FreelancerDashboard";
+import EditProfile from "./pages/EditProfile";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import Forget_Pass from "./pages/Forget_Pass";
+import PostProject from "./pages/PostProject";
+import VerifyOTP from "./pages/VerifyOTP";
+import VerifyOTP_forgetpassword from "./pages/VerifyOTP_ForgetPassword";
 import Protected from "./components/Auth/Protected";
-import GeneralProtected from "./components/Auth/GeneralProtected"
-
+import GeneralProtected from "./components/Auth/GeneralProtected";
 import ProductProvider from "./courses/src/contexts/ProductContext";
 import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
+import ClientDashboard from "./pages/ClientDashboard";
+import AddCourses from "./pages/AddCourses";
+import SignupPage from "./pages/Signup";
+import MainPage from "./pages/mainPage";
+import Check_ from "./pages/Check_user";
+import Complete_home from "./courses/src/complete_home";
+import Complete_products from "./courses/src/complete_products";
+import UpdatePassword from "./pages/UpdatePassword";
 import ProductProvid from "./software_products/courses/src/contexts/ProductContext";
 import SidebarProvid from "./software_products/courses/src/contexts/SidebarContext";
 import CartProvid from "./software_products/courses/src/contexts/CartContext";
-
-import ClientDashboard from './pages/ClientDashboard';
-import AddCourses from "./pages/AddCourses"
-import SignupPage from './pages/Signup';
-import MainPage from './pages/mainPage';
-import Check_ from './pages/Check_user';
-import Complete_home from "./courses/src/complete_home";
-import Complete_products from "./courses/src/complete_products";
 import MyJobs from './components/Freelancer/Myjobs';
 import Chat from './pages/Chat'
 import Progress from './pages/Progress';
 import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
 
+
+
 const currentUser = true;
 
 const ProtectedRoute = ({ children }) => {
-  if (!currentUser) {
-    return <Navigate to="/login" />;
-  }
+  // if (!currentUser) {
+  //   return <Navigate to="/login" />;
+  // }
   return children;
 };
 
