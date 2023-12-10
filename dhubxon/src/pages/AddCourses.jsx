@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import Navbar_Freelancer from "../components/Freelancer/Navbar_Freelancer"
 
 const ProductForm = () => {
     const [formData, setFormData] = useState({
@@ -73,6 +74,8 @@ const ProductForm = () => {
     };
 
     return (
+        <>
+        <Navbar_Freelancer/>
         <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-300">
             <form onSubmit={handleSubmit} className="space-y-4">
             <div className="mb-4">
@@ -184,6 +187,7 @@ const ProductForm = () => {
                 </button>
             </form>
         </div>
+        </>
     );
 };
 

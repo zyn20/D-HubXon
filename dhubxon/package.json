@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
+    "faker": "^6.6.6",
     "framer-motion": "^10.16.14",
     "gsap": "^3.12.3",
     "jwt-decode": "^4.0.0",

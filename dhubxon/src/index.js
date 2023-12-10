@@ -30,6 +30,7 @@ import MainPage from './pages/mainPage'
 import Check_ from './pages/Check_user';
 import Complete_home from "./courses/src/complete_home";
 import Complete_products from "./courses/src/complete_products";
+import MyJobs from './components/Freelancer/Myjobs';
 
 const currentUser = true;
 
@@ -67,23 +68,25 @@ const router = createBrowserRouter([
 
 //For Freelancer
       {path:"freelancerdashboard",
-      element: <Protected  component={<FreelancerHome/>}  allowableuser="freelancer" /> },
-      {path:"/freelancer/addcourse",
-      element: <Protected  component={<AddCourses/>}  allowableuser="freelancer" /> },
+      element: <FreelancerHome/>},
+      {path:"/freelancer/courses",
+      element: <AddCourses/> },
       {path:"freelancer/viewjob",
-      element: <Protected  component={<Fullviewjob/>} allowableuser="freelancer"/> },
-    {path: "/freelancer/postproject", element: <Protected  component={<PostProject/>} allowableuser="freelancer"/> },
+      element: <Fullviewjob/>},
+    {path: "/freelancer/postproject", element: <PostProject/> },
     {path:"/freelancer/setprofile",
-    element: <Protected  component={<SetupProfile/>}allowableuser="freelancer"/> },
-    {path:"/freelancer/dashboard",
-    element: <Protected  component={<FreelancerDashboard/>}allowableuser="freelancer"/> },
+    element: <SetupProfile/> },
+    {path:"/freelancer/",
+    element: <FreelancerDashboard/> },
     {path:"/freelancer/proposalsubmission",
-    element: <Protected  component={<ProposalSubmission/>}allowableuser="freelancer"/> },
+    element: <ProposalSubmission/> },
     {path:"check",
-    element: <Protected  component={<Check_/>}/> },
+    element:<Check_/> },
     {path:"/freelancer/community",
-    element: <Protected  component={<Community/>}allowableuser="freelancer"/> },
-    {path:"freelancer/home",
+    element: <Community/> },
+    {path:"freelancer/my-jobs",
+    element: <MyJobs/> },
+    {path:"freelancer/search-jobs",
     element: <Home/> },
 
 
@@ -93,13 +96,13 @@ const router = createBrowserRouter([
 
 //For Client
     {path:"/product/:id",
-    element: <Protected  component={<Complete_products/>} allowableuser="client"/>  },
+    element: <Complete_products/> },
     {path:"/client/explore-courses",
-    element: <Protected  component={<Complete_home/>} allowableuser="client"/>  },
+    element: <Complete_home/>  },
     {path:"/client/dashboard",
-    element: <Protected  component={<ClientDashboard/>}allowableuser="client"/> },
+    element: <ClientDashboard/> },
     {path:"/client/postproject",
-    element: <Protected  component={<PostProject/>}allowableuser="client"/> },
+    element: <PostProject/>},
    
 
     ]
