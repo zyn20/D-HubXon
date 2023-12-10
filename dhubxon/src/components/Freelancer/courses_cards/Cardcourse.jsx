@@ -22,9 +22,9 @@ const TaskCard = ({ title, description, imageSrc }) => {
           </button>
           {dropdownOpen && (
             <div className="absolute right-0 top-0 mt-8 py-2 w-48 bg-white rounded-md shadow-lg z-50">
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Option 1</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Option 2</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Option 3</a>
+              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete</a>
+            
             </div>
           )}
         </div>
