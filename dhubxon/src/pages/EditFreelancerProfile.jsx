@@ -77,7 +77,7 @@ const education=formData.education;
 const certifications=formData.certifications;
 const employmentHistory=formData.employmentHistory;
 const otherExperiences=formData.otherExperiences;
-const KEYWORDS=formData.KEYWORDS.toUpperCase;
+const KEYWORDS=formData.KEYWORDS.toUpperCase();
 
 
     e.preventDefault();

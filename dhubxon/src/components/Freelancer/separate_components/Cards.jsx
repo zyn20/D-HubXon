@@ -10,37 +10,40 @@ const Cards = () => {
   const [most_recent, setMostRecent] = useState([]);
   const [Best_Match, setBESTMATCH] = useState([]);
 
-  const [activeTab, setActiveTab] = useState("best-match"); // Initial active tab
+  const [activeTab, setActiveTab] = useState("best-match"); 
 
-  const fetch_recent=async ()=>{
+  const fetch_recent = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/freelancer/AllProjects');
+      setMostRecent(response.data);
+    } catch (error) {
+      console.error('Error fetching recent projects:', error);
+      
+    }
+  };
+  
 
-    const response = await axios.post('http://127.0.0.1:5000/freelancer/AllProjects');
-    
-    setMostRecent(response.data);
 
-    // console.log("All Data is:",response.data[0].KEYWORDS);
-    console.log("-----------------------------");
-    console.log("This is most recent data",most_recent);
-    console.log("-----------------------------------------")
-  }
-
-  const fetch_BESTMATCH=async ()=>{
-    const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
-    const Email=decodedToken.freelancerData.email
-    const BestMatch = await axios.get('http://127.0.0.1:5000/freelancer/fetchBESTMATCHES', {
-      params: {
-        Email: Email,
-      },
-    });
-    // console.log(BestMatch.data);
-    console.log("-----------------------------");
-    console.log("This is most recent data",BestMatch);
-    console.log("-----------------------------------------")
-    setBESTMATCH(BestMatch.data)
-    // console.log(project);
-    console.log("BEST MATCHES:",BestMatch)
-  }
+  const fetch_BESTMATCH = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const decodedToken = jwtDecode(token);
+      const Email = decodedToken.freelancerData.email;
+  
+      const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchBESTMATCHES', {
+        params: {
+          Email: Email,
+        },
+      });
+  
+      // Assuming the data you need is in response.data
+      setBESTMATCH(response.data);
+    } catch (error) {
+      console.error('Error fetching BESTMATCH:', error);
+      // Handle the error or log it as needed
+    }
+  };
+  
 
 
 

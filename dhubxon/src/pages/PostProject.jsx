@@ -167,7 +167,7 @@ const PostProject = () => {
                 value={KEYWORDS}
                 type="text"
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-green-500"
-                placeholder="Enter KeyWords Related to your Project (comma-separated)"
+                placeholder="Enter KeyWords Related to your Project (Space-separated)"
               />
             </div>
 

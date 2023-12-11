@@ -9,6 +9,7 @@ const { Op } = require('sequelize');
 
 const sequelize = require("../config");
 const { freemem } = require("os");
+const { Console } = require("console");
 let temporaryRecord = {};
 var user_ = {};
 var P_email = "";
@@ -301,7 +302,6 @@ const setProfile = async (req, res) => {
       email: Email,
     };
 
-    console.log("Data is:", data);
 
     // Check if a user with the given email already exists
     const existingUser = await FreelancerProfile.findOne({

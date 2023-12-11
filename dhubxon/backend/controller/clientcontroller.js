@@ -262,7 +262,7 @@ const Postproject = async (req, res) => {
       pricingType: req.body.pricingType,
       projectDeadline: req.body.projectDeadline,
       budget: req.body.budget,
-      KEYWORDS:req.body.KEYWORDS,
+      KEYWORDS:req.body.KEYWORDS.toUpperCase(),
     };
 
     const newPost = await Project.create({

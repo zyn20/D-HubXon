@@ -153,7 +153,7 @@ export default function Signup() {
       } else {
         // Handle other errors if needed
         console.error("An error occurred:", error);
-        Swal.fire('An error occurred. Please try again.');
+        Swal.fire('Invalid Email.');
       }
     }
   };

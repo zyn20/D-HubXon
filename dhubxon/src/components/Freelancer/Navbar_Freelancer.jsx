@@ -6,7 +6,7 @@ import logo from '../../assets/logo.png';
 import { IoMdMenu } from 'react-icons/io';
 import { FaComments } from 'react-icons/fa'; // Import the chat icon
 import { useNavigate } from 'react-router-dom';
-
+import Swal from 'sweetalert2'
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -22,6 +22,13 @@ const Navbar = () => {
   const handleLogout = () => {
     // Perform logout actions, e.g., clear user session, redirect to login page
     // For now, let's simulate a logout by redirecting to the login page
+    localStorage.removeItem("token");
+    Swal.fire({
+      title: "Done!",
+      text: "Logged Out Successfully.",
+      icon: "success"
+    });
+    console.log("Token has been Removed");
     navigate('/login');
 
   };
