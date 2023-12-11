@@ -13,10 +13,20 @@ const Freelancer = require("./models/freelancermodel");
 const Client = require("./models/clientmodel");  
 const { CronJob } = require('cron');
 
+
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
+
+
+
 
 
 app.use('/freelancer', freelancerroute)
