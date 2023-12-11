@@ -55,6 +55,10 @@ const FreelancerProfile = sequelize.define("FreelancerProfile", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  KEYWORDS: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = FreelancerProfile;

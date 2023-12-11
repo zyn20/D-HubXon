@@ -4,6 +4,8 @@ const Project = require("../models/project");
 const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");
 const jwt = require("jsonwebtoken");
+const { Op } = require('sequelize');
+
 
 const sequelize = require("../config");
 const { freemem } = require("os");
@@ -232,6 +234,8 @@ const verifypassword = async (req, res) => {
 const update_password = async (req, res) => {
   try {
     const newPassword=req.body.password;
+    const newEncyptedPassword=encrypt(newPassword,SECRETKEY);
+    console.log("New Encrypted Password:",newEncyptedPassword);
     const oldData = await Freelancer.findOne({
       where: {
         Email: req.body.email,
@@ -240,7 +244,7 @@ const update_password = async (req, res) => {
 
     console.log("Old Data:", oldData);
 
-    await oldData.update({ Password: newPassword });
+    await oldData.update({ Password: newEncyptedPassword });
     // Log the new data
 
 
@@ -251,6 +255,11 @@ const update_password = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+
+
+
+
 
 
 const Allproject = async (req, res) => {
@@ -269,6 +278,9 @@ const Allproject = async (req, res) => {
   }
 };
 
+
+
+
 const setProfile = async (req, res) => {
   try {
     const Email = req.body.Email; // Assuming P_email is a constant
@@ -285,6 +297,7 @@ const setProfile = async (req, res) => {
       certifications: req.body.certifications,
       employmentHistory: req.body.employmentHistory,
       otherExperiences: req.body.otherExperiences,
+      KEYWORDS:req.body.KEYWORDS,
       email: Email,
     };
 
@@ -356,6 +369,48 @@ console.log(req.body);
   }
 };
 
+
+
+const BESTMATCH = async (req, res) => {
+  try {
+ 
+    const existingUser = await FreelancerProfile.findOne({
+      where: {
+        email: req.query.Email,
+      },
+    });
+
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const userKeywords = existingUser.KEYWORDS.split(' ');
+    console.log("USERKEYWORDS:", userKeywords);
+
+    const allProjects = await Project.findAll();
+
+    const matchedProjects = allProjects.filter(project => {
+ 
+      const projectKeywords = project.KEYWORDS.split(' ');
+
+      const intersection = userKeywords.some(keyword => projectKeywords.includes(keyword));
+
+      return intersection;
+    });
+
+    // Log the retrieved projects (optional)
+    console.log("Best Matches Projects are:", matchedProjects);
+
+    // Send the retrieved projects as the response
+    res.status(200).json(matchedProjects);
+  } catch (error) {
+    console.error("Error in BESTMATCH: ", error);
+    res.status(500).send(error.message);
+  }
+};
+
+
+
 module.exports = {
   signIn,
   signUp,
@@ -367,4 +422,5 @@ module.exports = {
   setProfile,
   fetchprofiledata,
   Re_send_OTP,
+  BESTMATCH
 };

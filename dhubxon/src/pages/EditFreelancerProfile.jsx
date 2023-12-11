@@ -1,6 +1,9 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios'
 import {jwtDecode} from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
 
 
 const SetupProfile = () => {
@@ -17,7 +20,10 @@ const SetupProfile = () => {
     certifications: '',
     employmentHistory: '',
     otherExperiences: '',
+    KEYWORDS: '',
+
   });
+  const navigate=useNavigate();
 
   useEffect(() => {
 
@@ -71,6 +77,7 @@ const education=formData.education;
 const certifications=formData.certifications;
 const employmentHistory=formData.employmentHistory;
 const otherExperiences=formData.otherExperiences;
+const KEYWORDS=formData.KEYWORDS.toUpperCase;
 
 
     e.preventDefault();
@@ -81,8 +88,15 @@ const otherExperiences=formData.otherExperiences;
       const decodedToken = jwtDecode(token);
       const Email=decodedToken.freelancerData.email
       console.log(decodedToken.freelancerData.email);
-        const response = await axios.post('http://127.0.0.1:5000/freelancer/setprofile',{ Email,city,country,headline,headlineDescription,portfolioDescription,skills,languages,education,certifications,employmentHistory,otherExperiences});
-        // Handle the response, e.g., show a success message or redirect
+        const response = await axios.post('http://127.0.0.1:5000/freelancer/setprofile',{ Email,city,country,headline,headlineDescription,portfolioDescription,skills,languages,education,certifications,employmentHistory,otherExperiences,KEYWORDS});
+        Swal.fire({
+          title: "Done!",
+          text: "Your Profile has been Updated Successfully.",
+          icon: "success"
+        });
+        navigate("/freelancer/");
+
+
         console.log('Response:', response.data);
     } catch (error) {
         // Handle errors, e.g., show an error message
@@ -135,6 +149,12 @@ const otherExperiences=formData.otherExperiences;
           <SectionHeader title="Professional Experience" />
           <TextareaField label="Employment History" name="employmentHistory" value={formData.employmentHistory} onChange={handleChange} placeholder="Outline your employment history" />
           <TextareaField label="Other Experiences" name="otherExperiences" value={formData.otherExperiences} onChange={handleChange} placeholder="Describe any other relevant experiences" />
+        </div>
+
+        <div className="md:col-span-2">
+          <SectionHeader title="KEYWORDS" />
+          {/* <TextareaField label="Employment History" name="employmentHistory" value={formData.employmentHistory} onChange={handleChange} placeholder="Outline your employment history" /> */}
+          <TextareaField label="Enter Keywords" name="KEYWORDS" value={formData.KEYWORDS} onChange={handleChange} placeholder="Describe any other relevant experiences KEYWORDS" />
         </div>
 
         <button type="submit" className="bg-blue-900 hover:bg-blue-800 text-white font-medium py-2.5 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mt-6 md:col-span-2">Submit</button>

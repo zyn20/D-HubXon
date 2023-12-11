@@ -12,6 +12,9 @@ const PostProject = () => {
   const [pricingType, setPricingType] = useState('');
   const [projectDeadline, setProjectDeadline] = useState('');
   const [budget, setBudget] = useState('');
+  // const [KEYWORDS, setKEYWORDS] = useState('');
+  const [KEYWORDS, setKEYWORDS] = useState();
+
   const navigate = useNavigate();
 
   const validation = () => {
@@ -57,9 +60,11 @@ const PostProject = () => {
         pricingType,
         projectDeadline,
         budget,
+        KEYWORDS
       });
 
       Swal.fire('Project posted successfully');
+      navigate("/client/")
     } catch (error) {
       console.error('Error posting project:', error);
     }
@@ -152,6 +157,21 @@ const PostProject = () => {
                 placeholder="Enter your budget"
               />
             </div>
+
+      
+
+<div className="mb-4">
+              <label className="block text-gray-600 text-sm font-semibold mb-2">KEYWORDS</label>
+              <input
+                onChange={(e) => setKEYWORDS(e.target.value)}
+                value={KEYWORDS}
+                type="text"
+                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-green-500"
+                placeholder="Enter KeyWords Related to your Project (comma-separated)"
+              />
+            </div>
+
+
 
             <div className="text-right">
               <button

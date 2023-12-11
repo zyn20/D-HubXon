@@ -17,6 +17,7 @@ router.post('/AllProjects',functions.Allproject);
 router.post('/setprofile',functions.setProfile);
 router.get("/fetchprofiledata",functions.fetchprofiledata);
 router.post("/resendOTP",functions.Re_send_OTP);
+router.get("/fetchBESTMATCHES",functions.BESTMATCH);
 
 
 router.get('*', function(req, res){

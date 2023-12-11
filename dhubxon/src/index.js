@@ -187,8 +187,7 @@ const router = createBrowserRouter([
       ),
     },
 
-    {path:"freelancer/search-jobs",
-    element: <Home/> },
+   
 
    
 /////////////////////////////////////////////////////////////////For Client/

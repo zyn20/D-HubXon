@@ -1,21 +1,48 @@
 import React, { useState } from "react";
 import Jobcard from "../Jobcard";
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
 
 
 import Fullviewjob from "./Fullviewjob";
 
 const Cards = () => {
   const [most_recent, setMostRecent] = useState([]);
+  const [Best_Match, setBESTMATCH] = useState([]);
+
   const [activeTab, setActiveTab] = useState("best-match"); // Initial active tab
 
   const fetch_recent=async ()=>{
+
     const response = await axios.post('http://127.0.0.1:5000/freelancer/AllProjects');
+    
     setMostRecent(response.data);
-    console.log(response.data);
+
+    // console.log("All Data is:",response.data[0].KEYWORDS);
     console.log("-----------------------------");
     console.log("This is most recent data",most_recent);
+    console.log("-----------------------------------------")
   }
+
+  const fetch_BESTMATCH=async ()=>{
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    const Email=decodedToken.freelancerData.email
+    const BestMatch = await axios.get('http://127.0.0.1:5000/freelancer/fetchBESTMATCHES', {
+      params: {
+        Email: Email,
+      },
+    });
+    // console.log(BestMatch.data);
+    console.log("-----------------------------");
+    console.log("This is most recent data",BestMatch);
+    console.log("-----------------------------------------")
+    setBESTMATCH(BestMatch.data)
+    // console.log(project);
+    console.log("BEST MATCHES:",BestMatch)
+  }
+
+
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
@@ -24,6 +51,9 @@ if(tabId==="most-recent"){
 fetch_recent()
 }
 
+if(tabId==="best-match"){
+  fetch_BESTMATCH()
+  }
 
   };
 
@@ -124,79 +154,22 @@ fetch_recent()
           {/* Statistics content here */}
           <h2 className="text-2xl font-bold mb-4">Best Matches</h2>
           {/* Placeholder for Job Cards */}
-          <Jobcard
-  title="UI/UX Developer Required"
-  description="Looking for an experienced UI/UX Developer to revamp our member and admin panels. The backend is already integrated, and we need a fresh, user-friendly design."
-  projectType="Short Term"
-  price="$300"
-  projectTime="2 hours ago"
-  location="Remote"
-  budget="$1000 - $1500"
-  keywords={["UI/UX", "Web Design", "React", "Frontend"]}
-  onClick={handleJobClick}
-
-/>
-
-
-<Jobcard
-  title="Looking for React Developer"
-  description="Need a React Developer for updating forms and adding CRUD operations in our existing application. The project is nearly complete, requiring only maintenance."
-  projectType="Maintenance"
-  price="$200"
-  projectTime="1 day ago"
-  location="Remote"
-  budget="$500 - $800"
-  keywords={["React", "JavaScript", "CRUD", "Frontend"]}
-  onClick={handleJobClick}
-
-/>
-
-<Jobcard
-  title="Full-Stack Developer Needed"
-  description="Seeking a Full-Stack Developer for a new e-commerce project. Required to build both frontend and backend from scratch. Must have experience with React and Node.js."
-  projectType="Long Term"
-  price="$500"
-  projectTime="3 days ago"
-  location="On-site, New York"
-  budget="$2000 - $3000"
-  keywords={["Full-Stack", "React", "Node.js", "E-commerce"]}
-  onClick={handleJobClick}
- 
-/>
-
-<Jobcard
-  title="WordPress Expert Wanted"
-  description="Urgently looking for a WordPress Expert to optimize and enhance an existing website. Focus on SEO, performance improvements, and theme customization."
-  projectType="Short Term"
-  price="$150"
-  projectTime="5 hours ago"
-  location="Remote"
-  budget="$300 - $500"
-  keywords={["WordPress", "SEO", "Performance", "Customization"]}
-  onClick={handleJobClick}
- 
-
-
- 
-/>
-
-
-<Jobcard
-  title="WordPress Expert Wanted"
-  description="Urgently looking for a WordPress Expert to optimize and enhance an existing website. Focus on SEO, performance improvements, and theme customization."
-  projectType="Short Term"
-  price="$150"
-  projectTime="5 hours ago"
-  location="Remote"
-  budget="$300 - $500"
-  keywords={["WordPress", "SEO", "Performance", "Customization"]}
-  onClick={handleJobClick}
- 
-
-
- 
-/>
-
+          
+          {Best_Match.map((project, index) => (
+    
+    <Jobcard
+      key={index}
+      title={project.title}
+      description={project.description}
+      skillRequired={project.skillRequired}
+      projectDuration={project.projectDuration}
+      pricingType={project.pricingType}
+      projectDeadline={project.projectDeadline}
+      budget={project.budget}
+      KEYWORDS={project.KEYWORDS} // Make sure keywords is defined, use an empty array if not
+      onClick={handleJobClick}
+    />
+  ))}
 
 {/*  */}
 
@@ -220,20 +193,22 @@ fetch_recent()
   {/* Placeholder for Job Cards */}
 
 
+  {most_recent.map((project, index) => (
+    
+  <Jobcard
+    key={index}
+    title={project.title}
+    description={project.description}
+    skillRequired={project.skillRequired}
+    projectDuration={project.projectDuration}
+    pricingType={project.pricingType}
+    projectDeadline={project.projectDeadline}
+    budget={project.budget}
+    KEYWORDS={project.KEYWORDS} // Make sure keywords is defined, use an empty array if not
+    onClick={handleJobClick}
+  />
+))}
 
-  {most_recent.map((project) => (
-    <Jobcard
-      // key={index}
-      title={project.title}
-      description={project.description}
-      skillRequired={project.skillRequired}
-      projectDuration={project.projectDuration}
-      pricingType={project.pricingType}
-      projectDeadline={project.projectDeadline}
-      budget={project.budget}
-      onClick={handleJobClick}
-    />
-  ))}
 
 
 
@@ -257,7 +232,7 @@ fetch_recent()
         >
           {/* saved-jobs content here */}
           <h2 className="text-2xl font-bold mb-4">Saved Jobs</h2>
-          <Jobcard
+          {/* <Jobcard
   title="Cybersecurity Expert Required"
   description="Seeking a Cybersecurity Expert to enhance the security of our online platforms. Experience with network security and ethical hacking preferred."
   projectType="Consultancy"
@@ -289,9 +264,9 @@ fetch_recent()
   projectTime="1 day ago"
   location="Remote"
   budget="$100 - $300 per article"
-  keywords={["Content Writing", "Blogging", "Tech"]}
-  onClick={handleJobClick}
-/>
+  keywords={["Content Writing", "Blogging", "Tech"]} */}
+  {/* onClick={handleJobClick} */}
+{/* /> */}
           {/* Placeholder for Job Cards */}
        
 
