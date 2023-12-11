@@ -54,7 +54,7 @@ const signupFields = [
         autoComplete: "current-password",
         isRequired: true,
         placeholder: "Password",
-        pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$" // Regex pattern for password
+        pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$" 
     },
     {
         labelText: "Confirm Password",
