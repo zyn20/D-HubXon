@@ -3,6 +3,8 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar_Client from '../components/client/Navbar'
+import {jwtDecode} from 'jwt-decode';
+
 
 const EditClientProfile = () => {
 
@@ -18,10 +20,22 @@ const EditClientProfile = () => {
     companydescription: '',
   });
 
+
+
   useEffect(() => {
+
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/client/fetchprofiledata');
+        const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const Email=decodedToken.clientData.email
+
+  console.log("Email in Fetch Data:",Email);
+  const response = await axios.get('http://127.0.0.1:5000/client/fetchprofiledata', {
+    params: {
+      Email: Email,
+    },
+  });
         
         const fetchedData = response.data; // Modify this based on the actual response structure
         setFormData({ ...fetchedData });
@@ -33,6 +47,8 @@ const EditClientProfile = () => {
     fetchData(); // Call the async function inside useEffect
 
   }, []);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -82,11 +98,21 @@ const companydescription=formData.companydescription;
 const projectposted=formData.projectposted;
 
 try {
-  const response = await axios.post('http://127.0.0.1:5000/client/setprofile',{ companyname,industry,contactperson,contactemail,contactphone,companydescription,projectposted});
+  const token = localStorage.getItem('token');
+  const decodedToken = jwtDecode(token);
+  console.log("Token  is:",decodedToken);
+
+  const Email=decodedToken.clientData.email
+  console.log("Email is:",Email);
+  const response = await axios.post('http://127.0.0.1:5000/client/setprofile',{Email,companyname,industry,contactperson,contactemail,contactphone,companydescription,projectposted});
   // Handle the response, e.g., show a success message or redirect
   console.log('Response:', response.data);
-  Swal.fire("Profile Edited Successfully");
-  navigate("/clientdashboard");
+ Swal.fire({
+      title: "Done!",
+      text: "Your Profile has been Updated Successfully.",
+      icon: "success"
+    });
+  navigate("/client/");
 
 } catch (error) {
   // Handle errors, e.g., show an error message

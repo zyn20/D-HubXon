@@ -229,6 +229,7 @@ const verifypassword = async (req, res) => {
 const update_password = async (req, res) => {
   try {
     const newPassword=req.body.password;
+    const newEncyptedPassword=encrypt(newPassword,SECRETKEY);
     const oldData = await Client.findOne({
       where: {
         Email: req.body.email,
@@ -237,7 +238,7 @@ const update_password = async (req, res) => {
 
     console.log("Old Data:", oldData);
 
-    await oldData.update({ Password: newPassword });
+    await oldData.update({ Password: newEncyptedPassword });
     // Log the new data
 
 
@@ -261,6 +262,7 @@ const Postproject = async (req, res) => {
       pricingType: req.body.pricingType,
       projectDeadline: req.body.projectDeadline,
       budget: req.body.budget,
+      KEYWORDS:req.body.KEYWORDS.toUpperCase(),
     };
 
     const newPost = await Project.create({
@@ -278,7 +280,7 @@ const Postproject = async (req, res) => {
 
 const setProfile = async (req, res) => {
   try {
-    const Email = req/body.Email; // Assuming P_email is a constant
+    const Email = req.body.Email; // Assuming P_email is a constant
 
     const data = {
       companyname: req.body.companyname,

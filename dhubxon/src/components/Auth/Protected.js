@@ -24,8 +24,8 @@ function Protected({ component: Component,allowableuser }) {
       console.log('User Role:', userRole);
       console.log("allowable",allowableuser)
       if(userRole!=allowableuser){
-        if(userRole==="client"){navigate("/client/dashboard")}
-        if(userRole==="freelancer"){navigate("/freelancer/dashboard")}
+        if(userRole==="client"){navigate("/client/")}
+        if(userRole==="freelancer"){navigate("/freelancer/")}
       }
     } catch (error) {
       console.error('Error decoding token:', error);
