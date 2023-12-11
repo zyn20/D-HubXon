@@ -50,50 +50,111 @@ export default function Signup() {
 
   const handleUserTypeChange = (e) => setUserType(e.target.value);
 
-  const validations = () => {
-    let valid = true;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(signupState);
+
+  if(!validations())
+   {  
+   e.preventDefault();
+  }else{
+    createAccount();
+  }
+  // createAccount();
+  }
+
+  // Handle validations  here
+
+  const validations=()=>{
+
+
+    console.log("i am in validations");
+    console.log(signupState['password']);
+    console.log(signupState['confirm-password']);
     if (signupState['password'] !== signupState['confirm-password']) {
+      console.log("han Nh Equal");
       Swal.fire('Password and Confirm Password do not match!');
-      valid = false;
+      return false;
     }
 
     if (!userType) {
       Swal.fire('Please select a user type (Client/Freelancer)!');
-      valid = false;
+      return false;
     }
-    return valid;
-  };
+    return true;
+  }
 
+  // Handle Signup API Integration here
   const createAccount = async () => {
-    const name = signupState['username'];
-    const email = signupState['email-address'];
-    const pass = signupState['password'];
-
+    const Name = signupState['username'];
+    const Email = signupState['email-address'];
+    const Pass = signupState['password'];
+  
+    console.log("Name:", Name);
+    console.log("Email:", Email);
+    console.log("Password:", Pass);
+    console.log("User Type:", userType);
+  
     try {
-      Swal.fire({
-        title: 'Loading...',
-        allowOutsideClick: false,
-        onBeforeOpen: () => {
-          Swal.showLoading();
-        }
-      });
-
-      const endpoint = userType === "freelancer" ? 'freelancer/signUp' : 'client/signUp';
-      await axios.post(`http://127.0.0.1:5000/${endpoint}`, { name, email, pass });
-
-      Swal.fire('Verification code has been sent!')
-        .then(() => {
-          navigate(`/verify?userType=${userType}`);
+        let timerInterval;
+        Swal.fire({
+          title: "Sending OTP...",
+          html: " <b></b> Please wait while we send the verification code to your email",
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+              timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          }
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("OTP sent successfully");
+          }
         });
+  
+      let response;
+  
+      if (userType === "freelancer") {
+        response = await axios.post('http://127.0.0.1:5000/freelancer/signUp', { Name, Email, Pass });
+      } else {
+        response = await axios.post('http://127.0.0.1:5000/client/signUp', { Name, Email, Pass });
+      }
+  
+      Swal.fire("OTP Sent Successfully!", "", "success").then(() => {
+        navigate(`/verify?userType=${userType}&Email=${Email}`);
+      });
     } catch (error) {
-      Swal.fire('Please Enter a Valid email');
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validations()) {
-      createAccount();
+      if (error.response && error.response.status === 409) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Email Already Exist',
+          html: 'Please Input Another Email and ',
+          showClass: {
+            popup: `
+              animate__animated
+              animate__fadeInUp
+              animate__faster
+            `
+          },
+          hideClass: {
+            popup: `
+              animate__animated
+              animate__fadeOutDown
+              animate__faster
+            `
+          }
+        });
+      } else {
+        // Handle other errors if needed
+        console.error("An error occurred:", error);
+        Swal.fire('An error occurred. Please try again.');
+      }
     }
   };
 

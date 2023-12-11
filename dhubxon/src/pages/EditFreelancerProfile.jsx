@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import axios from 'axios'
+import {jwtDecode} from 'jwt-decode';
 
 
 const SetupProfile = () => {
@@ -19,9 +20,19 @@ const SetupProfile = () => {
   });
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofiledata');
+        const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const Email=decodedToken.freelancerData.email
+
+  console.log("Email in Fetch Data:",Email);
+  const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofiledata', {
+    params: {
+      Email: Email,
+    },
+  });
         
         const fetchedData = response.data; // Modify this based on the actual response structure
         setFormData({ ...fetchedData });
@@ -66,7 +77,11 @@ const otherExperiences=formData.otherExperiences;
     console.log('Form submitted:', formData);
 
     try {
-        const response = await axios.post('http://127.0.0.1:5000/freelancer/setprofile',{ city,country,headline,headlineDescription,portfolioDescription,skills,languages,education,certifications,employmentHistory,otherExperiences});
+      const token = localStorage.getItem('token');
+      const decodedToken = jwtDecode(token);
+      const Email=decodedToken.freelancerData.email
+      console.log(decodedToken.freelancerData.email);
+        const response = await axios.post('http://127.0.0.1:5000/freelancer/setprofile',{ Email,city,country,headline,headlineDescription,portfolioDescription,skills,languages,education,certifications,employmentHistory,otherExperiences});
         // Handle the response, e.g., show a success message or redirect
         console.log('Response:', response.data);
     } catch (error) {

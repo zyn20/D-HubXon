@@ -1,335 +1,366 @@
 const Client = require("../models/clientmodel");
-const ClientProfile=require("../models/clientprofile");
-const Project =require("../models/project");
+const ClientProfile = require("../models/clientprofile");
+const Project = require("../models/project");
 const sequelize = require("../config");
-const crypto = require('crypto');
-const { sendVerificationEmail } = require('./nodemailer/email');
+const crypto = require("crypto");
+const { sendVerificationEmail } = require("./nodemailer/email");
 const { Console } = require("console");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-
-
-var old_data={};
+var old_data = {};
 let temporaryUsersrecord = {};
-var user_={};
+var user_ = {};
+
+
+const SECRETKEY="NATIONAL UNIVERSITY";
+
+
+// Encryption function
+function encrypt(text, secretKey) {
+  const cipher = crypto.createCipher('aes-256-cbc', secretKey);
+  let encrypted = cipher.update(text, 'utf-8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+
+// Decryption function
+function decrypt(encryptedText, secretKey) {
+  const decipher = crypto.createDecipher('aes-256-cbc', secretKey);
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf-8');
+  decrypted += decipher.final('utf-8');
+  return decrypted;
+}
+
+
+
 const signUp = async (req, res) => {
-    try {
-        const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
-        console.log(verificationCode);
-        
-        await sendVerificationEmail(req.body.email, verificationCode);
-temporaryUsersrecord={
-    code:verificationCode,
-    email:req.body.email
-}
+  try {
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    console.log(verificationCode);
 
-user_={
-    UserID: req.body.id,
-        Name: req.body.name,
-        Email: req.body.email,
-        Password: req.body.pass
-}
+    await sendVerificationEmail(req.body.Email, verificationCode);
+    const EncryptedPassword=encrypt(req.body.Pass,SECRETKEY);
 
-
-console.log(user_);
-res.send("verification code sent");
-
-
-    } catch (error) {
-        console.error("can not added user: ", error);
-        res.status(500).send(error.message);
+    const TemporaryRecord={
+      Name: req.body.Name,
+      Email: req.body.Email,
+      Password: EncryptedPassword,
+      OTP:verificationCode,
+      Isverified:false
     }
+    const newUser = await Client.create({
+      ...TemporaryRecord,
+    });
+   
+
+    console.log(user_);
+    res.send("verification code sent");
+  } catch (error) {
+    console.error("can not added user: ", error);
+    res.status(500).send(error.message);
+  }
 };
 
 const verify = async (req, res) => {
-    try {
+  try {
+    const Email=req.body.Email;
+    const  verificationCode  = req.body.verificationCode;
+    console.log("Verification code:", verificationCode);
+  console.log("Email is:",Email)
 
-        const  verificationCode  = req.body.code;
-        console.log(verificationCode);
+    const clientData = await Client.findOne({
+      where: {
+        Email: Email,
+      },
+    });
+    console.log("Verification code By User:", verificationCode);
+    console.log("Verification code By Database:", clientData.OTP);
 
-        if (verificationCode!=temporaryUsersrecord.code) {
-            return res.status(400).send('Invalid verification code');
-        }
-else{
-        const newUser = await Client.create({
-            ...user_
-        });
+
+
+    if (!clientData ||  clientData.OTP ==='0' || verificationCode !== clientData.OTP) {
+      return res.status(400).send("Invalid verification code or user not found");
     }
 
+    
+    await clientData.update({ Isverified: true,OTP: '0' });
+    
 
-        res.status(200).send('User verified and registered successfully');
-    } catch (error) {
-        console.error("Error in verifyUser: ", error);
-        res.status(500).send(error.message);
-    }
+
+    res.status(200).send("User verified and registered successfully");
+  } catch (error) {
+    console.error("Error in verifyUser: ", error);
+    res.status(500).send(error.message);
+  }
 };
 
 
+const Re_send_OTP = async (req, res) => {
+  try {
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    console.log("New Verification Code:", verificationCode);
+    
+    const email = req.body.Email;
+    console.log("Email to resend OTP:", email);
+    
+    await sendVerificationEmail(email, verificationCode);
 
+    const clientData = await Client.findOne({
+      where: {
+        Email: req.body.Email,
+      },
+    });
 
+    await clientData.update({ OTP: verificationCode });
+
+    // Optionally, you may want to return a success message or handle the response as needed.
+    return res.status(200).send("Email Sent Successfully");
+  } catch (error) {
+    console.error("Error in resending OTP:", error);
+    return res.status(500).send("Error While Sending Email");
+  }
+};
 
 const signIn = async (req, res) => {
-    try {
-        await sequelize.sync();
-        console.log(req.body.pass);
-        console.log(req.body.email);
+  try {
+    await sequelize.sync();
+    console.log(req.body.pass);
+    console.log(req.body.email);
+    const EncryptedPassword=encrypt(req.body.pass,SECRETKEY);
 
-        const clientData = await Client.findOne({
-            where: {
-                Password: req.body.pass,
-                Email: req.body.email,
-            },
-        });
 
-        if (!clientData) {
-            console.error("Failed to sign in: User not found");
-            return res.status(404).send("Login failed");
-        }
+    const clientData = await Client.findOne({
+      where: {
+        Password: EncryptedPassword,
+        Email: req.body.email,
+        Isverified:true
+      },
+    });
 
-        console.log(clientData);
-        user_=clientData;
-        
-        // Include client data in the JWT payload
-        const payload = {
-            role: 'client',
-            clientData: {
-                id: clientData.id,
-                name: clientData.Name,
-                email:clientData.Email
-                // Add any other client data you want to include
-            },
-        };
-
-        // Sign the JWT with the payload
-        const token = jwt.sign(payload, 'NATIONAL UNIVERSITY', { expiresIn: '1h' });
-        console.log(token);
-
-        // Include additional client data in the response
-        res.status(200).json({
-            token,
-            message: 'Sign in successful',
-            clientData: payload.clientData,
-        });
-
-    } catch (error) {
-        console.error("Failed to sign in:", error);
-        return res.status(500).send(error.message);
+    if (!clientData) {
+      console.error("Failed to sign in: User not found");
+      return res.status(404).send("Login failed");
     }
+
+    console.log(clientData);
+    user_ = clientData;
+
+    // Include client data in the JWT payload
+    const payload = {
+      role: "client",
+      clientData: {
+        id: clientData.id,
+        name: clientData.Name,
+        email: clientData.Email,
+        // Add any other client data you want to include
+      },
+    };
+
+    // Sign the JWT with the payload
+    const token = jwt.sign(payload, "NATIONAL UNIVERSITY", { expiresIn: "1h" });
+    console.log(token);
+
+    // Include additional client data in the response
+    res.status(200).json({
+      token,
+      message: "Sign in successful",
+      clientData: payload.clientData,
+    });
+  } catch (error) {
+    console.error("Failed to sign in:", error);
+    return res.status(500).send(error.message);
+  }
 };
 
-  
-const forgetpassword=async (req,res)=>{
-try{
 
-var  verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
-temporaryUsersrecord={
-    code:verificationCode,
-    email:req.body.email
-}
-console.log(verificationCode);
 
-await sendVerificationEmail(req.body.email,verificationCode);
+const forgetpassword = async (req, res) => {
+  try {
+    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
 
-res.status(200).send("Forget password work correctly");
-console.log("Forget password work correctly")
+    const clientData = await Client.findOne({
+      where: {
+        Email: req.body.email,
+      },
+    });
 
-}
-catch(error){
-    console.error("can not send forget password: ", error);
-    res.status(500).send(error.message);
-}
-}
+    await clientData.update({ OTP: verificationCode });
+
+    await sendVerificationEmail(req.body.email, verificationCode);
+
+    res.status(200).send("Forget password process completed successfully");
+  } catch (error) {
+    console.error("Error in forget password process: ", error);
+    res.status(500).send("Error while processing forget password request");
+  }
+};
+
+
 
 const verifypassword = async (req, res) => {
-    try {
-        const verificationCode = req.body.code;
-        console.log(verificationCode);
+  try {
+    const { code, Email } = req.body;
+    console.log("Verification Code from User:", code);
 
-        if (verificationCode != temporaryUsersrecord.code) {
-            return res.status(400).send('Invalid verification code');
-        }
-        else{
+    const clientData = await Client.findOne({
+      where: {
+        Email: Email,
+      },
+    });
 
-        // What should be done now?
-       
+    console.log("Verification Code from Database:", clientData.OTP);
 
-
-        }
-        res.send('Verification Code matched');
-    } catch (error) {
-        console.error("Error in verifyUser: ", error);
-        res.status(500).send(error.message);
+    if (!clientData || code !== clientData.OTP || clientData.OTP==='0') {
+      return res.status(400).send("Invalid verification code or user not found");
     }
+    await clientData.update({ OTP: '0' });
 
+    const role = "All";
+    const token = jwt.sign({ role }, "NATIONAL UNIVERSITY", { expiresIn: "1h" });
+    
+    // Send the token in the response
+    return res.status(200).json({ message: "Verification Code matched", token });  } catch (error) {
+    console.error("Error in verifyUser: ", error);
+    res.status(500).send("Error while verifying the verification code");
+  }
 };
 
 
 const update_password = async (req, res) => {
-    try {
-       
-        const oldData = await Client.findOne({
-            where: {
-                Email: temporaryUsersrecord.email, 
-            },
-        });
+  try {
+    const newPassword=req.body.password;
+    const oldData = await Client.findOne({
+      where: {
+        Email: req.body.email,
+      },
+    });
 
-       
-        console.log("Old Data:", oldData);
+    console.log("Old Data:", oldData);
 
-      d
-        const newData = {
-            UserID: oldData.UserID,
-            Name: oldData.Name,
-            Email: oldData.Email,
-            Password: req.body.password, 
-        };
+    await oldData.update({ Password: newPassword });
+    // Log the new data
 
-        // Log the new data
-        console.log("New Data:", newData);
 
-        
-        await Client.update(newData, {
-            where: {
-                Email: temporaryUsersrecord.email, 
-            },
-        });
-
-        console.log("Password Changed");
-        res.status(200).send("Password Changed"); 
-    } catch (error) {
-        console.error("Error in updatePassword:", error);
-        res.status(500).send(error.message);
-    }
+    console.log("Password Changed");
+    res.status(200).send("Password Changed");
+  } catch (error) {
+    console.error("Error in updatePassword:", error);
+    res.status(500).send(error.message);
+  }
 };
-
-
-
-
-
 
 const Postproject = async (req, res) => {
+  console.log("------------------------------");
+  console.log(req.body.title);
+  try {
+    const post = {
+      title: req.body.title,
+      description: req.body.description,
+      skillRequired: req.body.skillRequired,
+      projectDuration: req.body.projectDuration,
+      pricingType: req.body.pricingType,
+      projectDeadline: req.body.projectDeadline,
+      budget: req.body.budget,
+    };
 
-console.log("------------------------------");
-    console.log(req.body.title);
-    try {
-      const post = {
-       
-        title: req.body.title,
-        description: req.body.description,
-        skillRequired: req.body.skillRequired,
-        projectDuration: req.body.projectDuration,
-        pricingType: req.body.pricingType,
-        projectDeadline: req.body.projectDeadline,
-        budget: req.body.budget,
-      };
+    const newPost = await Project.create({
+      ...post,
+    });
 
+    console.log(post);
 
-    
-  
-      const newPost = await Project.create({
-        ...post,
-      });
-  
-      console.log(post);
-  
-      res.status(201).send('Project posted successfully');
-    } catch (error) {
-      console.error('Error in Postproject: ', error);
-      res.status(500).send(error.message);
-    }
-  };
-  
-
-  const setProfile = async (req, res) => {
-    try {
-        const P_email = user_.Email;  // Assuming P_email is a constant
-
-        const data = {
-            companyname: req.body.companyname,
-            industry: req.body.industry,
-            contactperson: req.body.contactperson,
-            contactemail: req.body.contactemail,
-            contactphone: req.body.contactphone,
-            companydescription: req.body.companydescription,
-            projectposted: req.body.projectposted,
-            email: P_email
-        };
-
-        console.log("Data is:", data);
-
-        // Check if a user with the given email already exists
-        const existingUser = await ClientProfile.findOne({
-            where: {
-                email: data.email,
-            },
-        });
-
-        if (!existingUser) {
-            // If the user does not exist, create a new profile
-            await ClientProfile.create(data);
-        } else {
-            // If the user already exists, update the existing record with new data
-            await ClientProfile.update(data, {
-                where: {
-                    email: data.email,
-                },
-            });
-        }
-
-        // Handle success, send a response, or perform other actions if needed
-        res.status(200).json({ message: "Profile set successfully" });
-    } catch (error) {
-        // Handle errors, send an error response, or log the error
-        console.error("Error setting profile:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+    res.status(201).send("Project posted successfully");
+  } catch (error) {
+    console.error("Error in Postproject: ", error);
+    res.status(500).send(error.message);
+  }
 };
 
+const setProfile = async (req, res) => {
+  try {
+    const Email = req/body.Email; // Assuming P_email is a constant
 
-
-const fetchprofiledata = async (req, res) => {
     const data = {
-      companyname: " ",
-      industry: " ",
-      contactperson: " ",
-      contactemail: " ",
-      contactphone: " ",
-      companydescription: "",
-      projectposted: " ",
+      companyname: req.body.companyname,
+      industry: req.body.industry,
+      contactperson: req.body.contactperson,
+      contactemail: req.body.contactemail,
+      contactphone: req.body.contactphone,
+      companydescription: req.body.companydescription,
+      projectposted: req.body.projectposted,
+      email: Email,
     };
-  
-    try {
-      const existingUser = await ClientProfile.findOne({
+
+    console.log("Data is:", data);
+
+    // Check if a user with the given email already exists
+    const existingUser = await ClientProfile.findOne({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (!existingUser) {
+      // If the user does not exist, create a new profile
+      await ClientProfile.create(data);
+    } else {
+      // If the user already exists, update the existing record with new data
+      await ClientProfile.update(data, {
         where: {
-          email: user_.Email,
+          email: data.email,
         },
       });
-  
-      console.log(existingUser);
-  
-      if (existingUser) {
-        res.send(existingUser);
-      } else {
-        res.send(data);
-      }
-    } catch (error) {
-      console.error("Error fetching profile data:", error);
-      res.status(500).send("Internal Server Error");
     }
+
+    // Handle success, send a response, or perform other actions if needed
+    res.status(200).json({ message: "Profile set successfully" });
+  } catch (error) {
+    // Handle errors, send an error response, or log the error
+    console.error("Error setting profile:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const fetchprofiledata = async (req, res) => {
+  const data = {
+    companyname: " ",
+    industry: " ",
+    contactperson: " ",
+    contactemail: " ",
+    contactphone: " ",
+    companydescription: "",
+    projectposted: " ",
   };
-  
 
+  try {
+    const existingUser = await ClientProfile.findOne({
+      where: {
+        email: req.query.Email,
+      },
+    });
 
+    console.log(existingUser);
 
+    if (existingUser) {
+      res.send(existingUser);
+    } else {
+      res.send(data);
+    }
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
-  module.exports = {
-    signIn,
-    signUp,
-    verify,
-    forgetpassword,
-    verifypassword,
-    update_password,
-     Postproject,
-     setProfile,
-     fetchprofiledata
+module.exports = {
+  signIn,
+  signUp,
+  verify,
+  forgetpassword,
+  verifypassword,
+  update_password,
+  Postproject,
+  setProfile,
+  fetchprofiledata,
+  Re_send_OTP,
 };

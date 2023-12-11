@@ -6,22 +6,23 @@ const checkDuplicate = (req, res, next) => {
   console.log("i am in check function");
     Client.findOne({
       where: {
-          Name: req.body.email
+        Email: req.body.Email,
       }
     }).then(rs => {
       if (rs) {
-        res.status(400).send({message: "Failed Username is already  exist"});
+        res.status(409).send({message: "Failed Email is already  exist"});
         return;
       }
       Freelancer.findOne({
         where: {
-          Email: req.body.email
+          Email: req.body.Email
         }
       }).then(rs => {
         if (rs) {
-          res.status(400).send({message: "Failed Email is already exist"});
+          res.status(409).send({message: "Failed Email is already exist"});
           return;
         }
+        console.log("Going Out through  check function");
 
         next();
       });
