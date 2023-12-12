@@ -95,9 +95,9 @@ const router = createBrowserRouter([
       // { path: "update_password", element: <UpdatePassword /> },
      
 
-    {path:"/softwareproducts",
+    {path:"client/softwareproducts",
     element:<Software_home/>},
-    {path:"/softwareproductsone/:id",
+    {path:"client/product/:id",
     element:<Software_products/>},
  
 

@@ -43,7 +43,7 @@ const signupFields = [
         autoComplete: "email",
         isRequired: true,
         placeholder: "Email address",
-        pattern: "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(.\\w{2,3})+$" // Regex pattern for email
+        pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     },
     {
         labelText: "Password",
@@ -54,7 +54,7 @@ const signupFields = [
         autoComplete: "current-password",
         isRequired: true,
         placeholder: "Password",
-        pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$" // Regex pattern for password
+        pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$" 
     },
     {
         labelText: "Confirm Password",

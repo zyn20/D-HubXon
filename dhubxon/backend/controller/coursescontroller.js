@@ -1,24 +1,38 @@
 // Import the Course model
 const Course = require('../models/courses');
-
+const path = require('path');
 // Controller to add a new course
 const addCourse = async (req, res) => {
   try {
-    // Extract data from the request body
-    const { category, description, image, price, rating, title } = req.body;
+  
+
+    const { category, description, price, rating, title } = req.body;
+
+    // Handle the uploaded image file
+    let imagePath = '';
+    if (req.file) {
+      // Construct the path relative to the 'uploads' folder
+      imagePath = '/uploads/' + req.file.filename;
+    }
 
     // Create a new course using the Sequelize model
     const newCourse = await Course.create({
       category,
       description,
-      image,
+      image: imagePath, // Use the image path from the uploaded file
       price,
       rating,
       title,
     });
 
-    // Respond with the newly created course data
+
     res.status(201).json(newCourse);
+
+
+
+
+
+
   } catch (error) {
     // Handle errors
     console.error('Error adding course:', error);
