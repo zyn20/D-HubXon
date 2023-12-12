@@ -4,6 +4,8 @@ import { useDropzone } from 'react-dropzone';
 import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer'
+import {jwtDecode} from 'jwt-decode';
+
 const ProductForm = () => {
     const [formData, setFormData] = useState({
         category: '',
@@ -72,6 +74,9 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
             return;
         }
         const uploadFormData = new FormData();
+        const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+        const Email=decodedToken.freelancerData.email;
         uploadFormData.append('category', formData.category);
         uploadFormData.append('description', formData.description);
         uploadFormData.append('image', imageFile); // Append the image file
@@ -79,6 +84,8 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
         uploadFormData.append('title', formData.title);
         uploadFormData.append('rate', formData.rating.rate);
         uploadFormData.append('count', formData.rating.count);
+        uploadFormData.append('Email',Email)
+
     
         if (selectedFile) {
             // uploadFormData.append('zipFile', selectedFile);

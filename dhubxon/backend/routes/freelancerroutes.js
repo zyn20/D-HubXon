@@ -43,6 +43,7 @@ router.post('/setprofile',functions.setProfile);
 router.get("/fetchprofiledata",functions.fetchprofiledata);
 router.post("/resendOTP",functions.Re_send_OTP);
 router.get("/fetchBESTMATCHES",functions.BESTMATCH);
+router.get("/fetchcourses",courseController.getAllCourses);
 
 
 router.get('*', function(req, res){

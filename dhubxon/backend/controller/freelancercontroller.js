@@ -4,8 +4,8 @@ const Project = require("../models/project");
 const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");
 const jwt = require("jsonwebtoken");
-const { Op } = require('sequelize');
-
+const { Op } = require("sequelize");
+const emailValidator = require("deep-email-validator");
 
 const sequelize = require("../config");
 const { freemem } = require("os");
@@ -13,27 +13,27 @@ const { Console } = require("console");
 let temporaryRecord = {};
 var user_ = {};
 var P_email = "";
-const SECRETKEY="NATIONAL UNIVERSITY";
-
+const SECRETKEY = "NATIONAL UNIVERSITY";
 
 // Encryption function
 function encrypt(text, secretKey) {
-  const cipher = crypto.createCipher('aes-256-cbc', secretKey);
-  let encrypted = cipher.update(text, 'utf-8', 'hex');
-  encrypted += cipher.final('hex');
+  const cipher = crypto.createCipher("aes-256-cbc", secretKey);
+  let encrypted = cipher.update(text, "utf-8", "hex");
+  encrypted += cipher.final("hex");
   return encrypted;
 }
 
 // Decryption function
 function decrypt(encryptedText, secretKey) {
-  const decipher = crypto.createDecipher('aes-256-cbc', secretKey);
-  let decrypted = decipher.update(encryptedText, 'hex', 'utf-8');
-  decrypted += decipher.final('utf-8');
+  const decipher = crypto.createDecipher("aes-256-cbc", secretKey);
+  let decrypted = decipher.update(encryptedText, "hex", "utf-8");
+  decrypted += decipher.final("utf-8");
   return decrypted;
 }
 
-
-
+async function isEmailValid(email) {
+  return emailValidator.validate(email);
+}
 
 const signIn = async (req, res) => {
   const { email, pass } = req.body;
@@ -46,14 +46,14 @@ const signIn = async (req, res) => {
 
     // Sync with the database
     await sequelize.sync();
-    const EncryptedPassword=encrypt(pass,SECRETKEY);
+    const EncryptedPassword = encrypt(pass, SECRETKEY);
 
     // Find a Freelancer by email and password
     const freelancer = await Freelancer.findOne({
       where: {
         Password: EncryptedPassword,
         Email: email,
-        Isverified:true
+        Isverified: true,
       },
     });
 
@@ -81,13 +81,11 @@ const signIn = async (req, res) => {
     const token = jwt.sign(payload, "NATIONAL UNIVERSITY", { expiresIn: "1h" });
 
     // Send the token and additional data in the response
-    res
-      .status(200)
-      .json({
-        token,
-        freelancerData: payload.freelancerData,
-        message: "Sign in successful",
-      });
+    res.status(200).json({
+      token,
+      freelancerData: payload.freelancerData,
+      message: "Sign in successful",
+    });
   } catch (error) {
     console.error("Error in Sign in:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -96,23 +94,35 @@ const signIn = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    const verificationCode = crypto
+      .randomBytes(2)
+      .toString("hex")
+      .toUpperCase();
     console.log(verificationCode);
-    console.log("Email is:",req.body.Email)
+    console.log("Email is:", req.body.Email);
+
+    const { valid, reason, validators } = await isEmailValid(req.body.Email);
+    console.log("Reason is:",reason);
+    if (!valid) {
+      return res.status(401).send({
+        message: "Please provide a valid email address.",
+        reason: validators[reason].reason,
+      });
+    }
+
 
     await sendVerificationEmail(req.body.Email, verificationCode);
-const EncryptedPassword=encrypt(req.body.Pass,SECRETKEY);
-    const TemporaryRecord={
+    const EncryptedPassword = encrypt(req.body.Pass, SECRETKEY);
+    const TemporaryRecord = {
       Name: req.body.Name,
       Email: req.body.Email,
       Password: EncryptedPassword,
-      OTP:verificationCode,
-      Isverified:false
-    }
+      OTP: verificationCode,
+      Isverified: false,
+    };
     const newUser = await Freelancer.create({
       ...TemporaryRecord,
     });
-   
 
     console.log(user_);
     res.send("verification code sent");
@@ -122,16 +132,17 @@ const EncryptedPassword=encrypt(req.body.Pass,SECRETKEY);
   }
 };
 
-
-
 const Re_send_OTP = async (req, res) => {
   try {
-    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    const verificationCode = crypto
+      .randomBytes(2)
+      .toString("hex")
+      .toUpperCase();
     console.log("New Verification Code:", verificationCode);
-    
+
     const email = req.body.Email;
     console.log("Email to resend OTP:", email);
-    
+
     await sendVerificationEmail(email, verificationCode);
 
     const FreelancerData = await Freelancer.findOne({
@@ -152,10 +163,10 @@ const Re_send_OTP = async (req, res) => {
 
 const verify = async (req, res) => {
   try {
-    const Email=req.body.Email;
-    const  verificationCode  = req.body.verificationCode;
+    const Email = req.body.Email;
+    const verificationCode = req.body.verificationCode;
     console.log("Verification code:", verificationCode);
-  console.log("Email is:",Email)
+    console.log("Email is:", Email);
 
     const FreelancerData = await Freelancer.findOne({
       where: {
@@ -165,14 +176,18 @@ const verify = async (req, res) => {
     console.log("Verification code By User:", verificationCode);
     console.log("Verification code By Database:", FreelancerData.OTP);
 
-
-
-    if (!FreelancerData || FreelancerData.OTP==='0' || verificationCode !== FreelancerData.OTP) {
-      return res.status(400).send("Invalid verification code or user not found");
+    if (
+      !FreelancerData ||
+      FreelancerData.OTP === "0" ||
+      verificationCode !== FreelancerData.OTP
+    ) {
+      return res
+        .status(400)
+        .send("Invalid verification code or user not found");
     }
 
     // Update the isverified field
-    await FreelancerData.update({ Isverified: true,OTP:'0' });
+    await FreelancerData.update({ Isverified: true, OTP: "0" });
 
     res.status(200).send("User verified and registered successfully");
   } catch (error) {
@@ -183,7 +198,10 @@ const verify = async (req, res) => {
 
 const forgetpassword = async (req, res) => {
   try {
-    const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+    const verificationCode = crypto
+      .randomBytes(2)
+      .toString("hex")
+      .toUpperCase();
 
     const freelancerData = await Freelancer.findOne({
       where: {
@@ -215,17 +233,27 @@ const verifypassword = async (req, res) => {
 
     console.log("Verification Code from Database:", FreelancerData.OTP);
 
-    if (!FreelancerData || code !== FreelancerData.OTP ||FreelancerData.OTP==='0') {
-      return res.status(400).send("Invalid verification code or user not found");
+    if (
+      !FreelancerData ||
+      code !== FreelancerData.OTP ||
+      FreelancerData.OTP === "0"
+    ) {
+      return res
+        .status(400)
+        .send("Invalid verification code or user not found");
     }
 
-    await FreelancerData.update({ OTP: '0' });
+    await FreelancerData.update({ OTP: "0" });
     // Create a payload with additional data
     const role = "All";
-    const token = jwt.sign({ role }, "NATIONAL UNIVERSITY", { expiresIn: "1h" });
-    
+    const token = jwt.sign({ role }, "NATIONAL UNIVERSITY", {
+      expiresIn: "1h",
+    });
+
     // Send the token in the response
-    return res.status(200).json({ message: "Verification Code matched", token });
+    return res
+      .status(200)
+      .json({ message: "Verification Code matched", token });
   } catch (error) {
     console.error("Error in verifyUser: ", error);
     res.status(500).send("Error while verifying the verification code");
@@ -234,9 +262,9 @@ const verifypassword = async (req, res) => {
 
 const update_password = async (req, res) => {
   try {
-    const newPassword=req.body.password;
-    const newEncyptedPassword=encrypt(newPassword,SECRETKEY);
-    console.log("New Encrypted Password:",newEncyptedPassword);
+    const newPassword = req.body.password;
+    const newEncyptedPassword = encrypt(newPassword, SECRETKEY);
+    console.log("New Encrypted Password:", newEncyptedPassword);
     const oldData = await Freelancer.findOne({
       where: {
         Email: req.body.email,
@@ -248,7 +276,6 @@ const update_password = async (req, res) => {
     await oldData.update({ Password: newEncyptedPassword });
     // Log the new data
 
-
     console.log("Password Changed");
     res.status(200).send("Password Changed");
   } catch (error) {
@@ -256,12 +283,6 @@ const update_password = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-
-
-
-
-
-
 
 const Allproject = async (req, res) => {
   try {
@@ -279,9 +300,6 @@ const Allproject = async (req, res) => {
   }
 };
 
-
-
-
 const setProfile = async (req, res) => {
   try {
     const Email = req.body.Email; // Assuming P_email is a constant
@@ -298,10 +316,9 @@ const setProfile = async (req, res) => {
       certifications: req.body.certifications,
       employmentHistory: req.body.employmentHistory,
       otherExperiences: req.body.otherExperiences,
-      KEYWORDS:req.body.KEYWORDS,
+      KEYWORDS: req.body.KEYWORDS,
       email: Email,
     };
-
 
     // Check if a user with the given email already exists
     const existingUser = await FreelancerProfile.findOne({
@@ -345,8 +362,8 @@ const fetchprofiledata = async (req, res) => {
     employmentHistory: "",
     otherExperiences: "",
   };
-console.log(req.body);
-  console.log("Email in Profile Fetch data API:",req.body.Email);
+  console.log(req.body);
+  console.log("Email in Profile Fetch data API:", req.body.Email);
 
   try {
     const existingUser = await FreelancerProfile.findOne({
@@ -369,31 +386,28 @@ console.log(req.body);
   }
 };
 
-
-
 const BESTMATCH = async (req, res) => {
   try {
- 
     const existingUser = await FreelancerProfile.findOne({
       where: {
         email: req.query.Email,
       },
     });
 
-
     if (!existingUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
-    const userKeywords = existingUser.KEYWORDS.split(' ');
+    const userKeywords = existingUser.KEYWORDS.split(" ");
     console.log("USERKEYWORDS:", userKeywords);
 
     const allProjects = await Project.findAll();
 
-    const matchedProjects = allProjects.filter(project => {
- 
-      const projectKeywords = project.KEYWORDS.split(' ');
+    const matchedProjects = allProjects.filter((project) => {
+      const projectKeywords = project.KEYWORDS.split(" ");
 
-      const intersection = userKeywords.some(keyword => projectKeywords.includes(keyword));
+      const intersection = userKeywords.some((keyword) =>
+        projectKeywords.includes(keyword)
+      );
 
       return intersection;
     });
@@ -409,8 +423,6 @@ const BESTMATCH = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   signIn,
   signUp,
@@ -422,5 +434,5 @@ module.exports = {
   setProfile,
   fetchprofiledata,
   Re_send_OTP,
-  BESTMATCH
+  BESTMATCH,
 };

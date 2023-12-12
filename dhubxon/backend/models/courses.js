@@ -2,6 +2,12 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config");
 
 const Course = sequelize.define("Course", {
+
+  Email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+
   category: {
     type: DataTypes.STRING,
     allowNull: false,

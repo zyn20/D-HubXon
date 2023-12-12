@@ -29,7 +29,7 @@ export default function Signup() {
       case 'confirm-password':
         return "Passwords do not match.";
       default:
-        return "Invalid input.";
+        return "Please Input a Valid Input.";
     }
   };
 
@@ -48,7 +48,23 @@ export default function Signup() {
     }
   };
 
+
+  
+  const isEmailValid = () => {
+    console.log("I am in Email Regix Verification");
+    // Use a regular expression to validate email format
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    return emailRegex.test(signupState['email-address']);
+  };
+
+
+
   const handleUserTypeChange = (e) => setUserType(e.target.value);
+
+
+
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,14 +74,26 @@ export default function Signup() {
    {  
    e.preventDefault();
   }else{
+
     createAccount();
   }
-  // createAccount();
   }
 
   // Handle validations  here
 
+
   const validations=()=>{
+console.log("---------------------------------------------------------------------")
+
+    if (!isEmailValid()) {
+      Swal.fire(
+        "Invalid Email Format",
+        "Please enter a valid email address",
+        "error"
+      );
+      return false;
+    }
+    console.log("---------------------------------------------------------------------")
 
 
     console.log("i am in validations");
@@ -130,6 +158,11 @@ export default function Signup() {
         navigate(`/verify?userType=${userType}&Email=${Email}`);
       });
     } catch (error) {
+
+// if(error.response.status === 409){  Swal.fire('Email Not Found.');}
+
+
+
       if (error.response && error.response.status === 409) {
         Swal.fire({
           icon: 'info',
@@ -153,7 +186,7 @@ export default function Signup() {
       } else {
         // Handle other errors if needed
         console.error("An error occurred:", error);
-        Swal.fire('Invalid Email.');
+        Swal.fire('Error Occured:');
       }
     }
   };
