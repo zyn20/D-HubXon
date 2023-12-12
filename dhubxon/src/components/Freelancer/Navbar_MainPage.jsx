@@ -12,21 +12,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-50 border-b-2  dark:bg-gray-900 font-poppins navbar-with-shadow py-4">
+    <nav className="bg-[#E1E1E1] border-b-2 font-poppins navbar-with-shadow py-4 fixed top-0 left-0 right-0 z-10">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto">
         <NavLink to="/" className="flex items-center">
           <img src={logo} className="h-6 sm:h-9" alt="Logo" />
         </NavLink>
-
-        {/* Centered NavLinks for Desktop - Move to the right */}
-        <div className="hidden lg:flex lg:justify-end lg:items-center space-x-8">
-          <NavLink to="/login" activeClassName="font-semibold" className="nav-link">
-            <FaSignInAlt /> Login
-          </NavLink>
-          <NavLink to="/signup" activeClassName="font-semibold" className="nav-link">
-            <FaUser /> Signup
-          </NavLink>
-        </div>
 
         {/* Mobile Menu for smaller screens */}
         <div className="flex items-center lg:order-2">

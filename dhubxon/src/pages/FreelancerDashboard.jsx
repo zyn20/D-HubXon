@@ -160,7 +160,7 @@ const FreelancerDashboard = () => {
       <Navbar_Freelancer />
     
       {/* Banner Section */}
-      <div className="w-full max-w-[1400px] h-[200px] bg-blue-900 rounded-xl overflow-hidden flex justify-center items-center my-10">
+      <div className="w-full max-w-[1400px] h-[200px] bg-blue-900 rounded-xl overflow-hidden flex justify-center mt-[100px] items-center my-10">
         <div className="z-10 text-white text-center">
           <p className='text-xl lg:text-3xl font-poppins'>Welcome to Freelancer Dashboard</p>
           <p className='text-xl lg:text-3xl font-poppins'>Good Evening Zain!</p>

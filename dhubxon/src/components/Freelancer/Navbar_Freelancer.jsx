@@ -1,45 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import CircularButton from './separate_components/CircularButton';
 import profile_img from '../../assets/profile image.png';
-import { NavLink } from 'react-router-dom';
+import { NavLink,Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import { IoMdMenu } from 'react-icons/io';
 import { FaComments } from 'react-icons/fa'; // Import the chat icon
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+ 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownAnchorRef = useRef(null);
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleButtonClick = () => {
-    console.log('Button clicked!');
-  };
+ 
+
   const handleLogout = () => {
     // Perform logout actions, e.g., clear user session, redirect to login page
     // For now, let's simulate a logout by redirecting to the login page
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     Swal.fire({
-      title: "Done!",
-      text: "Logged Out Successfully.",
-      icon: "success"
+      title: 'Done!',
+      text: 'Logged Out Successfully.',
+      icon: 'success',
     });
-    console.log("Token has been Removed");
+    console.log('Token has been Removed');
     navigate('/login');
-
   };
 
   return (
-    <nav className="bg-gray-100 border-gray-200 dark:bg-gray-900 font-poppins navbar-with-shadow py-4">
+    <nav className="bg-[#E1E1E1] border-gray-200  font-poppins navbar-with-shadow py-4 fixed top-0 left-0 mb-28 right-0 z-10">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto">
         <NavLink to="#" className="flex items-center">
-          
           <img src={logo} className="h-6 mr-3 sm:h-9" alt="Logo" />
-       
         </NavLink>
 
         {/* Centered NavLinks for Desktop */}
@@ -50,7 +53,6 @@ const Navbar = () => {
                 Home
               </NavLink>
             </li>
-         
             <li>
               <NavLink to="/freelancer/search-jobs" activeClassName="font-semibold" className="nav-link">
                 Find Work
@@ -72,16 +74,8 @@ const Navbar = () => {
                 <FaComments className="mr-1" /> Chat
               </NavLink>
             </li>
-            <li>
-            <button onClick={handleLogout} className="nav-link cursor-pointer">
-              Logout
-            </button>
-          </li>
-          <li className="flex items-center">
-              <NavLink to="/freelancer/set-profile" activeClassName="font-semibold" className="nav-link flex items-center">
-                Profile
-              </NavLink>
-            </li>
+          
+          
           </ul>
         </div>
 
@@ -96,9 +90,26 @@ const Navbar = () => {
             <IoMdMenu size={24} />
           </button>
 
-          {/* Profile Button for Desktop */}
-          <CircularButton  imageUrl={profile_img} altText="profile_image" onClick={handleButtonClick} />
+          <div ref={dropdownAnchorRef} className="relative">
+          <CircularButton
+            imageUrl={profile_img}
+            altText="profile_image"
+            onClick={handleDropdownToggle}
+          />
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+              {/* Dropdown items */}
+              <Link to="/freelancer/set-profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"> Profile</Link>
+              <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+      Logout
+    </button>
+              {/* Add more dropdown items here */}
+            </div>
+          )}
         </div>
+       
+          </div>
       </div>
 
       {/* Mobile Menu Content */}

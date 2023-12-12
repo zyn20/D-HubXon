@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
     <Navbar/>
-      <div>
+      <div className='mt-[80px]'>
         <CarouselComponent />
       </div>
       <div className="flex justify-center items-center">

@@ -5,6 +5,15 @@ import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer'
 const ProductForm = () => {
+
+
+
+
+
+
+
+
+
     const [formData, setFormData] = useState({
         category: '',
         description: '',
@@ -61,6 +70,26 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
     };
 
 
+    const validateTitle = (title) => {
+        const regex = /^.{3,}$/; // Title should be at least 3 characters long
+        return regex.test(title);
+    };
+
+    const validatePrice = (price) => {
+        // Validates a non-negative number (with up to 2 decimal places)
+        const regex = /^[0-9]+(\.[0-9]{1,2})?$/;
+        return regex.test(price) && parseFloat(price) >= 0;
+    };
+
+    const validateDescription = (description) => {
+        const wordCount = description.trim().split(/\s+/).length;
+        return wordCount >= 30;
+    };
+
+
+
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.category || !formData.description || !imageFile || !formData.price || !formData.title) {
@@ -68,6 +97,14 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
                 icon: 'warning',
                 title: 'Warning',
                 text: 'Please fill in all the fields.',
+            });
+            return;
+        }
+        if (!validateTitle(formData.title) || !validatePrice(formData.price) || !validateDescription(formData.description)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please check your inputs.',
             });
             return;
         }
@@ -129,8 +166,38 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
     
     return (
         <>
+        
+        <style>
+        {`
+            #description-textarea:hover + #description-tooltip {
+                visibility: visible;
+                opacity: 1;
+                transform: translateX(100%);
+                left: 50%;
+                bottom:-1px;
+            }
+            #image-upload-field:hover + #image-tooltip {
+                visibility: visible;
+                opacity: 1;
+                transform: translateX(100%);
+                left: 50%;
+                bottom: -20px; /* Adjust for image tooltip */
+            }
+            #zip-upload-field:hover + #zip-tooltip {
+                visibility: visible;
+                opacity: 1;
+                transform: translateX(100%);
+                left: 50%;
+                bottom: -20px;
+            }
+        `}
+    </style>
+
+
+
+
         <Navbar_Freelancer/>
-        <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-300">
+        <div className="max-w-md mt-28 mb-14 mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-300">
             <form onSubmit={handleSubmit} className="space-y-4">
 
             <div className="mb-4">
@@ -150,39 +217,56 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
                         <option value="AI">AI</option>
                         <option value="Writing">Writing</option>
                         <option value="UML">UML</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="description" className="block text-sm font-semibold text-gray-800">Description</label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        placeholder="Description"
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                    />
-                </div>
+                <div className="relative mb-4">
+                        <label htmlFor="description" className="block text-sm font-semibold text-gray-800">Description</label>
+                        <textarea
+                            id="description-textarea"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            placeholder="Description"
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                        />
+                        <div 
+                            id="description-tooltip"
+                            role="tooltip"
+                            className="absolute bottom-full mb-2 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Description must be at least 30 words.
+                            <div className="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
+        
 
-                <div className="mb-4">
-                {/* Image URL field with dropzone */}
-                <label htmlFor="image-url" className="block text-sm font-semibold text-gray-800">
-                    Image URL (PNG or JPG)
-                </label>
-                <div {...getImageRootProps()} className="flex items-center">
-                    <input {...getImageInputProps()} id="image-url" style={{ display: 'none' }} />
-                    <input
-                        type="text"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                        placeholder="Drag 'n' drop an image file here, or click to select file"
-                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-                    />
-                    <FaImage className="ml-2 text-gray-500 cursor-pointer" />
+                    <div className="relative mb-4">
+                    <label htmlFor="image-url" className="block text-sm font-semibold text-gray-800">
+                        Image URL (PNG or JPG)
+                    </label>
+                    <div {...getImageRootProps()} id="image-upload-field" className="flex items-center">
+                        <input {...getImageInputProps()} id="image-url" style={{ display: 'none' }} />
+                        <input
+                            type="text"
+                            name="image"
+                            value={formData.image}
+                            onChange={handleChange}
+                            placeholder="Drag 'n' drop an image file here, or click to select file"
+                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                        />
+                        <FaImage className="ml-2 text-gray-500 cursor-pointer" />
+                    </div>
+                    <div 
+                        id="image-tooltip"
+                        role="tooltip"
+                        className="absolute bottom-full mb-2 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Maximum image size should be 5 MB
+                        <div className="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
-            </div>
-
 
                 <div className="mb-4">
                     <label htmlFor="price" className="block text-sm font-semibold text-gray-800">Price</label>
@@ -214,23 +298,35 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
                 </div>
                 {/* ... Other form fields ... */}
 
-                <div {...getRootProps()} className="mb-4">
-                <label htmlFor="file-upload-input" className="block text-sm font-semibold text-gray-800">
-                    Upload ZIP File
-                </label>
-                <div className="flex items-center justify-between">
-                    <input {...getInputProps()} id="file-upload-input" style={{ display: 'none' }} />
-                    <input
+                
+                    
+                    <div className="relative mb-4">
+                    <label htmlFor="zip-upload" className="block text-sm font-semibold text-gray-800">
+                        Upload ZIP File
+                    </label>
+                    <div {...getRootProps()} id="zip-upload-field" className="flex items-center">
+                        <input {...getInputProps()} id="zip-upload" style={{ display: 'none' }} />
+                        {/* ... ZIP file field input ... */}
+                        <input
                         type="text"
                         placeholder="Select your .zip file"
                         readOnly
                         value={selectedFile ? selectedFile.name : ''}
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                     />
-                    <FaImage className="ml-2 text-gray-500 cursor-pointer" onClick={handleFileIconClick} />
+                    
+                    
+                        <FaRegStar className="ml-2 text-gray-500 cursor-pointer" onClick={handleFileIconClick} />
+                    </div>
+                    <div 
+                        id="zip-tooltip"
+                        role="tooltip"
+                        className="absolute bottom-full mb-2 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Maximum ZIP file size should be 150 MB
+                        <div className="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
-                
-            </div>
 
             {/* ... other form fields ... */}
 
