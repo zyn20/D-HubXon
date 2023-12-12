@@ -21,8 +21,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // Perform logout actions, e.g., clear user session, redirect to login page
-    // For now, let's simulate a logout by redirecting to the login page
+
     localStorage.removeItem("token");
     Swal.fire({
       title: "Done!",
