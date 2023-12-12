@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer'
 const ProductForm = () => {
     const [formData, setFormData] = useState({
         category: '',
