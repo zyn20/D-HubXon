@@ -91,7 +91,7 @@ const FreelancerDashboard = () => {
               <p><strong>Current Projects:</strong> <span className="text-blue-600">3 active</span></p>
               {/* Replace below divs with actual progress bars */}
               <div className="bg-gray-200 rounded h-2 w-full">
-                <div className="bg-blue-600 h-2 rounded" style={{ width: '60%' }}></div>
+                <div className="bg-blue-600 h-2 rounded" style={{ width: '50%' }}></div>
               </div>
               <p><strong>Pending Invitations:</strong> <span className="text-yellow-600">2 pending</span></p>
               <div className="bg-gray-200 rounded h-2 w-full">
@@ -99,7 +99,7 @@ const FreelancerDashboard = () => {
               </div>
               <p><strong>Completed Projects:</strong> <span className="text-green-600">12 completed</span></p>
               <div className="bg-gray-200 rounded h-2 w-full">
-                <div className="bg-green-600 h-2 rounded" style={{ width: '100%' }}></div>
+                <div className="bg-green-600 h-2 rounded" style={{ width: '70%' }}></div>
               </div>
             </div>
           </div>
