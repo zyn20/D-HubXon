@@ -51,6 +51,18 @@ const SetupProfile = () => {
 
   }, []);
 
+
+  const isNumeric = (value) => {
+    return /^\d+$/.test(value);
+  };
+
+  const validateEmail = (email) => {
+    // Add your email validation logic (regex or other method)
+    // For simplicity, we'll just check if the string contains '@'
+    return email.includes('@');
+  };
+
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -80,8 +92,76 @@ const otherExperiences=formData.otherExperiences;
 const KEYWORDS=formData.KEYWORDS.toUpperCase();
 
 
+/////////////////////////////////////////////////////////////
+
+
+const errors = {};
+
+// if (!validateEmail(email)) errors.email = 'Invalid email address';
+if (isNumeric(city)) errors.city = 'City should not contain numeric values';
+if (isNumeric(country)) errors.country = 'Country should not contain numeric values';
+
+if (headline.length < 5 || headline.length > 100) {
+  errors.headline = 'Headline should be between 5 and 100 characters';
+}
+
+if (headlineDescription.length < 50 || headlineDescription.length > 200) {
+  errors.headlineDescription = 'Description should be between 50 and 200 characters';
+}
+
+if (portfolioDescription.length < 50 || portfolioDescription.length > 500) {
+  errors.portfolioDescription = 'Portfolio description should be between 50 and 500 characters';
+}
+
+if (skills.length < 1 || skills.length > 500) {
+  errors.skills = 'Skill Description should be between 1 and 500 characters';
+}
+if (languages.length < 1 || languages.length > 50) {
+  errors.languages = 'language should be between 1 and 50 characters';
+}
+
+if (education.length < 1 || education.length > 50) {
+  errors.education = 'Education should be between 1 and 50 characters';
+}
+
+if (certifications.length < 1 || certifications.length > 50) {
+  errors.certifications = 'certifications should be between 1 and 50 characters';
+}
+
+if (employmentHistory.length < 1 || employmentHistory.length > 50) {
+  errors.employmentHistory = 'employmentHistory should be between 1 and 50 characters';
+}
+
+if (otherExperiences.length < 1 || otherExperiences.length > 50) {
+  errors.otherExperiences = 'otherExperiences should be between 1 and 50 characters';
+}
+
+if (KEYWORDS.length < 1 || KEYWORDS.length > 50) {
+  errors.KEYWORDS = 'KEYWORDS should be between 1 and 50 characters';
+}
+
+
+if (Object.keys(errors).length > 0) {
+  // Handle validation errors, e.g., show an error message
+  Swal.fire({
+    icon: 'error',
+    title: 'Validation Error',
+    html: Object.values(errors).map((error) => `<p>${error}</p>`).join(''),
+  });
+  // return;
+}
+
+
+/////////////////////////////////////////////////////////
+
+e.preventDefault();
+if("Length is:",Object.keys(errors).length===0){
+
+
     e.preventDefault();
     console.log('Form submitted:', formData);
+
+console.log("Length is:",Object.keys(errors).length);
 
     try {
       const token = localStorage.getItem('token');
@@ -102,6 +182,7 @@ const KEYWORDS=formData.KEYWORDS.toUpperCase();
         // Handle errors, e.g., show an error message
         console.error('Error submitting form:', error);
     }
+  }
 };
 
 

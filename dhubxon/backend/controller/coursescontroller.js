@@ -6,7 +6,7 @@ const addCourse = async (req, res) => {
   try {
   
 
-    const { category, description, price, rating, title } = req.body;
+    const { Email,category, description, price, rating, title } = req.body;
 
     // Handle the uploaded image file
     let imagePath = '';
@@ -17,6 +17,7 @@ const addCourse = async (req, res) => {
 
     // Create a new course using the Sequelize model
     const newCourse = await Course.create({
+      Email,
       category,
       description,
       image: imagePath, // Use the image path from the uploaded file
@@ -42,9 +43,14 @@ const addCourse = async (req, res) => {
 
 
 const getAllCourses = async (req, res) => {
+  const email=req.query.email;
+  console.log("---------------------------------------------------------");
+  console.log("All Courses Email:",email)
+  console.log("---------------------------------------------------------");
+
   try {
-    // Retrieve all courses from the database
-    const courses = await Course.findAll();
+
+    const courses = await Course.findAll({ where: { Email: email } });
 
     // Respond with the list of courses
     res.status(200).json(courses);

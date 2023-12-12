@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import image from '../assets/1.png';
 import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGraduationCap, faLaptopCode } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
+
 
 const cardData = [
   { title: 'Projects in Queue', content: '10' },
@@ -16,6 +19,45 @@ const cardData = [
 ];
 
 const FreelancerDashboard = () => {
+var PortfolioData={}
+var token ;
+var decodedToken;
+var Email;
+var Name;
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        token = localStorage.getItem('token');
+         decodedToken = jwtDecode(token);
+        Email=decodedToken.freelancerData.email
+        Name=decodedToken.freelancerData.name;
+  console.log("Email in Fetch Data:",Email);
+  console.log("Name in Fetch Data:",Name);
+
+  const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofiledata', {
+    params: {
+      Email: Email,
+    },
+  });
+        
+             PortfolioData = response.data; // Modify this based on the actual response structure
+       
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Call the async function inside useEffect
+
+  }, []);
+
+
+
+
+
+
   const navigate = useNavigate();
 
     const renderStatisticsOverview = () => {
@@ -132,12 +174,12 @@ const FreelancerDashboard = () => {
       
       
       
-      const renderProfileAndPortfolio = () => {
+      const renderProfileAndPortfolio = (Name) => {
         return (
           <div className="p-4 bg-white rounded-lg shadow">
             <h3 className="text-lg font-semibold mb-4 text-blue-700">Profile and Portfolio</h3>
             <div className="space-y-3">
-              <p><strong>Name:</strong> <span className="text-gray-800">Zain the Freelancer</span></p>
+              <p><strong>Name:</strong> <span className="text-gray-800">Zain Ul Abidean</span></p>
               <p><strong>Skills:</strong> <span className="text-gray-800">Web Development, Graphic Design, SEO</span></p>
               <div className="flex space-x-2">
                 <span className="bg-blue-200 text-blue-800 px-2 py-1 rounded">Web Development</span>
@@ -190,7 +232,7 @@ const FreelancerDashboard = () => {
         {renderRecentActivityFeed()}
         {renderProjectManagementSection()}
         {renderMessageCenter()}
-        {renderProfileAndPortfolio()}
+        {renderProfileAndPortfolio(Name)}
       </div>
       </div>
     </div>

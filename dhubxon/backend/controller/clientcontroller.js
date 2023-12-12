@@ -6,6 +6,8 @@ const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");
 const { Console } = require("console");
 const jwt = require("jsonwebtoken");
+const emailValidator = require("deep-email-validator");
+
 
 var old_data = {};
 let temporaryUsersrecord = {};
@@ -31,12 +33,25 @@ function decrypt(encryptedText, secretKey) {
   return decrypted;
 }
 
+async function isEmailValid(email) {
+  return emailValidator.validate(email);
+}
 
 
 const signUp = async (req, res) => {
   try {
     const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
     console.log(verificationCode);
+
+    const { valid, reason, validators } = await isEmailValid(req.body.Email);
+    console.log("Reason is:",reason);
+    if (!valid) {
+      return res.status(401).send({
+        message: "Please provide a valid email address.",
+        reason: validators[reason].reason,
+      });
+    }
+
 
     await sendVerificationEmail(req.body.Email, verificationCode);
     const EncryptedPassword=encrypt(req.body.Pass,SECRETKEY);
