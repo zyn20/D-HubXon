@@ -46,6 +46,8 @@ import Progress from './pages/Progress';
 import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
 import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
+import AddPost from "./pages/AddPost"
+
 
 
 
@@ -172,6 +174,16 @@ const router = createBrowserRouter([
       element: (
         <Protected
           component={<Community />}
+          allowableuser="freelancer"
+        />
+      ),
+    },
+
+    {
+      path: "/freelancer/addpost",
+      element: (
+        <Protected
+          component={<AddPost />}
           allowableuser="freelancer"
         />
       ),

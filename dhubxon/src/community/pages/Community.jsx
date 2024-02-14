@@ -8,12 +8,12 @@ const Community = () => {
   return (
     <>
     <CommunityNavbar/>
-    <div style={{display:"flex"}}>
-        <Leftbar/>
+    <div >
+        {/* <Leftbar/> */}
         <div style={{flex: 6}}>
         <CommunityHome/>
         </div>
-        <RightBar/>
+        {/* <RightBar/> */}
     </div>
     </>
   )

@@ -34,7 +34,7 @@ const Post = ({ post }) => {
         </div>
         <div className="content">
           <p>{post.desc}</p>
-          <img src={post.img} alt="" />
+          {/* <img src={post.img} alt="" /> */}
         </div>
         <div className="info">
           <div className="item">

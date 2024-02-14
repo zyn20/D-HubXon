@@ -82,40 +82,6 @@ const job = new CronJob(
 
 
 
-// const deleteUnverifiedUsersJob = new CronJob({
-//   cronTime: '* * * * * *', // Run every minute
-//   onTick: async () => {
-//     try {
-//       // Find and delete unverified freelancers
-//       const deletedFreelancersCount = await Freelancer.destroy({
-//         where: {
-//           Isverified: false,
-//         },
-//       });
-
-//       console.log(`Deleted ${deletedFreelancersCount} unverified freelancers at ${new Date()}`);
-
-//       // Find and delete unverified clients
-//       const deletedClientsCount = await Client.destroy({
-//         where: {
-//           Ssverified: false,
-//         },
-//       });
-
-//       console.log(`Deleted ${deletedClientsCount} unverified clients at ${new Date()}`);
-//     } catch (error) {
-//       console.error('Error in cron job:', error);
-//     }
-//   },
-//   start: true,
-//   timeZone: 'Asia/Karachi', // Replace with your time zone if needed
-// });
-
-// deleteUnverifiedUsersJob.start();
-
-
-
-
 sequelizee.sync().then(() => {
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);

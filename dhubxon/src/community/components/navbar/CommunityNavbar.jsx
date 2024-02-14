@@ -1,6 +1,6 @@
 import React from "react";
 import "./communitynavbar.scss";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import EmailIcon from "@mui/icons-material/EmailOutlined";
 import {
   EmailOutlined,
@@ -14,7 +14,16 @@ import { GridViewOutlined } from "@mui/icons-material";
 import { DarkModeOutlined } from "@mui/icons-material";
 import img from "../../../assets/profile image.png";
 
+
+
 const CommunityNavbar = () => {
+  const navigate = useNavigate();
+
+  const handleUploadPost = () => {
+    navigate("/freelancer/addpost");
+    // console.log('Upload post clicked');
+  };
+
   return (
     <>
       <div className="navbar">
@@ -35,6 +44,9 @@ const CommunityNavbar = () => {
 
         {/* Right Section */}
         <div className="right">
+          <button onClick={handleUploadPost} className="upload-button">
+            Upload Post
+          </button>
           <PersonOutline />
           <EmailIcon />
           <NotificationsOutlined />

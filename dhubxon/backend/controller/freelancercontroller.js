@@ -1,5 +1,8 @@
 const Freelancer = require("../models/freelancermodel");
 const FreelancerProfile = require("../models/freelancerprofile");
+const Post = require("../models/post");
+const Comment = require("../models/comment");
+
 const Project = require("../models/project");
 const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");

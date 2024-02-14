@@ -50,7 +50,7 @@ const getAllCourses = async (req, res) => {
 
   try {
 
-    const courses = await Course.findAll({ where: { Email: email } });
+    const courses = await Course.findAll();
 
     // Respond with the list of courses
     res.status(200).json(courses);
