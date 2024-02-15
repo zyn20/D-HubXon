@@ -426,6 +426,57 @@ const BESTMATCH = async (req, res) => {
   }
 };
 
+const addPost = async (req, res) => {
+  try {
+    const PostData = req.body;
+console.log("Post Data:",PostData);
+    // Assuming your FreelancerProfile model is correctly defined
+    const newPost = await Post.create(PostData);
+
+    res.status(201).json({ message: "Post added successfully", post: newPost });
+  } catch (error) {
+    console.error("Error adding post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getAllPost = async (req, res) => {
+  
+    try {
+  
+      const Posts = await Post.findAll();
+  
+      // Respond with the list of courses
+      res.status(200).json(Posts);
+    } catch (error) {
+      // Handle errors
+      console.error('Error getting courses:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const CHANGELIKE = async (req, res) => {
+  console.log("'''''''''''''''''''''''''  " ,req.body.LikesCount);
+  try {
+    
+    const oldData = await Post.findOne({
+      where: {
+        id: req.body.id,
+      },
+    });
+
+    console.log("Old Data:", oldData);
+
+    await oldData.update({ LIKES: req.body.LikesCount });
+
+    console.log("Likes Change");
+    res.status(200).send("Likes Change");
+  } catch (error) {
+    console.error("Error in Changing Like:", error);
+    res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
   signIn,
   signUp,
@@ -438,4 +489,7 @@ module.exports = {
   fetchprofiledata,
   Re_send_OTP,
   BESTMATCH,
+  addPost,
+  getAllPost,
+  CHANGELIKE,
 };

@@ -45,7 +45,7 @@ const addCourse = async (req, res) => {
 const getAllCourses = async (req, res) => {
   const email=req.query.email;
   console.log("---------------------------------------------------------");
-  console.log("All Courses Email:",email)
+  // console.log("All Courses Email:",email)
   console.log("---------------------------------------------------------");
 
   try {

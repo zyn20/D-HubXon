@@ -1,8 +1,40 @@
-import { useContext } from "react";
+import { useContext ,useState} from "react";
 import "./comment.scss";
+import {jwtDecode} from 'jwt-decode';
 
 
 const Comments = () => {
+  const [CommentData, setCommentData] = useState('');
+
+
+  const getCurrentDateTimeString = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    const dateTimeString = `${dateString} ${timeString}`;
+    return dateTimeString;
+};
+
+
+  const PostComment=()=>{
+    const token = localStorage.getItem('token');
+        const decodedToken = jwtDecode(token);
+
+        const comment = {
+          NAME: decodedToken.freelancerData.name,
+          PICTURE: "x",
+          TIME: getCurrentDateTimeString(),
+          CONTENT: CommentData,
+         
+      };
+    console.log("I am in Post Comment:",CommentData);
+  }
 
   //Temporary
   const comments = [
@@ -90,9 +122,9 @@ const Comments = () => {
   
   return (
     <div className="comments">
-      <div className="write">
+      <div className="write" onClick={PostComment} >
         <img src="" alt="" />
-        <input type="text" placeholder="write a comment" />
+        <input type="text" placeholder="write a comment" value={CommentData} onChange={(e)=>{setCommentData(e.target.value);}} />
         <button>Send</button>
       </div>
       {comments.map((comment) => (

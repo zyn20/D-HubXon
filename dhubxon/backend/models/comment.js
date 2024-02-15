@@ -19,7 +19,11 @@ const Comment = sequelize.define("comment", {
   PICTURE:{
     type:DataTypes.STRING,
     allowNull:false
-  }
+  },
+  NAME:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
  });
 
  module.exports = Comment

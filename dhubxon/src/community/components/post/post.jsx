@@ -7,12 +7,37 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comment/Comment";
 import { useState } from "react";
+import axios from 'axios';
+
 
 const Post = ({ post }) => {
-  const [commentOpen, setCommentOpen] = useState(false);
+  var id=post.id;
+  const [commentOpen, setCommentOpen] = useState(false);  
+  const [liked,setliked] = useState(false);
+  const [LikesCount,setLikesCount]=useState(post.LIKES);
 
+const LIKED=()=>{
+  if(!liked){
+    console.log("Before Likes Count is:",LikesCount)
+
+    setliked(true);
+    setLikesCount(LikesCount+1);
+    console.log("After Likes Count is:",LikesCount)
+    try {
+      const response =  axios.post('http://127.0.0.1:5000/freelancer/CHANGELIKEcommunity_post', {id,LikesCount:LikesCount+1});
+  } catch (error) {
+      console.error('Error sending post data:', error);
+  }
   
-  const liked = false;
+  }
+  else{setliked(false);setLikesCount(LikesCount-1);
+    try {
+    const response =  axios.post('http://127.0.0.1:5000/freelancer/CHANGELIKEcommunity_post', {id,LikesCount:LikesCount-1});
+} catch (error) {
+    console.error('Error sending post data:', error);
+}}
+  console.log("I am in Like Function:",post.id);
+}
 
   return (
     <div className="post">
@@ -21,30 +46,29 @@ const Post = ({ post }) => {
           <div className="userInfo">
             <img src={post.profilePic} alt="" />
             <div className="details">
-              <Link
-                to={`/profile/${post.userId}`}
+              <p
+                // to={`/profile/${post.userId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                <span className="name">{post.name}</span>
-              </Link>
-              <span className="date">1 min ago</span>
+                <span className="name">{post.NAME}</span>
+              </p>
+              <span className="date">{post.TIME}</span>
             </div>
           </div>
           <MoreHorizIcon />
         </div>
         <div className="content">
-          <p>{post.desc}</p>
+          <p>{post.CONTENT}</p>
           {/* <img src={post.img} alt="" /> */}
         </div>
         <div className="info">
-          <div className="item">
+          <div className="item" onClick={LIKED}>
             {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-            12 Likes
+            {LikesCount}
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            12 Comments
-          </div>
+            {post.COMMENTS}          </div>
           <div className="item">
             <ShareOutlinedIcon />
             Share

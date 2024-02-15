@@ -26,6 +26,10 @@ const POST = sequelize.define("post", {
   LIKES: {
     type: DataTypes.INTEGER,
     allowNull: false
+}, 
+ COMMENTS: {
+    type: DataTypes.INTEGER,
+    allowNull: false
 }
  });
 
