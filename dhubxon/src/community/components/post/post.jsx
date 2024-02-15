@@ -74,7 +74,7 @@ const LIKED=()=>{
             Share
           </div>
         </div>
-        {commentOpen && <Comments />}
+        {commentOpen && <Comments  postid={post.id} CommentCount={post.COMMENTS}/>}
       </div>
     </div>
   );

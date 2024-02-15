@@ -304,6 +304,7 @@ const Allproject = async (req, res) => {
 };
 
 const setProfile = async (req, res) => {
+  console.log("image is:",req.body.image);
   try {
     const Email = req.body.Email; // Assuming P_email is a constant
     console.log(P_email);
@@ -477,6 +478,68 @@ const CHANGELIKE = async (req, res) => {
   }
 };
 
+const ADD_POST_COMMENT = async (req, res) => {
+
+
+  try {
+    const CommentData = req.body;
+console.log("Post Data:",CommentData);
+    // Assuming your FreelancerProfile model is correctly defined
+    const newComment = await Comment.create(CommentData);
+INCREMENT_POST_COMMENT(CommentData.POSTID);
+    res.status(201).json({ message: "Post added successfully", Comment: newComment });
+  } catch (error) {
+    console.error("Error adding post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const INCREMENT_POST_COMMENT = async (postid) => {
+  // console.log("'''''''''''''''''''''''''  " ,req.body.commentCount);
+  try {
+    
+    const oldData = await Post.findOne({
+      where: {
+        id: postid,
+      },
+    });
+
+    console.log("Old Data:", oldData.COMMENTS);
+
+    await oldData.update({ COMMENTS: oldData.COMMENTS+1});
+
+    console.log("COMMENTS COUNT CHANGE ");
+    return oldData.COMMENTS+1;
+    // res.status(200).send("COMMENTS COUNT CHANGE");
+  } catch (error) {
+    console.error("Error in Changing COMMENTS COUNT CHANGE:", error);
+    return 0;
+    // res.status(500).send(error.message);
+  }
+};
+
+const fetchpostcomments = async (req, res) => {
+  
+  console.log(req.body);
+  console.log("ID in Comment Fetch API:", req.query.POSTID);
+
+  try {
+    const AllComments = await Comment.findAll({
+      where: {
+        //   email: user_.Email,
+        POSTID: req.query.POSTID,
+      },
+    });
+
+    console.log(AllComments);
+      res.send(AllComments);
+    
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   signIn,
   signUp,
@@ -492,4 +555,7 @@ module.exports = {
   addPost,
   getAllPost,
   CHANGELIKE,
+  ADD_POST_COMMENT,
+  fetchpostcomments,
+  INCREMENT_POST_COMMENT
 };

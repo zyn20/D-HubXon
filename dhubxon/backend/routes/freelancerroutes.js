@@ -47,6 +47,10 @@ router.get("/fetchcourses",courseController.getAllCourses);
 router.post("/ADDcommunity_post",functions.addPost);
 router.get("/GETcommunity_post",functions.getAllPost);
 router.post("/CHANGELIKEcommunity_post",functions.CHANGELIKE);
+router.post("/ADD_POST_COMMENT",functions.ADD_POST_COMMENT);
+router.get("/fetchpostcomments",functions.fetchpostcomments);
+router.post("/INCREMENT_POST_COMMENT",functions.INCREMENT_POST_COMMENT);
+
 
 
 

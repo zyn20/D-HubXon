@@ -1,11 +1,41 @@
-import { useContext ,useState} from "react";
-import "./comment.scss";
-import {jwtDecode} from 'jwt-decode';
+
+import React, { useEffect, useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import './comment.scss';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 
-const Comments = () => {
-  const [CommentData, setCommentData] = useState('');
+const Comments = ({ postid,CommentCount }) => {
+  const [comments, setComments] = useState([
+    // Your existing comments array
+  ]);
 
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        
+  const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchpostcomments', {
+    params: {
+      POSTID: postid,
+    },
+  });
+        
+        const fetchedData = response.data; // Modify this based on the actual response structure
+        setComments(fetchedData);
+        console.log(fetchedData)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData(); // Call the async function inside useEffect
+
+  }, []);
+
+   
 
   const getCurrentDateTimeString = () => {
     const currentDate = new Date();
@@ -19,122 +49,78 @@ const Comments = () => {
     const timeString = `${hours}:${minutes}:${seconds}`;
     const dateTimeString = `${dateString} ${timeString}`;
     return dateTimeString;
-};
+  };
 
-
-  const PostComment=()=>{
-    const token = localStorage.getItem('token');
-        const decodedToken = jwtDecode(token);
-
-        const comment = {
-          NAME: decodedToken.freelancerData.name,
-          PICTURE: "x",
-          TIME: getCurrentDateTimeString(),
-          CONTENT: CommentData,
-         
-      };
-    console.log("I am in Post Comment:",CommentData);
-  }
-
-  //Temporary
-  const comments = [
-    {
-      id: 1,
-      desc: "Great post! I really enjoyed reading it.",
-      name: "John Doe",
-      userId: 1,
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 2,
-      desc: "Nice content! Looking forward to more.",
-      name: "Jane Doe",
-      userId: 2,
-      profilePicture:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 3,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "Alice Johnson",
-      userId: 3,
-      profilePicture:
-        "https://example.com/profile-picture-3.jpg",
-    },
-    {
-      id: 4,
-      desc: "Awesome insights! Keep up the good work.",
-      name: "Bob Smith",
-      userId: 1, // Reusing the profile picture for user with userId 1
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 5,
-      desc: "Impressive stuff! Can't wait for more updates.",
-      name: "Eva Williams",
-      userId: 2, // Reusing the profile picture for user with userId 2
-      profilePicture:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 6,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "Charlie Brown",
-      userId: 3, // Reusing the profile picture for user with userId 3
-      profilePicture:
-        "https://example.com/profile-picture-3.jpg",
-    },
-    {
-      id: 7,
-      desc: "Fantastic content! I learned a lot.",
-      name: "Grace Taylor",
-      userId: 1, // Reusing the profile picture for user with userId 1
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 8,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "David Lee",
-      userId: 2, // Reusing the profile picture for user with userId 2
-      profilePicture:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 9,
-      desc: "Keep it up! Your insights are valuable.",
-      name: "Sophia Miller",
-      userId: 3, // Reusing the profile picture for user with userId 3
-      profilePicture:
-        "https://example.com/profile-picture-3.jpg",
-    },
-    {
-      id: 10,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "Daniel White",
-      userId: 1, // Reusing the profile picture for user with userId 1
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-  ];
+  const PostComment = async (values, actions) => {
+    if (!values.comment) {
+      actions.setFieldError('comment', 'Please Enter comment');
+      return;
+    }
   
+    try {
+      const token = localStorage.getItem('token');
+      const decodedToken = jwtDecode(token);
+  
+      const newComment = {
+        NAME: decodedToken.freelancerData.name,
+        PICTURE: 'x',
+        TIME: getCurrentDateTimeString(),
+        CONTENT: values.comment,
+        POSTID: postid,
+      };
+  
+      const response = await axios.post('http://127.0.0.1:5000/freelancer/ADD_POST_COMMENT', newComment);
+      console.log('Post Comment sent successfully:', response.data);
+      
+      // Update state or perform any other action upon successful post
+      setComments([...comments, newComment]);
+      actions.resetForm();
+
+//Increment in Post Comments
+
+// try {
+//   const response =  axios.post('http://127.0.0.1:5000/freelancer/INCREMENT_POST_COMMENT', {postid,commentCount:CommentCount+1});
+// } catch (error) {
+//   console.error('Error sending post data:', error);
+// }
+
+
+
+    } catch (error) {
+      console.error('Error sending post data:', error);
+      // Handle error gracefully, maybe display an error message to the user
+    }
+  };
+  
+
   return (
     <div className="comments">
-      <div className="write" onClick={PostComment} >
-        <img src="" alt="" />
-        <input type="text" placeholder="write a comment" value={CommentData} onChange={(e)=>{setCommentData(e.target.value);}} />
-        <button>Send</button>
-      </div>
-      {comments.map((comment) => (
-        <div className="comment">
-          <img src={comment.profilePicture} alt="" />
-          <div className="info">
-            <span>{comment.name}</span>
-            <p>{comment.desc}</p>
+      <Formik
+        initialValues={{ comment: '' }}
+        onSubmit={PostComment}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <div className="write">
+              <img src="" alt="" />
+              <Field type="text" name="comment" placeholder="write a comment" />
+              <button type="submit" disabled={isSubmitting}>Send</button>
+            </div>
+            <div> 
+              <ErrorMessage name="comment" component="div" className="error" style={{ color: 'red' }}/>
           </div>
-          <span className="date">1 hour ago</span>
+          </Form>
+        )}
+      </Formik>
+
+      {comments.map((comment, index) => (
+        <div className="comment" key={index}>
+          {/* <img src={comment.profilePicture} alt="" /> */}
+          <div className="info">
+            <span>{comment.NAME}</span>
+            <p>{comment.CONTENT}</p>
+          </div>
+          <span className="date">{comment.TIME}</span>
         </div>
       ))}
     </div>
