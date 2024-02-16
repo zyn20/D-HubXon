@@ -18,6 +18,13 @@ var user_ = {};
 var P_email = "";
 const SECRETKEY = "NATIONAL UNIVERSITY";
 
+const cloudinary=require('cloudinary').v2;
+cloudinary.config({ 
+  cloud_name: 'dig2awru0', 
+  api_key: '654569747515356', 
+  api_secret: 'G-kITNA64mEFVpl-kTM_tgOXs1s' 
+});
+
 // Encryption function
 function encrypt(text, secretKey) {
   const cipher = crypto.createCipher("aes-256-cbc", secretKey);
@@ -304,7 +311,7 @@ const Allproject = async (req, res) => {
 };
 
 const setProfile = async (req, res) => {
-  console.log("image is:",req.body.image);
+  // console.log("Profile URL:",req.body.imageurl);
   try {
     const Email = req.body.Email; // Assuming P_email is a constant
     console.log(P_email);
@@ -322,6 +329,8 @@ const setProfile = async (req, res) => {
       otherExperiences: req.body.otherExperiences,
       KEYWORDS: req.body.KEYWORDS,
       email: Email,
+      ProfileURL:req.body.imageUrl,
+      // ProfileURL:req.body.imageurl
     };
 
     // Check if a user with the given email already exists
@@ -540,6 +549,39 @@ const fetchpostcomments = async (req, res) => {
   }
 };
 
+
+const fetchprofileurl = async (req, res) => {
+  console.log("Email in Fetchprofileurl:", req.query.Email);
+  try {
+    const Email = req.query.Email;
+
+    // Check if a user with the given email already exists
+    const existingUser = await FreelancerProfile.findOne({
+      where: {
+        email: Email,
+      },
+    });
+    console.log("exist user is:", existingUser);
+
+    if (!existingUser) {
+      // If the user does not exist, send a constant string e.g "xyz"
+      res.status(200).json("https://res.cloudinary.com/dig2awru0/image/upload/v1708116157/WhatsApp_Image_2024-02-17_at_01.33.28_b9e28513_xtihdt.jpg");
+    } else {
+      // If the user exists, send the existing PROFILEURL
+      console.log("exist user is:", existingUser.ProfileURL);
+      res.status(200).json(existingUser.ProfileURL);
+    }
+
+  } catch (error) {
+    // Handle errors, send an error response, or log the error
+    console.error("Error Fetching profileURL:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+
 module.exports = {
   signIn,
   signUp,
@@ -557,5 +599,6 @@ module.exports = {
   CHANGELIKE,
   ADD_POST_COMMENT,
   fetchpostcomments,
-  INCREMENT_POST_COMMENT
+  INCREMENT_POST_COMMENT,
+  fetchprofileurl
 };

@@ -6,15 +6,33 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { Link } from "react-router-dom";
 import Comments from "../comment/Comment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
 
 
 const Post = ({ post }) => {
+  const [profileURL, setProfileURL] = useState("");
   var id=post.id;
   const [commentOpen, setCommentOpen] = useState(false);  
   const [liked,setliked] = useState(false);
   const [LikesCount,setLikesCount]=useState(post.LIKES);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log(" Profile URL:",profileURL)
+        const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofileurl', { params: { Email: post.EMAIL } });
+        setProfileURL(response.data); // Update profileURL state with the fetched data
+        console.log(" Profile URL:",profileURL)
+      } catch (error) {
+        console.error('Error fetching profile URL:', error);
+      }
+    };
+  
+    fetchData();
+  }, [post.EMAIL]);
+  
 
 const LIKED=()=>{
   if(!liked){
@@ -44,7 +62,7 @@ const LIKED=()=>{
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={post.profilePic} alt="" />
+            <img src={profileURL} alt="" />
             <div className="details">
               <p
                 // to={`/profile/${post.userId}`}
@@ -74,7 +92,7 @@ const LIKED=()=>{
             Share
           </div>
         </div>
-        {commentOpen && <Comments  postid={post.id} CommentCount={post.COMMENTS}/>}
+        {commentOpen && <Comments  postid={post.id} url={profileURL} CommentCount={post.COMMENTS}/>}
       </div>
     </div>
   );

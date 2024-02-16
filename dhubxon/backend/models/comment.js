@@ -24,6 +24,10 @@ const Comment = sequelize.define("comment", {
     type:DataTypes.STRING,
     allowNull:false
   },
+  EMAIL:{
+    type:DataTypes.STRING,
+    allowNull:false
+  },
  });
 
  module.exports = Comment

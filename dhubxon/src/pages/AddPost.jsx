@@ -8,8 +8,9 @@ const AddPost = () => {
 
     useEffect(() => {
         // Fetch and decode token
-        const token = localStorage.getItem('token');
-        const decodedToken = jwtDecode(token);
+        // const token = localStorage.getItem('token');
+        // const decodedToken = jwtDecode(token);
+        // console.log(decodedToken.freelancerData);
     }, []);
 
     const handleInputChange = (e) => {
@@ -36,6 +37,7 @@ const AddPost = () => {
 
         const token = localStorage.getItem('token');
         const decodedToken = jwtDecode(token);
+        // console.log("FIND EMAIL:",decodedToken);
 
         const post = {
             NAME: decodedToken.freelancerData.name,
@@ -43,7 +45,8 @@ const AddPost = () => {
             TIME: getCurrentDateTimeString(),
             CONTENT: postData,
             LIKES: 0,
-            COMMENTS:0
+            COMMENTS:0,
+            EMAIL:decodedToken.freelancerData.email
         };
 
         try {

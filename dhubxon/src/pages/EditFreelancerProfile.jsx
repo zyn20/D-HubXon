@@ -310,6 +310,7 @@ import Swal from 'sweetalert2';
 
 
 const SetupProfile = () => {
+  const [imageurl,setimageurl]=useState(null)
   const [image, setImage] = useState(null);
   const [formData, setFormData] = useState({
     email:'',
@@ -383,6 +384,27 @@ const handleImageChange=(e)=>{
       setFormData({ ...formData, [name]: value });
     }
   };
+
+  
+  const uploadimage = () => {
+    return new Promise((resolve, reject) => {
+        const formdata = new FormData();
+        formdata.append("file", image);
+        formdata.append("upload_preset", "hixrhbq4"); // Check your Cloudinary preset name
+        axios.post("https://api.cloudinary.com/v1_1/dig2awru0/image/upload", formdata)
+            .then((response) => {
+                console.log("Cloudinary Response is:", response.data.secure_url);
+                setimageurl(response.data.secure_url);
+                resolve(response.data.secure_url);
+            })
+            .catch((error) => {
+                console.error("Error uploading image:", error);
+                reject(error);
+            });
+    });
+};
+
+  
 
   const handleSubmit = async (e) => {
 
@@ -466,35 +488,50 @@ e.preventDefault();
 if("Length is:",Object.keys(errors).length===0){
 
 
+
+
     e.preventDefault();
     console.log('Form submitted:', formData);
 
 console.log("Length is:",Object.keys(errors).length);
 
-    try {
-      const token = localStorage.getItem('token');
-      const decodedToken = jwtDecode(token);
-      const Email=decodedToken.freelancerData.email
-      console.log(decodedToken.freelancerData.email);
-      console.log("Image is:",image);
-        const response = await axios.post('http://127.0.0.1:5000/freelancer/setprofile',{ Email,city,country,headline,headlineDescription,portfolioDescription,skills,languages,education,certifications,employmentHistory,otherExperiences,KEYWORDS,image,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        Swal.fire({
-          title: "Done!",
-          text: "Your Profile has been Updated Successfully.",
-          icon: "success"
-        });
-        navigate("/freelancer/");
+
+uploadimage()
+    .then(async(imageUrl) => {
+        console.log("IMAGE URLLL:", imageUrl); // Accessing imageurl after it's been updated
+        // Code to submit the form with imageUrl included
+        try {
+          const token = localStorage.getItem('token');
+          const decodedToken = jwtDecode(token);
+          const Email=decodedToken.freelancerData.email
+          console.log(decodedToken.freelancerData.email);
+          console.log("Image is:",image);
+            const response = await axios.post('http://127.0.0.1:5000/freelancer/setprofile',{ Email,city,country,headline,headlineDescription,portfolioDescription,skills,languages,education,certifications,employmentHistory,otherExperiences,KEYWORDS,imageUrl,
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+            Swal.fire({
+              title: "Done!",
+              text: "Your Profile has been Updated Successfully.",
+              icon: "success"
+            });
+            navigate("/freelancer/");
+    
+    
+            console.log('Response:', response.data);
+        } catch (error) {
+            // Handle errors, e.g., show an error message
+            console.error('Error submitting form:', error);
+        }
+    })
+    .catch((error) => {
+        console.error("Error uploading image:", error);
+    });
 
 
-        console.log('Response:', response.data);
-    } catch (error) {
-        // Handle errors, e.g., show an error message
-        console.error('Error submitting form:', error);
-    }
+console.log("IMAGE URL:",imageurl);
+    
   }
 };
 

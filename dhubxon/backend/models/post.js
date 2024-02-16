@@ -30,6 +30,10 @@ const POST = sequelize.define("post", {
  COMMENTS: {
     type: DataTypes.INTEGER,
     allowNull: false
+}, 
+EMAIL: {
+   type: DataTypes.STRING,
+   allowNull: false
 }
  });
 
