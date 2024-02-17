@@ -34,6 +34,10 @@ const POST = sequelize.define("post", {
 EMAIL: {
    type: DataTypes.STRING,
    allowNull: false
+},
+IMAGEURL: {
+  type: DataTypes.STRING,
+  allowNull: false
 }
  });
 

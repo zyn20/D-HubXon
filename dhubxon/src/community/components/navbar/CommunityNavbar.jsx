@@ -24,6 +24,11 @@ const CommunityNavbar = () => {
     // console.log('Upload post clicked');
   };
 
+  const handleMyPosts = () => {
+    navigate("/freelancer/community/myposts");
+    
+  };
+
   return (
     <>
       <div className="navbar">
@@ -46,6 +51,9 @@ const CommunityNavbar = () => {
         <div className="right">
           <button onClick={handleUploadPost} className="upload-button">
             Upload Post
+          </button>
+          <button onClick={handleMyPosts} className="upload-button">
+            My Posts
           </button>
           <PersonOutline />
           <EmailIcon />

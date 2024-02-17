@@ -4,13 +4,15 @@ import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import { Link } from "react-router-dom";
 import Comments from "../comment/Comment";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
 
-const Post = ({ post }) => {
+const Post = ({ post,IDENTIFIER }) => {
   const [profileURL, setProfileURL] = useState("");
   var id=post.id;
   const [commentOpen, setCommentOpen] = useState(false);  
@@ -73,12 +75,38 @@ const LIKED=()=>{
               <span className="date">{post.TIME}</span>
             </div>
           </div>
-          <MoreHorizIcon />
+          {IDENTIFIER=="one" && (
+          <DeleteIcon  onClick={console.log("Delete Icon Clicked")}/>
+)}
         </div>
-        <div className="content">
+
+        <div className="flex flex-col justify-center ">
+      <p className="m-2">{post.CONTENT}</p>
+      {post.IMAGEURL !="NOT" && (
+        <div>
+          <img
+            className=" ml-20 object-contain w-[70vw] h-[60vh] mt-6 mb-4"
+            src={post.IMAGEURL}
+            alt=""
+          />
+        </div>
+      )}
+    </div>
+
+{/* <div className="content">
           <p>{post.CONTENT}</p>
-          {/* <img src={post.img} alt="" /> */}
+          {post.IMAGEURL !== "NOT" && (
+            <div>
+              <img
+                className="object-contain w-full h-auto mt-6 mb-4"
+                src={post.IMAGEURL}
+                alt=""
+              />
+            </div>
+          )}
         </div>
+
+         */}
         <div className="info">
           <div className="item" onClick={LIKED}>
             {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}

@@ -465,6 +465,26 @@ const getAllPost = async (req, res) => {
     }
 };
 
+const getmyPost = async (req, res) => {
+  const email=req.query.Email;
+  
+  try {
+
+    const Posts = await Post.findAll({
+      where: {
+      EMAIL: email,
+      },
+    });
+
+    // Respond with the list of courses
+    res.status(200).json(Posts);
+  } catch (error) {
+    // Handle errors
+    console.error('Error getting courses:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 const CHANGELIKE = async (req, res) => {
   console.log("'''''''''''''''''''''''''  " ,req.body.LikesCount);
   try {
@@ -600,5 +620,6 @@ module.exports = {
   ADD_POST_COMMENT,
   fetchpostcomments,
   INCREMENT_POST_COMMENT,
-  fetchprofileurl
+  fetchprofileurl,
+  getmyPost
 };

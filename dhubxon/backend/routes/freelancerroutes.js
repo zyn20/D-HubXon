@@ -46,6 +46,7 @@ router.get("/fetchBESTMATCHES",functions.BESTMATCH);
 router.get("/fetchcourses",courseController.getAllCourses);
 router.post("/ADDcommunity_post",functions.addPost);
 router.get("/GETcommunity_post",functions.getAllPost);
+router.get("/GETcommunity_mypost",functions.getmyPost);
 router.post("/CHANGELIKEcommunity_post",functions.CHANGELIKE);
 router.post("/ADD_POST_COMMENT",functions.ADD_POST_COMMENT);
 router.get("/fetchpostcomments",functions.fetchpostcomments);

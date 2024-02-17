@@ -173,11 +173,19 @@ const router = createBrowserRouter([
       path: "/freelancer/community",
       element: (
         <Protected
-          component={<Community />}
+          component={<Community IDENTIFIER="all"/>}
           allowableuser="freelancer"
         />
       ),
     },
+
+    
+{
+  path: "/freelancer/community/myposts",
+  element: (
+    <Protected component={<Community  IDENTIFIER="one"/>} allowableuser="freelancer" />
+  ),
+},
 
     {
       path: "/freelancer/addpost",
