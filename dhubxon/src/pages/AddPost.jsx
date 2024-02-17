@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate} from "react-router-dom";
+import Swal from 'sweetalert2'
 
 const AddPost = () => {
   const [postData, setPostData] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [image, setImage] = useState(null);
   const [Postimageurl, setimageurl] = useState(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch and decode token
-    // const token = localStorage.getItem('token');
-    // const decodedToken = jwtDecode(token);
-    // console.log(decodedToken.freelancerData);
-  }, []);
-
+ 
   const handleInputChange = (e) => {
     setPostData(e.target.value);
   };
@@ -59,34 +56,7 @@ const AddPost = () => {
     return dateTimeString;
   };
 
-  // const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     setIsSubmitting(true);
-
-  //     const token = localStorage.getItem('token');
-  //     const decodedToken = jwtDecode(token);
-  //     // console.log("FIND EMAIL:",decodedToken);
-
-  //     const post = {
-  //         NAME: decodedToken.freelancerData.name,
-  //         PICTURE: "x",
-  //         TIME: getCurrentDateTimeString(),
-  //         CONTENT: postData,
-  //         LIKES: 0,
-  //         COMMENTS:0,
-  //         EMAIL:decodedToken.freelancerData.email
-  //     };
-
-  //     try {
-  //         const response = await axios.post('http://127.0.0.1:5000/freelancer/ADDcommunity_post', post);
-  //         console.log('Post data sent successfully:', response.data);
-  //         setPostData('');
-  //     } catch (error) {
-  //         console.error('Error sending post data:', error);
-  //     } finally {
-  //         setIsSubmitting(false);
-  //     }
-  // };
+  
 
   const handleSubmit = async (e) => {
     var imageUrl;
@@ -94,43 +64,62 @@ const AddPost = () => {
     setIsSubmitting(true);
 
     try {
-      // Upload the image to Cloudinary
-      if (image == null) {
-        imageUrl = "NOT";
-      } else {
-        imageUrl = await uploadimage();
-      }
-      console.log("ImageURL is:",imageUrl)
+        // Upload the image to Cloudinary
+        if (image == null) {
+            imageUrl = "NOT";
+        } else {
+            imageUrl = await uploadimage();
+        }
+        console.log("ImageURL is:", imageUrl)
 
-      // Construct the post object with the obtained image URL
-      const token = localStorage.getItem("token");
-      const decodedToken = jwtDecode(token);
-      console.log("Decoded Token:", decodedToken);
+        // Construct the post object with the obtained image URL
+        const token = localStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded Token:", decodedToken);
 
-      const post = {
-        NAME: decodedToken.freelancerData.name,
-        PICTURE: imageUrl,
-        TIME: getCurrentDateTimeString(),
-        CONTENT: postData,
-        LIKES: 0,
-        COMMENTS: 0,
-        EMAIL: decodedToken.freelancerData.email,
-        IMAGEURL: imageUrl,
-      };
+        const post = {
+            NAME: decodedToken.freelancerData.name,
+            PICTURE: imageUrl,
+            TIME: getCurrentDateTimeString(),
+            CONTENT: postData,
+            LIKES: 0,
+            COMMENTS: 0,
+            EMAIL: decodedToken.freelancerData.email,
+            IMAGEURL: imageUrl,
+        };
 
-      // Call the backend API with the constructed post object
-      const response = await axios.post(
-        "http://127.0.0.1:5000/freelancer/ADDcommunity_post",
-        post
-      );
-      console.log("Post data sent successfully:", response.data);
-      setPostData("");
+        // Call the backend API with the constructed post object
+        const response = await axios.post(
+            "http://127.0.0.1:5000/freelancer/ADDcommunity_post",
+            post
+        );
+
+        // Check if the upload was successful
+        if (response.status === 201) {
+            Swal.fire({
+                title: "Success!",
+                text: "Your post has been added.",
+                icon: "success"
+            });
+        } else {
+            Swal.fire({
+                title: "Error!",
+                text: "An error occurred while adding the post.",
+                icon: "error"
+            });
+        }
+        
+        console.log("Post data sent successfully:", response.data);
+        navigate("/freelancer/community");
+
+        setPostData("");
     } catch (error) {
-      console.error("Error sending post data:", error);
+        console.error("Error sending post data:", error);
     } finally {
-      setIsSubmitting(false);
+        setIsSubmitting(false);
     }
-  };
+};
+
 
   return (
     <div className="container mx-auto mt-8 bg-gray-100 shadow-md rounded-lg p-8">

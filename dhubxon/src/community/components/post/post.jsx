@@ -18,9 +18,13 @@ const Post = ({ post,IDENTIFIER,onDelete }) => {
   const [commentOpen, setCommentOpen] = useState(false);  
   const [liked,setliked] = useState(false);
   const [LikesCount,setLikesCount]=useState(post.LIKES);
+  const [CommentCount,setCommentCount]=useState(post.COMMENTS);
 
 
-  
+
+  const incrementCommentCount = () => {
+    setCommentCount(prevCount => prevCount + 1);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -95,20 +99,7 @@ const LIKED=()=>{
       )}
     </div>
 
-{/* <div className="content">
-          <p>{post.CONTENT}</p>
-          {post.IMAGEURL !== "NOT" && (
-            <div>
-              <img
-                className="object-contain w-full h-auto mt-6 mb-4"
-                src={post.IMAGEURL}
-                alt=""
-              />
-            </div>
-          )}
-        </div>
 
-         */}
         <div className="info">
           <div className="item" onClick={LIKED}>
             {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
@@ -116,13 +107,13 @@ const LIKED=()=>{
           </div>
           <div className="item" onClick={() => setCommentOpen(!commentOpen)}>
             <TextsmsOutlinedIcon />
-            {post.COMMENTS}          </div>
+            {CommentCount}          </div>
           <div className="item">
             <ShareOutlinedIcon />
             Share
           </div>
         </div>
-        {commentOpen && <Comments  postid={post.id} url={profileURL} CommentCount={post.COMMENTS}/>}
+        {commentOpen && <Comments  postid={post.id}  IncrementCommentcount={incrementCommentCount} url={profileURL} CommentCount={post.COMMENTS}/>}
       </div>
     </div>
   );

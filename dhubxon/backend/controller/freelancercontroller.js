@@ -486,18 +486,25 @@ const getmyPost = async (req, res) => {
 };
 
 const DELETEPOST = async (req, res) => {
-  const ID=req.body.id;
+  const { id } = req.body;
   
   try {
-
-    const Posts = await Post.destroy({  
+    // Delete post
+    await Post.destroy({  
       where: {
-      id: ID,
+        id: id,
       },
     });
 
-    // Respond
-    res.status(200).json(Posts);
+    // Delete comments associated with the post
+    await Comment.destroy({  
+      where: {
+        POSTID: id,
+      },
+    });
+
+    // Respond with success status
+    res.status(200).json({ message: 'Post and associated comments deleted successfully' });
   } catch (error) {
     // Handle errors
     console.error('Error Deleting Post:', error);

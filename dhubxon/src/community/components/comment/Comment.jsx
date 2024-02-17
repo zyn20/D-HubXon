@@ -4,7 +4,7 @@ import "./comment.scss";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
-const Comments = ({ postid, CommentCount, url }) => {
+const Comments = ({ postid, IncrementCommentcount, url }) => {
   const [comments, setComments] = useState([]);
   const [profileURLs, setProfileURLs] = useState({});
   const [MainprofileURL, MainsetProfileURL] = useState("");
@@ -119,6 +119,7 @@ const Comments = ({ postid, CommentCount, url }) => {
         newComment
       );
       console.log("Post Comment sent successfully:", response.data);
+      IncrementCommentcount();
 
       // Update state or perform any other action upon successful post
       setComments([...comments, newComment]);
