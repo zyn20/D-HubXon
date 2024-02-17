@@ -1,108 +1,166 @@
-import { useContext } from "react";
+import React, { useEffect, useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import "./comment.scss";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
+const Comments = ({ postid, CommentCount, url }) => {
+  const [comments, setComments] = useState([]);
+  const [profileURLs, setProfileURLs] = useState({});
+  const [MainprofileURL, MainsetProfileURL] = useState("");
 
-const Comments = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:5000/freelancer/fetchpostcomments",
+          {
+            params: {
+              POSTID: postid,
+            },
+          }
+        );
 
-  //Temporary
-  const comments = [
-    {
-      id: 1,
-      desc: "Great post! I really enjoyed reading it.",
-      name: "John Doe",
-      userId: 1,
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 2,
-      desc: "Nice content! Looking forward to more.",
-      name: "Jane Doe",
-      userId: 2,
-      profilePicture:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 3,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "Alice Johnson",
-      userId: 3,
-      profilePicture:
-        "https://example.com/profile-picture-3.jpg",
-    },
-    {
-      id: 4,
-      desc: "Awesome insights! Keep up the good work.",
-      name: "Bob Smith",
-      userId: 1, // Reusing the profile picture for user with userId 1
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 5,
-      desc: "Impressive stuff! Can't wait for more updates.",
-      name: "Eva Williams",
-      userId: 2, // Reusing the profile picture for user with userId 2
-      profilePicture:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 6,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "Charlie Brown",
-      userId: 3, // Reusing the profile picture for user with userId 3
-      profilePicture:
-        "https://example.com/profile-picture-3.jpg",
-    },
-    {
-      id: 7,
-      desc: "Fantastic content! I learned a lot.",
-      name: "Grace Taylor",
-      userId: 1, // Reusing the profile picture for user with userId 1
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-    {
-      id: 8,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "David Lee",
-      userId: 2, // Reusing the profile picture for user with userId 2
-      profilePicture:
-        "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    },
-    {
-      id: 9,
-      desc: "Keep it up! Your insights are valuable.",
-      name: "Sophia Miller",
-      userId: 3, // Reusing the profile picture for user with userId 3
-      profilePicture:
-        "https://example.com/profile-picture-3.jpg",
-    },
-    {
-      id: 10,
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      name: "Daniel White",
-      userId: 1, // Reusing the profile picture for user with userId 1
-      profilePicture:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-  ];
+        const fetchedData = response.data; // Modify this based on the actual response structure
+        setComments(fetchedData);
+        console.log(fetchedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData(); // Call the async function inside useEffect
+  }, []);
+
+ 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+          const decodedToken = jwtDecode(token);
+          const Email=decodedToken.freelancerData.email
+    const fetchData = async () => {
+      try {
+        console.log(" Profile URL:",MainprofileURL)
+        const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofileurl', { params: { Email: Email } });
+        MainsetProfileURL(response.data); // Update profileURL state with the fetched data
+        console.log(" Profile URL:",MainprofileURL)
+      } catch (error) {
+        console.error('Error fetching profile URL:', error);
+      }
+    };
   
+    fetchData();
+  }, []);
+
+
+
+  useEffect(() => {
+
+    
+    const fetchProfileURLs = async () => {
+      const urls = {};
+      for (const comment of comments) {
+        try {
+          const response = await axios.get(
+            "http://127.0.0.1:5000/freelancer/fetchprofileurl",
+            {
+              params: {
+                Email: comment.EMAIL,
+              },
+            }
+          );
+          urls[comment.EMAIL] = response.data;
+        } catch (error) {
+          console.error("Error fetching profile URL:", error);
+          // Handle error gracefully or set a default URL
+          urls[comment.EMAIL] = ""; // Set a default URL in case of error
+        }
+      }
+      setProfileURLs(urls);
+    };
+
+    fetchProfileURLs();
+  }, [comments]);
+
+  const getCurrentDateTimeString = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const hours = String(currentDate.getHours()).padStart(2, "0");
+    const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+    const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+    const dateString = `${year}-${month}-${day}`;
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    const dateTimeString = `${dateString} ${timeString}`;
+    return dateTimeString;
+  };
+
+  const PostComment = async (values, actions) => {
+    if (!values.comment) {
+      actions.setFieldError("comment", "Please Enter comment");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode(token);
+
+      const newComment = {
+        NAME: decodedToken.freelancerData.name,
+        PICTURE: "x",
+        TIME: getCurrentDateTimeString(),
+        CONTENT: values.comment,
+        POSTID: postid,
+        EMAIL: decodedToken.freelancerData.email,
+      };
+
+      const response = await axios.post(
+        "http://127.0.0.1:5000/freelancer/ADD_POST_COMMENT",
+        newComment
+      );
+      console.log("Post Comment sent successfully:", response.data);
+
+      // Update state or perform any other action upon successful post
+      setComments([...comments, newComment]);
+      actions.resetForm();
+    } catch (error) {
+      console.error("Error sending post data:", error);
+      // Handle error gracefully, maybe display an error message to the user
+    }
+  };
+
   return (
     <div className="comments">
-      <div className="write">
-        <img src="" alt="" />
-        <input type="text" placeholder="write a comment" />
-        <button>Send</button>
-      </div>
-      {comments.map((comment) => (
-        <div className="comment">
-          <img src={comment.profilePicture} alt="" />
+      <Formik initialValues={{ comment: "" }} onSubmit={PostComment}>
+        {({ isSubmitting }) => (
+          <Form>
+            <div className="write">
+              <img src={MainprofileURL} alt="" />
+              <Field type="text" name="comment" placeholder="write a comment" />
+              <button type="submit" disabled={isSubmitting}>
+                Send
+              </button>
+            </div>
+            <div>
+              <ErrorMessage
+                name="comment"
+                component="div"
+                className="error"
+                style={{ color: "red" }}
+              />
+            </div>
+          </Form>
+        )}
+      </Formik>
+
+      {comments.map((comment, index) => (
+        <div className="comment" key={index}>
+          <img src={profileURLs[comment.EMAIL]} alt="" />
           <div className="info">
-            <span>{comment.name}</span>
-            <p>{comment.desc}</p>
+            <span>{comment.NAME}</span>
+            <p>{comment.CONTENT}</p>
           </div>
-          <span className="date">1 hour ago</span>
+          <span className="date">{comment.TIME}</span>
         </div>
       ))}
     </div>
