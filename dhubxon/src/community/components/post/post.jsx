@@ -5,20 +5,22 @@ import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import Swal from 'sweetalert2'
 import { Link } from "react-router-dom";
 import Comments from "../comment/Comment";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
 
-const Post = ({ post,IDENTIFIER }) => {
+const Post = ({ post,IDENTIFIER,onDelete }) => {
   const [profileURL, setProfileURL] = useState("");
   var id=post.id;
   const [commentOpen, setCommentOpen] = useState(false);  
   const [liked,setliked] = useState(false);
   const [LikesCount,setLikesCount]=useState(post.LIKES);
 
+
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +35,7 @@ const Post = ({ post,IDENTIFIER }) => {
     };
   
     fetchData();
-  }, [post.EMAIL]);
+  }, [post]);
   
 
 const LIKED=()=>{
@@ -76,7 +78,7 @@ const LIKED=()=>{
             </div>
           </div>
           {IDENTIFIER=="one" && (
-          <DeleteIcon  onClick={console.log("Delete Icon Clicked")}/>
+          <DeleteIcon  onClick={() => onDelete(post.id)}/>
 )}
         </div>
 

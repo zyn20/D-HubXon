@@ -4,9 +4,54 @@ import axios from 'axios';
 import Post from '../post/post';
 import './posts.scss';
 import {jwtDecode} from 'jwt-decode';
+import Swal from 'sweetalert2'
+
 
 const Posts = ({IDENTIFIER}) => {
   const [communityPosts, setCommunityPosts] = useState([]);
+
+
+  const handleDeleteIcon = async (postId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post('http://127.0.0.1:5000/freelancer/deletepost', {  id: postId });
+          if (response.status === 200) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+                    setCommunityPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while deleting the post.",
+              icon: "error"
+            });
+          }
+        } catch (error) {
+          console.error('Error Deleting Post:', error);
+          Swal.fire({
+            title: "Error!",
+            text: "An error occurred while deleting the post.",
+            icon: "error"
+          });
+        }
+      }
+    });
+  }
+  
+  
 
   useEffect(() => {
 
@@ -38,7 +83,7 @@ const Posts = ({IDENTIFIER}) => {
   return (
     <div className="posts">
       {communityPosts.map(post => (
-        <Post post={post} IDENTIFIER={IDENTIFIER} key={post.id} /> // Render each post component
+        <Post post={post} IDENTIFIER={IDENTIFIER} onDelete={handleDeleteIcon} key={post.id} /> // Render each post component
       ))}
     </div>
   );

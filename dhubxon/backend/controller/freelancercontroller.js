@@ -485,6 +485,26 @@ const getmyPost = async (req, res) => {
   }
 };
 
+const DELETEPOST = async (req, res) => {
+  const ID=req.body.id;
+  
+  try {
+
+    const Posts = await Post.destroy({  
+      where: {
+      id: ID,
+      },
+    });
+
+    // Respond
+    res.status(200).json(Posts);
+  } catch (error) {
+    // Handle errors
+    console.error('Error Deleting Post:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 const CHANGELIKE = async (req, res) => {
   console.log("'''''''''''''''''''''''''  " ,req.body.LikesCount);
   try {
@@ -621,5 +641,6 @@ module.exports = {
   fetchpostcomments,
   INCREMENT_POST_COMMENT,
   fetchprofileurl,
-  getmyPost
+  getmyPost,
+  DELETEPOST
 };
