@@ -31,6 +31,7 @@ router.post('/courses', upload.single('image'), courseController.addCourse);
 
 
 
+
 // router.post('/courses', courseController.addCourse);
 router.post('/signIn',functions.signIn);
 router.post('/signUp', checkDuplicate,functions.signUp);

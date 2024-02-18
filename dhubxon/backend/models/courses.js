@@ -2,9 +2,6 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config");
 
 const Course = sequelize.define("Course", {
-
- 
-
   category: {
     type: DataTypes.STRING,
     allowNull: false,

@@ -5,8 +5,6 @@ import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer'
-
-
 const ProductForm = () => {
     const navigate = useNavigate();
 
@@ -146,8 +144,6 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
             return;
         }
         const uploadFormData = new FormData();
-      
-       
         uploadFormData.append('category', formData.category);
         uploadFormData.append('description', formData.description);
         uploadFormData.append('image', imageFile); // Append the image file
@@ -155,8 +151,6 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
         uploadFormData.append('title', formData.title);
         uploadFormData.append('rate', formData.rating.rate);
         uploadFormData.append('count', formData.rating.count);
-       
-
     
         if (selectedFile) {
             // uploadFormData.append('zipFile', selectedFile);
