@@ -1,44 +1,88 @@
 // Import the Course model
 const Course = require('../models/courses');
 const path = require('path');
-// Controller to add a new course
+const jwt = require('jsonwebtoken');
 const addCourse = async (req, res) => {
   try {
-  
+    const { category, description, price, rating, title, token } = req.body; // Extract token from the request body
 
-    const { category, description, price, rating, title } = req.body;
-
-    // Handle the uploaded image file
-    let imagePath = '';
-    if (req.file) {
-      // Construct the path relative to the 'uploads' folder
-      imagePath = '/uploads/' + req.file.filename;
+    // Decode the token to get the freelancer's email
+    let freelancerEmail = '';
+    if (token) {
+      const decoded = jwt.decode(token); // Decode the token without verifying
+      freelancerEmail = decoded.freelancerData.email; // Extract email from the token payload
+    } else {
+      return res.status(400).json({ error: 'Token is required' });
     }
 
-    // Create a new course using the Sequelize model
+    let imagePath = '';
+    let zipPath = '';
+
+    if (req.files) {
+      if (req.files.image) {
+        imagePath = '/uploads/' + req.files.image[0].filename;
+      }
+      if (req.files.zipFile) {
+        zipPath = '/uploads/' + req.files.zipFile[0].filename;
+      }
+    }
+
+    // Include the freelancer's email in the data you're saving
     const newCourse = await Course.create({
       category,
       description,
-      image: imagePath, // Use the image path from the uploaded file
+      image: imagePath,
       price,
       rating,
       title,
+      zipPath, // Save the zip file path
+      email: freelancerEmail, // Save the freelancer's email extracted from the token
     });
 
-
     res.status(201).json(newCourse);
-
-
-
-
-
-
   } catch (error) {
-    // Handle errors
     console.error('Error adding course:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
+
+
+
+
+// const addCourse = async (req, res) => {
+//   try {
+//     const { category, description, price, rating, title } = req.body;
+
+//     let imagePath = '';
+//     let zipPath = '';
+
+//     if (req.files) {
+//       if (req.files.image) {
+//         imagePath = '/uploads/' + req.files.image[0].filename;
+//       }
+//       if (req.files.zipFile) {
+//         zipPath = '/uploads/' + req.files.zipFile[0].filename;
+//       }
+//     }
+
+//     const newCourse = await Course.create({
+//       category,
+//       description,
+//       image: imagePath,
+//       price,
+//       rating,
+//       title,
+//       zipPath, // Save the zip file path
+//     });
+
+//     res.status(201).json(newCourse);
+//   } catch (error) {
+//     console.error('Error adding course:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
 
 
 const getAllCourses = async (req, res) => {

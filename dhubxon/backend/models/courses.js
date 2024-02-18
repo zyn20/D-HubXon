@@ -2,6 +2,12 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config");
 
 const Course = sequelize.define("Course", {
+
+  zipPath: {
+    type: DataTypes.STRING,
+    allowNull: true, // Set to true if the ZIP file is optional
+  },
+  
   category: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -14,6 +20,10 @@ const Course = sequelize.define("Course", {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   image: {

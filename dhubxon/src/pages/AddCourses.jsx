@@ -127,6 +127,9 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+
+        const token = localStorage.getItem('token');
         if (!formData.category || !formData.description || !imageFile || !formData.price || !formData.title) {
             Swal.fire({
                 icon: 'warning',
@@ -153,8 +156,12 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
         uploadFormData.append('count', formData.rating.count);
     
         if (selectedFile) {
-            // uploadFormData.append('zipFile', selectedFile);
+            uploadFormData.append('zipFile', selectedFile);
         }
+        if (token) {
+            uploadFormData.append('token', token);
+        }
+    
     
         try {
             const response = await fetch('http://127.0.0.1:5000/freelancer/courses', {

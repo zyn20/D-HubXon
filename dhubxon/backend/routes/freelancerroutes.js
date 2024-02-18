@@ -7,11 +7,26 @@ const courseController = require('../controller/coursescontroller');
 
 
 
-const path = require('path'); // Import the path module
+// const path = require('path'); // Import the path module
+
+// const multer = require('multer');
+
+// // Set up storage directory (you might want to customize this)
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/'); // the folder where files will be saved
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//   }
+// });
+
+// const upload = multer({ storage: storage });
+
 
 const multer = require('multer');
+const path = require('path');
 
-// Set up storage directory (you might want to customize this)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/'); // the folder where files will be saved
@@ -23,13 +38,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Setup to handle multiple fields
+const fileFields = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'zipFile', maxCount: 1 }
+]);
 
 
 
+// router.post('/courses', upload.single('image'), courseController.addCourse);
 
-router.post('/courses', upload.single('image'), courseController.addCourse);
-
-
+router.post('/courses', fileFields, courseController.addCourse);
 
 
 // router.post('/courses', courseController.addCourse);
