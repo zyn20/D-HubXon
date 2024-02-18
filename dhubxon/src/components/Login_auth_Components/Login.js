@@ -6,6 +6,10 @@ import FormAction from "./FormAction";
 import FormExtra from "./FormExtra";
 import Input from "./Input";
 import Swal from 'sweetalert2';
+import 'animate.css';
+import { jwtDecode } from "jwt-decode";
+
+
 
 const fields = loginFields;
 const initialLoginState = fields.reduce((acc, field) => {
@@ -27,54 +31,92 @@ export default function Login() {
         authenticateUser();
     }
 
-   
-    
 
-
-
-    const authenticateUser = async () => {
-        const email = loginState['email-address'];
-        const pass = loginState['password'];
-    
-        try {
-            const clientResponse = await axios.post('http://127.0.0.1:5000/client/signIn', { email, pass });
-    
-            if (clientResponse.status === 200) {
-                console.log("Client Sign-in successful!");
-                Swal.fire("Sign in Successfully!");
-                navigate('/jobview');
-                return;
-            }
-        } catch (clientError) {
-            console.error("Client Authentication Error:", clientError);
-        }
-    
-        // If client login fails, try freelancer login
-        try {
-            const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
-    
-            if (freelancerResponse.status === 200) {
-                console.log("Freelancer Sign-in successful!");
-                Swal.fire("Sign in Successfully!");
-                navigate('/freelancerdashboard');
-                return;
-            }
-        } catch (freelancerError) {
-            console.error("Freelancer Authentication Error:", freelancerError);
-        }
-    
-        // If both client and freelancer login fail
+const authenticateUser = async () => {
+    const email = loginState['email-address'];
+    const pass = loginState['password'];
+  
+    try {
+      const clientResponse = await axios.post('http://127.0.0.1:5000/client/signIn', { email, pass });
+  
+      if (clientResponse.status === 200) {
+        console.log("Client Sign-in successful!");
         Swal.fire({
-            icon: "error",  
-            title: "Oops...",
-            text: "User Not Found!",
-            footer: <a href="/signup">Create a new account</a>,
+          position: "top-end",
+          icon: "success",
+          title: "Login In Successfully",
+          showConfirmButton: false,
+          timer: 1500
         });
-        navigate('/login');
-    };
+  
+
+        localStorage.setItem('token', clientResponse.data.token);
+        console.log(clientResponse);
+        console.log(clientResponse.data.token);
+  
+        navigate('/client/');
+        return;
+      }
+    } catch (clientError) {
+      console.error("Client Authentication Error:", clientError);
+    }
+  
+    try {
+      const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
+  
+      if (freelancerResponse.status === 200) {
+        console.log("Freelancer Sign-in successful!");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Login In Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
+  
+        localStorage.setItem('token', freelancerResponse.data.token);
+  
+        const token = localStorage.getItem('token');
+
+        const decodedToken = jwtDecode(token);
+  
+        const userRole = decodedToken.role;
+        console.log(userRole);
+  
+        navigate('/freelancer/');
+        return;
+      }
+    } catch (freelancerError) {
+      console.error("Freelancer Authentication Error:", freelancerError);
+    }
+  
+    // If both client and freelancer login fail
+    Swal.fire({
+      icon: 'error',
+      title: 'User Not Found',
+      html: 'Please Input Correct Email and Password',
+      showClass: {
+        popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+      }
+    });
+  
     
-    
-    
+  };
+  
+
+
+
 
     return(
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

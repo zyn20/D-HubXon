@@ -30,6 +30,10 @@ const Project = sequelize.define("Project", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  KEYWORDS: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
 module.exports = Project;

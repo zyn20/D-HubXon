@@ -1,11 +1,13 @@
 import React from 'react';
 import CarouselComponent from '../components/Freelancer/separate_components/CarouselComponent';
 import Cards from '../components/Freelancer/separate_components/Cards';
+import Navbar from '../components/Freelancer/Navbar_Freelancer'
 
 const Home = () => {
   return (
     <>
-      <div>
+    <Navbar/>
+      <div className='mt-[80px]'>
         <CarouselComponent />
       </div>
       <div className="flex justify-center items-center">

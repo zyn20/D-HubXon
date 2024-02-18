@@ -1,22 +1,29 @@
-const express = require('express')
-const router = express.Router()
-const checkforDuplicate = require("../middleware/checkforduplicate_client")
-const checkRecord=require("../middleware/check_client_record")
-const Functions = require("../controller/clientcontroller")
-const courseController = require('../controller/coursescontroller');
+const express = require("express");
+const router = express.Router();
+const checkforDuplicate = require("../middleware/checkforduplicate");
+const checkRecord = require("../middleware/check_existing_record");
+const Functions = require("../controller/clientcontroller");
+const courseController = require("../controller/coursescontroller");
 
-router.get('/courses', courseController.getAllCourses);
-router.post('/signUp', checkforDuplicate, Functions.signUp);
-router.post('/signIn' , Functions.signIn);
-router.post('/verify', Functions.verify);
-router.post('/forgetpassword',checkRecord,Functions.forgetpassword);
-router.post('/verifypassword',Functions.verifypassword);
-router.post('/updatepassword',Functions.update_password);
+router.get("/courses", courseController.getAllCourses);
+router.post("/signUp", checkforDuplicate, Functions.signUp);
+router.post("/signIn", Functions.signIn);
+router.post("/verify",Functions.verify);
+router.post("/forgetpassword", Functions.forgetpassword);
+router.post("/verify_forgetpass_OTP", Functions.verifypassword);
+router.post("/updatepassword", Functions.update_password);
+router.post("/setprofile", Functions.setProfile);
+router.post("/post_project", Functions.Postproject);
+router.get("/fetchprofiledata", Functions.fetchprofiledata);
+router.post("/resendOTP", Functions.Re_send_OTP);
 
-router.post("/post_project",Functions.Postproject);
+router.get("*", function (req, res) {
+  res.status(404).send("404 error: page not found");
+});
 
-router.get('*', function(req, res){
-    res.status(404).send('404 error: page not found');
-  });
+module.exports = router;
 
-module.exports = router
+
+
+
+

@@ -12,7 +12,7 @@ import { SearchOutlined } from "@mui/icons-material";
 import { HomeOutlined } from "@mui/icons-material";
 import { GridViewOutlined } from "@mui/icons-material";
 import { DarkModeOutlined } from "@mui/icons-material";
-import img from "../../../assets/profile image.png";
+import img from "../../../assets/image.png";
 
 const CommunityNavbar = () => {
   return (
