@@ -12,9 +12,11 @@ const check_record=require("./middleware/check_existing_record");
 const Freelancer = require("./models/freelancermodel");  
 const Client = require("./models/clientmodel");  
 const { CronJob } = require('cron');
+const fileUpload=require('express-fileupload');
 
 
 app.use(bodyParser.json());
+app.use(fileUpload({useTempFiles:true}))
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -78,40 +80,6 @@ const job = new CronJob(
 	true, // start
 	'Asia/Karachi' // timeZone
 );
-
-
-
-
-// const deleteUnverifiedUsersJob = new CronJob({
-//   cronTime: '* * * * * *', // Run every minute
-//   onTick: async () => {
-//     try {
-//       // Find and delete unverified freelancers
-//       const deletedFreelancersCount = await Freelancer.destroy({
-//         where: {
-//           Isverified: false,
-//         },
-//       });
-
-//       console.log(`Deleted ${deletedFreelancersCount} unverified freelancers at ${new Date()}`);
-
-//       // Find and delete unverified clients
-//       const deletedClientsCount = await Client.destroy({
-//         where: {
-//           Ssverified: false,
-//         },
-//       });
-
-//       console.log(`Deleted ${deletedClientsCount} unverified clients at ${new Date()}`);
-//     } catch (error) {
-//       console.error('Error in cron job:', error);
-//     }
-//   },
-//   start: true,
-//   timeZone: 'Asia/Karachi', // Replace with your time zone if needed
-// });
-
-// deleteUnverifiedUsersJob.start();
 
 
 

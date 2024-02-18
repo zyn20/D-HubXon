@@ -7,7 +7,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
             secure: false,
             auth: {
                 user: "f200376@cfd.nu.edu.pk",
-                pass: 'eank crqv bovf egmb'
+                pass: 'uulo szrc ncsg tinx'
             },
             tls: {
                 rejectUnauthorized: false

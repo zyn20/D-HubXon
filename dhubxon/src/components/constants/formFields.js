@@ -31,7 +31,7 @@ const signupFields = [
         autoComplete: "username",
         isRequired: true,
         placeholder: "Username",
-        pattern: "^[a-zA-Z]+[a-zA-Z0-9_-]*$"
+        pattern: "^[a-zA-Z\\s]+[a-zA-Z0-9_-\\s]*$"
 
     },
     {
@@ -43,7 +43,8 @@ const signupFields = [
         autoComplete: "email",
         isRequired: true,
         placeholder: "Email address",
-        pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        // pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        pattern:"^[a-zA-Z][a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(?![.]+)([a-zA-Z]{2,6})$"
     },
     {
         labelText: "Password",

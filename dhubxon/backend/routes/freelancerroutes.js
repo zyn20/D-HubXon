@@ -43,6 +43,16 @@ router.post('/setprofile',functions.setProfile);
 router.get("/fetchprofiledata",functions.fetchprofiledata);
 router.post("/resendOTP",functions.Re_send_OTP);
 router.get("/fetchBESTMATCHES",functions.BESTMATCH);
+router.get("/fetchcourses",courseController.getAllCourses);
+router.post("/ADDcommunity_post",functions.addPost);
+router.get("/GETcommunity_post",functions.getAllPost);
+router.post("/CHANGELIKEcommunity_post",functions.CHANGELIKE);
+router.post("/ADD_POST_COMMENT",functions.ADD_POST_COMMENT);
+router.get("/fetchpostcomments",functions.fetchpostcomments);
+router.post("/INCREMENT_POST_COMMENT",functions.INCREMENT_POST_COMMENT);
+router.get("/fetchprofileurl",functions.fetchprofileurl);
+
+
 
 
 router.get('*', function(req, res){

@@ -7,8 +7,8 @@ import Posts from "../posts/Posts"
 const CommunityHome = () => {
   return (
     <div className='home'>
-      <Stories/>
-      <Share/>
+      {/* <Stories/> */}
+      {/* <Share/> */}
       <Posts/>
  
         </div>

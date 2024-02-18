@@ -15,7 +15,7 @@ const Navbar = () => {
     <nav className="bg-[#E1E1E1] border-b-2 font-poppins navbar-with-shadow py-4 fixed top-0 left-0 right-0 z-10">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto">
         <NavLink to="/" className="flex items-center">
-          <img src={logo} className="h-6 sm:h-9" alt="Logo" />
+          <img src={logo} className="h-6 sm:h-16 w-36" alt="Logo" />
         </NavLink>
 
         {/* Mobile Menu for smaller screens */}
