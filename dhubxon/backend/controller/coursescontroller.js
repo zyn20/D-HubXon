@@ -6,7 +6,7 @@ const addCourse = async (req, res) => {
   try {
   
 
-    const { Email,category, description, price, rating, title } = req.body;
+    const { category, description, price, rating, title } = req.body;
 
     // Handle the uploaded image file
     let imagePath = '';
@@ -17,7 +17,7 @@ const addCourse = async (req, res) => {
 
     // Create a new course using the Sequelize model
     const newCourse = await Course.create({
-      Email,
+      
       category,
       description,
       image: imagePath, // Use the image path from the uploaded file
