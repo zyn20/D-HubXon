@@ -47,6 +47,7 @@ import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
 import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
 import AddPost from "./pages/AddPost"
+import CardPage from "./components/Freelancer/courses_cards/Cards_page";
 
 
 
@@ -102,7 +103,8 @@ const router = createBrowserRouter([
     element:<Software_home/>},
     {path:"/softwareproductsone/:id",
     element:<Software_products/>},
- 
+    {path:"/coursecard",
+    element:<CardPage/>},
 
     
     

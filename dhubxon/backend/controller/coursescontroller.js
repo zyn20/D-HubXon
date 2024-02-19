@@ -51,40 +51,6 @@ const addCourse = async (req, res) => {
 
 
 
-// const addCourse = async (req, res) => {
-//   try {
-//     const { category, description, price, rating, title } = req.body;
-
-//     let imagePath = '';
-//     let zipPath = '';
-
-//     if (req.files) {
-//       if (req.files.image) {
-//         imagePath = '/uploads/' + req.files.image[0].filename;
-//       }
-//       if (req.files.zipFile) {
-//         zipPath = '/uploads/' + req.files.zipFile[0].filename;
-//       }
-//     }
-
-//     const newCourse = await Course.create({
-//       category,
-//       description,
-//       image: imagePath,
-//       price,
-//       rating,
-//       title,
-//       zipPath, // Save the zip file path
-//     });
-
-//     res.status(201).json(newCourse);
-//   } catch (error) {
-//     console.error('Error adding course:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
-
-
 const getAllCourses = async (req, res) => {
   try {
     // Retrieve all courses from the database
@@ -100,7 +66,55 @@ const getAllCourses = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+const getCoursesByEmail = async (req, res) => {
+  try {
+    const { token } = req.body; // Extract token from the request body
+
+    if (!token) {
+      return res.status(400).json({ error: 'Token is required' });
+    }
+
+    // Assuming jwt.decode is correctly decoding the token
+    const decoded = jwt.decode(token); 
+    const email = decoded?.freelancerData?.email;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Invalid token' });
+    }
+
+    // Use Sequelize's findOne or findAll method
+    const courses = await Course.findAll({
+      where: { email: email }
+    });
+
+    if (!courses || courses.length === 0) {
+      return res.status(404).json({ error: 'No courses found for this email' });
+    }
+
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error('Error getting courses by email:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 module.exports = {
   addCourse,
-  getAllCourses
+  getAllCourses,
+  getCoursesByEmail, // Add the new controller function to the exports
 };
+
+
+
+
+// module.exports = {
+//   addCourse,
+//   getAllCourses
+// };

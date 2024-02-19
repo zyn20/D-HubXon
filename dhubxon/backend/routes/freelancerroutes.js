@@ -49,9 +49,10 @@ const fileFields = upload.fields([
 // router.post('/courses', upload.single('image'), courseController.addCourse);
 
 router.post('/courses', fileFields, courseController.addCourse);
-
+router.post('/courseOne',courseController.getCoursesByEmail);
 
 // router.post('/courses', courseController.addCourse);
+
 router.post('/signIn',functions.signIn);
 router.post('/signUp', checkDuplicate,functions.signUp);
 router.post('/verify', functions.verify) ;
