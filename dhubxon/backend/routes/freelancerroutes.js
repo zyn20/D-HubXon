@@ -49,6 +49,7 @@ const fileFields = upload.fields([
 // router.post('/courses', upload.single('image'), courseController.addCourse);
 
 router.post('/courses', fileFields, courseController.addCourse);
+router.delete('/course/:courseId', courseController.deleteCourseById);
 router.post('/courseOne',courseController.getCoursesByEmail);
 
 // router.post('/courses', courseController.addCourse);

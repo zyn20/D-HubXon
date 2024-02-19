@@ -103,18 +103,38 @@ const getCoursesByEmail = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+const deleteCourseById = async (req, res) => {
+  try {
+    const { courseId } = req.params; // Extract the course ID from the request parameters
 
+    // Use Sequelize's destroy method to delete the course
+    const result = await Course.destroy({
+      where: { id: courseId }
+    });
 
-module.exports = {
-  addCourse,
-  getAllCourses,
-  getCoursesByEmail, // Add the new controller function to the exports
+    if (result === 0) {
+      // No course was deleted (possibly because the course was not found)
+      return res.status(404).json({ error: 'Course not found' });
+    }
+
+    // Respond with a success message
+    res.status(200).json({ message: 'Course deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting course:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 
 
 
-// module.exports = {
-//   addCourse,
-//   getAllCourses
-// };
+
+module.exports = {
+  addCourse,
+  getAllCourses,
+  getCoursesByEmail, 
+  deleteCourseById,
+};
+
+
+
