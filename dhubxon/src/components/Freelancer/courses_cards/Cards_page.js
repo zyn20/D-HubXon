@@ -4,7 +4,10 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode'; // Ensure correct import
 import TaskCard from './Cardcourse';
 import logo1 from './logo1.png'; // Assuming this is used somewhere else or remove if not used
-
+import { Button } from "@material-tailwind/react";
+import { Link } from 'react-router-dom';
+// import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer';
+import Navbar_Freelancer from "../../Freelancer/Navbar_Freelancer";
 function CardPage() {
   const [CARDS, SetCARDS] = useState([]);
 
@@ -45,9 +48,16 @@ function CardPage() {
 
   return (
     <>
+    <Navbar_Freelancer/>
       <div className="container mx-auto p-4">
-        <div className="flex justify-center">
-          <h2 className="text-2xl font-bold mb-4">All Courses</h2>
+        <div className="flex justify-center mt-20">
+        <Link to="/freelancer/viewcourses" className="mr-2">
+        <Button className="mr-2">Add Courses</Button>
+        </Link>
+         
+        </div>
+        <div className="flex justify-center mt-6">
+        <h2 className="text-2xl font-bold mb-4">All Courses</h2>
         </div>
         <div className="flex flex-wrap -mx-2 mt-20">
           {CARDS.map((card, index) => (

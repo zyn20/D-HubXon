@@ -179,7 +179,7 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
                                    text: 'Data added successfully!',
                               });
 
-navigate('/freelancer/')
+navigate('/freelancer/courses')
                 
             } else {
                 // ... error handling

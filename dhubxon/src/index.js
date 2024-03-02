@@ -122,7 +122,7 @@ const router = createBrowserRouter([
 {
   path: "/freelancer/viewcourses",
   element: (
-    <Protected component={<Coursecard />} allowableuser="freelancer" />
+    <Protected component={<AddCourses />} allowableuser="freelancer" />
   ),
 },
 
@@ -140,7 +140,7 @@ const router = createBrowserRouter([
 {
   path: "/freelancer/courses",
   element: (
-    <Protected component={<AddCourses />} allowableuser="freelancer" />
+    <Protected component={<Coursecard />} allowableuser="freelancer" />
   ),
 },
 {
