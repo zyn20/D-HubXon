@@ -4,6 +4,9 @@ const checkforDuplicate = require("../middleware/checkforduplicate");
 const checkRecord = require("../middleware/check_existing_record");
 const Functions = require("../controller/clientcontroller");
 const courseController = require("../controller/coursescontroller");
+const { handlePurchase } = require('../controller/purchasecontroller'); // Adjust the path as needed
+
+router.post('/purchase', handlePurchase);
 
 router.get("/courses", courseController.getAllCourses);
 router.post("/signUp", checkforDuplicate, Functions.signUp);

@@ -12,70 +12,66 @@ const Checkout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
-
-  // Log ID and selected quantity of each product
-  cart.forEach(item => {
-    console.log(`ID: ${item.id}, Quantity: ${item.amount}`);
-  });
-
-  // Extracting form data
-  const { name, address, postalCode, creditCardNo } = event.target.elements;
-
-  // Construct an array of items with their id and amount
-  const items = cart.map(item => ({
-    id: item.id,
-    amount: item.amount,
-  }));
-
-  let requestBody = {
-    name: name.value,
-    address: address.value,
-    postalCode: postalCode.value,
-    creditCardNo: creditCardNo.value,
-    amount: total,
-    items, // Include the items array in the request body
-  };
-
-  // Checking for authentication tokens
-  const token = localStorage.getItem('token');
-  const profile = token ? null : JSON.parse(localStorage.getItem('profile') || 'null');
-
-  if (token) {
-    requestBody.token = token;
-  } else if (profile && profile.email) {
-    requestBody.email = profile.email;
-  } else {
-    alert('Authentication is required to complete the purchase.');
-    setIsModalOpen(false);
-    return;
-  }
-
-  // Sending the purchase request
-  try {
-    const response = await fetch('http://127.0.0.1:5000/client/purchase', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody),
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    // Log ID and selected quantity of each product
+    cart.forEach(item => {
+      console.log(`ID: ${item.id}, Quantity: ${item.amount},Price: ${item.price}`);
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  
+    // Extracting form data
+    const { name, address, postalCode, creditCardNo } = event.target.elements;
+  
+    // Construct an array of items with their id and amount
+    const items = cart.map(item => ({
+      id: item.id,
+      amount: item.amount,
+      price:item.price,
+    }));
+  
+    // Retrieve the token from localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Authentication is required to complete the purchase.');
+      setIsModalOpen(false);
+      return;
     }
-
-    const data = await response.json();
-    console.log('Purchase successful:', data);
-    alert('Purchase successful!');
-    clearCart();
-    setIsModalOpen(false); // Close the modal upon successful purchase
-    window.location.reload();
-  } catch (error) {
-    console.error('Error making purchase:', error);
-    alert('An error occurred during the purchase.');
-  }
-};
-
+  
+    let requestBody = {
+      name: name.value,
+      address: address.value,
+      postalCode: postalCode.value,
+      creditCardNo: creditCardNo.value,
+      total,
+      items, // Include the items array in the request body
+      token, // Include the token directly in the request body
+    };
+  
+    // Sending the purchase request
+    try {
+      const response = await fetch('http://127.0.0.1:5000/client/purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Purchase successful:', data);
+      alert('Purchase successful!');
+      clearCart();
+      setIsModalOpen(false); // Close the modal upon successful purchase
+      window.location.reload();
+    } catch (error) {
+      console.error('Error making purchase:', error);
+      alert('An error occurred during the purchase.');
+    }
+  };
+  
 
 
   return (

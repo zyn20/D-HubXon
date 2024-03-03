@@ -1,9 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode'; // Ensure correct import
+// Ensure correct import
 import TaskCard from './Cardcourse';
-import logo1 from './logo1.png'; // Assuming this is used somewhere else or remove if not used
+ // Assuming this is used somewhere else or remove if not used
 import { Button } from "@material-tailwind/react";
 import { Link } from 'react-router-dom';
 // import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer';

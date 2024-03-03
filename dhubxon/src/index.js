@@ -48,7 +48,7 @@ import Software_products from "./software_products/courses/src/complete_products
 import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
 import AddPost from "./pages/AddPost"
 import CardPage from "./components/Freelancer/courses_cards/Cards_page";
-
+import Checkout from "./courses/src/components/Checkout";
 
 
 
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
       { path: "/forgetPassword", element: <Forget_Pass /> },//general Path
       { path: "verify", element: <VerifyOTP /> },//general Path
       { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> }, //general Path
-
+      { path: "/cart", element: <Checkout /> },
 
       
       //For Only One Time Accessable
