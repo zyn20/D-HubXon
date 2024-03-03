@@ -6,7 +6,7 @@ import CartItem from "../components/CartItem";
 import { CartContext } from "../contexts/CartContext";
 import Header from "./Header";
 import Modal from "./Modal"; // Adjust the path as needed
-
+import Swal from 'sweetalert2'; // Import SweetAlert2
 const Checkout = () => {
   const { cart, clearCart, total } = useContext(CartContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,9 +47,20 @@ const Checkout = () => {
       items, // Include the items array in the request body
       token, // Include the token directly in the request body
     };
+     // Show loading screen
+     Swal.fire({
+      title: 'Processing your purchase...',
+      html: 'Please wait',
+      timerProgressBar: true,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
   
     // Sending the purchase request
     try {
+      
       const response = await fetch('http://127.0.0.1:5000/client/purchase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -61,14 +72,38 @@ const Checkout = () => {
       }
   
       const data = await response.json();
+      Swal.close(); // Close the loading screen
       console.log('Purchase successful:', data);
-      alert('Purchase successful!');
-      clearCart();
-      setIsModalOpen(false); // Close the modal upon successful purchase
-      window.location.reload();
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Purchase has been successful",
+        showConfirmButton: false,
+        timer: 1500, // Alert will auto-close after 2 seconds
+      }).then((result) => {
+        // This callback function will be executed after the alert closes
+        // You can check the result.dismiss to see if the alert was closed by the timer
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log("I was closed by the timer"); // Optional: for debug purposes
+          clearCart();
+          setIsModalOpen(false); // Close the modal upon successful purchase
+    
+          window.location.reload(); // Reload the page
+        }
+      });
+      
+      // clearCart();
+      // setIsModalOpen(false); // Close the modal upon successful purchase
+
     } catch (error) {
       console.error('Error making purchase:', error);
-      alert('An error occurred during the purchase.');
+      Swal.close(); // Ensure to close the loading screen even if there is an error
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        footer: '<a href="#">Why do I have this issue?</a>'
+      });
     }
   };
   
