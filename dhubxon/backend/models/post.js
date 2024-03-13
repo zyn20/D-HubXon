@@ -38,7 +38,12 @@ EMAIL: {
 IMAGEURL: {
   type: DataTypes.STRING,
   allowNull: false
+},
+BLOCKCHAININDEX: {
+  type: DataTypes.INTEGER,
+  allowNull: true
 }
+
  });
 
  module.exports = POST
