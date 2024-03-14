@@ -24,6 +24,13 @@ const Message = sequelize.define('Message', {
     type: DataTypes.ENUM('client', 'freelancer'),
     allowNull: false,
   },
+  
+  isRead: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+}
+,
 });
 
 // Define associations for messages sent by clients
