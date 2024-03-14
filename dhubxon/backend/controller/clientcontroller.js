@@ -1,6 +1,7 @@
 const Client = require("../models/clientmodel");
 const ClientProfile = require("../models/clientprofile");
 const Project = require("../models/project");
+
 const sequelize = require("../config");
 const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");

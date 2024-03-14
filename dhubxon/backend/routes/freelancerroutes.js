@@ -5,6 +5,9 @@ const checkDuplicate=require('../middleware/checkforduplicate');
 const checkRecord=require("../middleware/check_existing_record");
 const courseController = require('../controller/coursescontroller');
 
+const chatController = require('../controller/chatcontroller');
+
+
 
 
 const path = require('path'); // Import the path module
@@ -51,10 +54,8 @@ router.post("/ADD_POST_COMMENT",functions.ADD_POST_COMMENT);
 router.get("/fetchpostcomments",functions.fetchpostcomments);
 router.post("/INCREMENT_POST_COMMENT",functions.INCREMENT_POST_COMMENT);
 router.get("/fetchprofileurl",functions.fetchprofileurl);
-
-
-
-
+router.post('/message/send', chatController.sendMessage);
+router.get('/message/history', chatController.getChatHistory);
 router.get('*', function(req, res){
     res.status(404).send('404 error: page not found');
   });

@@ -5,6 +5,9 @@ const checkRecord = require("../middleware/check_existing_record");
 const Functions = require("../controller/clientcontroller");
 const courseController = require("../controller/coursescontroller");
 
+const chatController = require("../controller/chatcontroller")
+
+
 router.get("/courses", courseController.getAllCourses);
 router.post("/signUp", checkforDuplicate, Functions.signUp);
 router.post("/signIn", Functions.signIn);
@@ -16,7 +19,8 @@ router.post("/setprofile", Functions.setProfile);
 router.post("/post_project", Functions.Postproject);
 router.get("/fetchprofiledata", Functions.fetchprofiledata);
 router.post("/resendOTP", Functions.Re_send_OTP);
-
+router.post('/message/send', chatController.sendMessage);
+router.get('/message/history', chatController.getChatHistory);
 router.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");
 });

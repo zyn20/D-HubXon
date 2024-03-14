@@ -2,10 +2,10 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config");
 
 const FreelancerProfile = sequelize.define("FreelancerProfile", {
-    email: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 
   city: {
     type: DataTypes.STRING,
@@ -24,7 +24,7 @@ const FreelancerProfile = sequelize.define("FreelancerProfile", {
     allowNull: true,
   },
   portfolioFile: {
-    type: DataTypes.BLOB('long'),
+    type: DataTypes.BLOB("long"),
     allowNull: true,
   },
   portfolioDescription: {
@@ -59,10 +59,10 @@ const FreelancerProfile = sequelize.define("FreelancerProfile", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  ProfileURL:{
+  ProfileURL: {
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
 });
 
 module.exports = FreelancerProfile;
