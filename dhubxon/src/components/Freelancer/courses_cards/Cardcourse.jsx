@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Stars from "./stars.png";
 
-const TaskCard = ({ id, title, description, imageSrc,onDelete }) => {
+const TaskCard = ({ id, title, description, imageSrc,onDelete,onEdit }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
@@ -13,8 +13,14 @@ const TaskCard = ({ id, title, description, imageSrc,onDelete }) => {
     return text.length > length ? text.substring(0, length) + "..." : text;
   };
 
+  const handleEditClick = (event) => {
+    event.preventDefault();
+    // console.log('Attempting to log ID:', id);
+    
+    // Debugging line
+    onEdit(id);
+  };
 
-  
   const handleDeleteClick = (event) => {
     event.preventDefault(); // Prevent the default anchor action
     onDelete(id); // Call the onDelete function passed as a prop
@@ -62,7 +68,7 @@ const TaskCard = ({ id, title, description, imageSrc,onDelete }) => {
         </button>
         {dropdownOpen && (
           <div className="absolute right-0 mt-8 py-2 w-48 bg-white rounded-md shadow-lg z-50">
-            <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+            <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={handleEditClick}>View Purchases</a>
             <a 
             href="#" 
             onClick={handleDeleteClick} // Use handleDeleteClick to handle the click event

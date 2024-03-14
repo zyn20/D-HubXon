@@ -52,5 +52,21 @@ const handlePurchase = async (req, res) => {
     res.status(500).json({ error: 'An error occurred during the purchase.' });
   }
 };
+const searchPurchasesByItemId = async (req, res) => {
+  const { itemId } = req.body; // Assuming you're getting the itemId from the URL
 
-module.exports = { handlePurchase };
+  try {
+    // const purchases = await Purchase.find({ itemId: itemId });
+    const purchases = await Purchase.findOne({ where: { itemId: itemId } });
+    if (purchases.length === 0) {
+      return res.status(404).json({ error: 'No purchases found for this item ID.' });
+    }
+
+    res.status(200).json(purchases);
+  } catch (error) {
+    console.error('Error searching for purchases by item ID:', error);
+    res.status(500).json({ error: 'An error occurred while searching for purchases.' });
+  }
+};
+
+module.exports = { handlePurchase, searchPurchasesByItemId };

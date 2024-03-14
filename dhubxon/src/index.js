@@ -49,7 +49,7 @@ import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
 import AddPost from "./pages/AddPost"
 import CardPage from "./components/Freelancer/courses_cards/Cards_page";
 import Checkout from "./courses/src/components/Checkout";
-
+import MembersTable from "./components/Freelancer/courses_cards/PurchaseDetail";
 
 
 const currentUser = true;
@@ -106,7 +106,8 @@ const router = createBrowserRouter([
     {path:"/coursecard",
     element:<CardPage/>},
 
-    
+    {path:"/productstable",
+    element:<MembersTable/>},
     
 
 //////////////////////////////////////////////////For Freelancer/////////////////////////////////////////////////////////////////

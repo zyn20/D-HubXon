@@ -4,7 +4,7 @@ const functions = require('../controller/freelancercontroller');
 const checkDuplicate=require('../middleware/checkforduplicate');
 const checkRecord=require("../middleware/check_existing_record");
 const courseController = require('../controller/coursescontroller');
-
+const { searchPurchasesByItemId } = require('../controller/purchasecontroller');
 
 
 // const path = require('path'); // Import the path module
@@ -51,6 +51,7 @@ const fileFields = upload.fields([
 router.post('/courses', fileFields, courseController.addCourse);
 router.delete('/course/:courseId', courseController.deleteCourseById);
 router.post('/courseOne',courseController.getCoursesByEmail);
+router.post('/purchaseitem',searchPurchasesByItemId);
 
 // router.post('/courses', courseController.addCourse);
 

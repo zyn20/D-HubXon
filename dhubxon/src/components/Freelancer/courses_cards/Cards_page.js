@@ -1,5 +1,7 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 // Ensure correct import
 import TaskCard from './Cardcourse';
@@ -9,6 +11,7 @@ import { Link } from 'react-router-dom';
 // import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer';
 import Navbar_Freelancer from "../../Freelancer/Navbar_Freelancer";
 function CardPage() {
+  const navigate = useNavigate();
   const [CARDS, SetCARDS] = useState([]);
 
   useEffect(() => {
@@ -44,6 +47,11 @@ function CardPage() {
       console.error('Error deleting course:', error);
     }
   };
+  const handleEditClick = (id) => {
+    localStorage.setItem('itemid', id);
+    // Here you can add more logic for editing, such as showing an edit form
+    navigate("/productstable");
+  };
 
 
   return (
@@ -66,7 +74,7 @@ function CardPage() {
               id={card.id}   
               title={card.title} 
                 description={card.description} 
-                
+                onEdit={handleEditClick} 
                 imageSrc={`http://127.0.0.1:5000${card.image.startsWith('/uploads') ? card.image : '/uploads/' + card.image}`} 
                 onDelete={deleteCourse}
                 />
