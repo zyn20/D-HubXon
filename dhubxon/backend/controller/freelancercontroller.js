@@ -579,11 +579,20 @@ const fetchprofileurl = async (req, res) => {
   }
 };
 
-
+const getAllFreelancers = async (req, res) => {
+  try {
+    const freelancers = await Freelancer.findAll(); // Sequelize method to find all records
+    res.status(200).json(freelancers);
+  } catch (error) {
+    console.error("Error fetching all freelancers:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 
 module.exports = {
   signIn,
+  getAllFreelancers,
   signUp,
   verify,
   forgetpassword,

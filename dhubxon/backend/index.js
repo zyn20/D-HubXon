@@ -12,8 +12,10 @@ const Freelancer = require("./models/freelancermodel");
 const Client = require("./models/clientmodel");
 const freelancerroute = require('./routes/freelancerroutes');
 const clientroute = require('./routes/clientroutes');
+const messageroute = require('./routes/messageroutes');
 const check_record = require("./middleware/check_existing_record");
 const messageController = require('./controller/chatcontroller');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -31,6 +33,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use('/freelancer', freelancerroute);
 app.use('/client', clientroute);
+app.use('/message',messageroute)
 app.use('/forgetpassword', check_record);
 
 // Socket.IO connection handling

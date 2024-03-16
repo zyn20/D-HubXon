@@ -8,12 +8,12 @@ const Message = sequelize.define('Message', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  fromUserId: {
-    type: DataTypes.INTEGER,
+  fromUserEmail: {
+    type: DataTypes.STRING,
     allowNull: false
   },
-  toUserId: {
-    type: DataTypes.INTEGER,
+  toUserEmail: {
+    type: DataTypes.STRING,
     allowNull: false
   },
   fromUserType: {
@@ -24,33 +24,31 @@ const Message = sequelize.define('Message', {
     type: DataTypes.ENUM('client', 'freelancer'),
     allowNull: false,
   },
-  
   isRead: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-}
-,
+  },
 });
 
 // Define associations for messages sent by clients
-Client.hasMany(Message, { foreignKey: 'fromUserId', constraints: false, as: 'sentMessages' });
+Client.hasMany(Message, { foreignKey: 'fromUserEmail', sourceKey: 'Email', constraints: false, as: 'sentMessages' });
 
 // Define associations for messages received by clients
-Client.hasMany(Message, { foreignKey: 'toUserId', constraints: false, as: 'receivedMessages' });
+Client.hasMany(Message, { foreignKey: 'toUserEmail', sourceKey: 'Email', constraints: false, as: 'receivedMessages' });
 
 // Define associations for messages sent by freelancers
-Freelancer.hasMany(Message, { foreignKey: 'fromUserId', constraints: false, as: 'sentMessages' });
+Freelancer.hasMany(Message, { foreignKey: 'fromUserEmail', sourceKey: 'Email', constraints: false, as: 'sentMessages' });
 
 // Define associations for messages received by freelancers
-Freelancer.hasMany(Message, { foreignKey: 'toUserId', constraints: false, as: 'receivedMessages' });
+Freelancer.hasMany(Message, { foreignKey: 'toUserEmail', sourceKey: 'Email', constraints: false, as: 'receivedMessages' });
 
 // Define associations for sender
-Message.belongsTo(Client, { foreignKey: 'fromUserId', constraints: false, as: 'clientSender', scope: { fromUserType: 'client' }});
-Message.belongsTo(Freelancer, { foreignKey: 'fromUserId', constraints: false, as: 'freelancerSender', scope: { fromUserType: 'freelancer' }});
+Message.belongsTo(Client, { foreignKey: 'fromUserEmail', targetKey: 'Email', constraints: false, as: 'clientSender', scope: { fromUserType: 'client' }});
+Message.belongsTo(Freelancer, { foreignKey: 'fromUserEmail', targetKey: 'Email', constraints: false, as: 'freelancerSender', scope: { fromUserType: 'freelancer' }});
 
 // Define associations for receiver
-Message.belongsTo(Client, { foreignKey: 'toUserId', constraints: false, as: 'clientReceiver', scope: { toUserType: 'client' }});
-Message.belongsTo(Freelancer, { foreignKey: 'toUserId', constraints: false, as: 'freelancerReceiver', scope: { toUserType: 'freelancer' }});
+Message.belongsTo(Client, { foreignKey: 'toUserEmail', targetKey: 'Email', constraints: false, as: 'clientReceiver', scope: { toUserType: 'client' }});
+Message.belongsTo(Freelancer, { foreignKey: 'toUserEmail', targetKey: 'Email', constraints: false, as: 'freelancerReceiver', scope: { toUserType: 'freelancer' }});
 
 module.exports = Message;

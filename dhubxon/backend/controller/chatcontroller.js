@@ -1,21 +1,20 @@
 const { Op } = require('sequelize');
-const Message = require('../models/message'); // adjust the path as necessary
-const Client = require('../models/clientmodel'); // adjust the path as necessary
-const Freelancer = require('../models/freelancermodel'); // adjust the path as necessary
+const Message = require('../models/message');
+const Client = require('../models/clientmodel');
+const Freelancer = require('../models/freelancermodel');
 
 // Function to send a message
 exports.sendMessage = async (req, res) => {
-    const { fromUserId, toUserId, content, fromUserType, toUserType } = req.body;
+    const { fromUserEmail, toUserEmail, content, fromUserType, toUserType } = req.body;
 
     try {
-       
-        
         const newMessage = await Message.create({
             content,
-            fromUserId,
-            toUserId,
+            fromUserEmail,
+            toUserEmail,
             fromUserType,
-            toUserType
+            toUserType,
+            isRead: false
         });
 
         res.status(200).json({
@@ -37,15 +36,15 @@ exports.getChatHistory = async (req, res) => {
             where: {
                 [Op.or]: [
                     {
-                        fromUserId: userId,
+                        fromUserEmail: userId,
                         fromUserType: userType,
-                        toUserId: otherUserId,
+                        toUserEmail: otherUserId,
                         toUserType: otherUserType
                     },
                     {
-                        fromUserId: otherUserId,
+                        fromUserEmail: otherUserId,
                         fromUserType: otherUserType,
-                        toUserId: userId,
+                        toUserEmail: userId,
                         toUserType: userType
                     }
                 ]
@@ -63,14 +62,14 @@ exports.getChatHistory = async (req, res) => {
     }
 };
 
-// Use Case: Get Unread Messages
+// Function to get unread messages for a user
 exports.getUnreadMessages = async (req, res) => {
     const { userId } = req.query;
 
     try {
         const unreadMessages = await Message.findAll({
             where: {
-                toUserId: userId,
+                toUserEmail: userId,
                 isRead: false
             }
         });
@@ -85,23 +84,16 @@ exports.getUnreadMessages = async (req, res) => {
     }
 };
 
-// Use Case: Search Chat History
+// Function to search chat history by keyword
 exports.searchChatHistory = async (req, res) => {
     const { userId, keyword } = req.query;
 
     try {
         const messages = await Message.findAll({
             where: {
-                [Op.or]: [
-                    {
-                        content: {
-                            [Op.iLike]: `%${keyword}%`
-                        }
-                    },
-                    {
-                        senderId: userId,
-                        senderType: 'user'
-                    }
+                [Op.and]: [
+                    { [Op.or]: [{ fromUserEmail: userId }, { toUserEmail: userId }] },
+                    { content: { [Op.iLike]: `%${keyword}%` } }
                 ]
             }
         });
@@ -116,7 +108,7 @@ exports.searchChatHistory = async (req, res) => {
     }
 };
 
-// Use Case: Filter Chat History by Date Range
+// Function to filter chat history by date range
 exports.filterChatByDateRange = async (req, res) => {
     const { userId, startDate, endDate } = req.query;
 
@@ -125,7 +117,8 @@ exports.filterChatByDateRange = async (req, res) => {
             where: {
                 createdAt: {
                     [Op.between]: [startDate, endDate]
-                }
+                },
+                [Op.or]: [{ fromUserEmail: userId }, { toUserEmail: userId }]
             }
         });
 
@@ -139,133 +132,4 @@ exports.filterChatByDateRange = async (req, res) => {
     }
 };
 
-// Additional use case: Get Chat Count
-exports.getChatCount = async (req, res) => {
-    try {
-        const count = await Message.count();
-        res.status(200).json({
-            message: 'Chat count retrieved successfully',
-            data: count
-        });
-    } catch (error) {
-        console.error('Error retrieving chat count:', error);
-        res.status(500).send('Error while retrieving chat count');
-    }
-};
-
-// Additional use case: Delete Message
-exports.deleteMessage = async (req, res) => {
-    const { messageId } = req.params;
-
-    try {
-        const deletedMessage = await Message.destroy({ where: { id: messageId } });
-        res.status(200).json({
-            message: 'Message deleted successfully',
-            data: deletedMessage
-        });
-    } catch (error) {
-        console.error('Error deleting message:', error);
-        res.status(500).send('Error while deleting message');
-    }
-};
-
-// Additional use case: Update Message
-exports.updateMessage = async (req, res) => {
-    const { messageId } = req.params;
-    const { content } = req.body;
-
-    try {
-        const updatedMessage = await Message.update({ content }, { where: { id: messageId } });
-        res.status(200).json({
-            message: 'Message updated successfully',
-            data: updatedMessage
-        });
-    } catch (error) {
-        console.error('Error updating message:', error);
-        res.status(500).send('Error while updating message');
-    }
-};
-
-// Additional use case: Get Message by ID
-exports.getMessageById = async (req, res) => {
-    const { messageId } = req.params;
-
-    try {
-        const message = await Message.findByPk(messageId);
-        if (!message) {
-            res.status(404).json({
-                message: 'Message not found'
-            });
-        } else {
-            res.status(200).json({
-                message: 'Message retrieved successfully',
-                data: message
-            });
-        }
-    } catch (error) {
-        console.error('Error retrieving message:', error);
-        res.status(500).send('Error while retrieving message');
-    }
-};
-
-// Additional use case: Mark Message as Read
-exports.markMessageAsRead = async (req, res) => {
-    const { messageId } = req.params;
-
-    try {
-        const updatedMessage = await Message.update({ isRead: true }, { where: { id: messageId } });
-        res.status(200).json({
-            message: 'Message marked as read successfully',
-            data: updatedMessage
-        });
-    } catch (error) {
-        console.error('Error marking message as read:', error);
-        res.status(500).send('Error while marking message as read');
-    }
-};
-
-// Additional use case: Get Chat Participants
-exports.getChatParticipants = async (req, res) => {
-    try {
-        const participants = await Message.findAll({
-            attributes: ['fromUserId', 'toUserId'],
-            group: ['fromUserId', 'toUserId']
-        });
-        res.status(200).json({
-            message: 'Chat participants retrieved successfully',
-            data: participants
-        });
-    } catch (error) {
-        console.error('Error retrieving chat participants:', error);
-        res.status(500).send('Error while retrieving chat participants');
-    }
-};
-
-// Additional use case: Get Message Statistics
-exports.getMessageStatistics = async (req, res) => {
-    try {
-        const statistics = await Message.aggregate('fromUserId', 'count', { distinct: true });
-        res.status(200).json({
-            message: 'Message statistics retrieved successfully',
-            data: statistics
-        });
-    } catch (error) {
-        console.error('Error retrieving message statistics:', error);
-        res.status(500).send('Error while retrieving message statistics');
-    }
-};
-
-exports.getLastMessage = async (req, res) => {
-    try {
-        const lastMessage = await Message.findOne({
-            order: [['createdAt', 'DESC']]
-        });
-        res.status(200).json({
-            message: 'Last message retrieved successfully',
-            data: lastMessage
-        });
-    } catch (error) {
-        console.error('Error retrieving last message:', error);
-        res.status(500).send('Error while retrieving last message');
-    }
-};
+// Add more API functions as needed based on your use case requirements

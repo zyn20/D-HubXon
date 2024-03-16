@@ -1,59 +1,61 @@
-
-  import React from 'react';
-import { IoIosSend } from 'react-icons/io';
-import { Button, TextField } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useChat } from '../contexts/ChatContext'; // Import useChat hook
+import * as chatService from '../services/chatService'; // Import chat service
 
 const ChatArea = () => {
-    const dummyMessages = [
-        { id: 1, user: 'John', text: 'Hello, how are you?' },
-        { id: 2, user: 'ME', text: 'I am fine, thanks! And you?' },
-        { id: 3, user: 'John', text: 'Great! Working on the new project.' },
-        { id: 4, user: 'ME', text: `That sounds exciting! What's the project about?` },
-        { id: 5, user: 'John', text: 'We are developing a new website for a client.' },
-        { id: 6, user: 'ME', text: 'Nice! Do you need any help with the development?' },
-        { id: 7, user: 'John', text: 'Actually, we could use an extra hand. Are you available?' },
-        { id: 8, user: 'ME', text: `Sure, I'd love to help. When do you need me to start?` },
-        { id: 9, user: 'John', text: 'As soon as possible. Can we meet tomorrow to discuss the details?' },
-        { id: 10, user: 'ME', text: 'Absolutely! What time works for you?' },
-        { id: 11, user: 'John', text: 'How about 2:00 PM? Does that work for you?' },
-        { id: 12, user: 'ME', text: "Perfect! Let's meet at 2:00 PM tomorrow." },
-      ];
+    const [messageContent, setMessageContent] = useState('');
+    const { selectedUser, messages, setMessages, sendMessage } = useChat(); // Destructure needed states and functions from context
 
-  return (
-    <div className="flex-1 p-4 flex flex-col bg-white">
-      <div className="bg-gray-50 flex-1 mb-4 overflow-y-auto p-3 custom-scrollbar">
-        {dummyMessages.map((message) => (
-          <div key={message.id} className={`flex ${
-            message.user === 'ME' ? 'justify-end' : 'justify-start'
-          }`}>
-            <div className={`max-w-2/3 p-3 my-1 rounded-lg shadow ${
-              message.user === 'ME' ? 'bg-blue-200' : 'bg-green-200'
-            }`}>
-              <strong className="block font-medium">{message.user}</strong>
-              <p className="text-gray-800">{message.text}</p>
-              <span className="text-xs text-gray-500 block text-right">10:30 AM</span>
+    useEffect(() => {
+        if (selectedUser) {
+            // Assuming a fetchChatHistory function is implemented in chatService and integrated into useChat
+            // This is where you would call it to fetch and display the chat history with the selected user
+            console.log('Fetching chat history with', selectedUser);
+        }
+    }, [selectedUser]);
+
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+        if (!messageContent.trim()) return; // Prevent sending empty messages
+
+        // Prepare message data based on your backend requirements
+        const messageData = {
+            fromUserEmail: 'currentUser@example.com', // This should be dynamically set based on the current user
+            toUserEmail: selectedUser.email,
+            content: messageContent,
+            fromUserType: 'client', // Adjust according to the current user's role
+            toUserType: selectedUser.userType,
+        };
+
+        // Use sendMessage from ChatContext which should internally use chatService to send the message
+        await sendMessage(messageData);
+
+        setMessageContent(''); // Clear input field after sending
+    };
+
+    return (
+        <div className="flex flex-col h-full bg-gray-200">
+            <div className="flex-grow overflow-auto p-4">
+                {/* Render chat messages here */}
+                {messages.map((message, index) => (
+                    <div key={index} className="mb-2">
+                        <span className="font-bold">{message.fromUserEmail}: </span>
+                        <span>{message.content}</span>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center border-t border-gray-300 pt-2">
-        <TextField
-          label="Type a message"
-          className="flex-grow mr-2"
-          variant="outlined"
-          size="small"
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<IoIosSend />}
-          className="shrink-0"
-        >
-          Send
-        </Button>
-      </div>
-    </div>
-  );
+            <form onSubmit={handleSendMessage} className="flex items-center justify-between p-2 border-t">
+                <input
+                    type="text"
+                    value={messageContent}
+                    onChange={(e) => setMessageContent(e.target.value)}
+                    placeholder="Type a message..."
+                    className="flex-grow px-4 py-2 mr-2 border rounded-lg focus:outline-none"
+                />
+                <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">Send</button>
+            </form>
+        </div>
+    );
 };
 
 export default ChatArea;

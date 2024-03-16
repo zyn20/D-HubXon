@@ -1,21 +1,21 @@
-
 import React from 'react';
+import { useChat } from '../contexts/ChatContext'; // Correctly import the useChat hook
 import Sidebar from '../components/Chat_Sidebar';
 import ChatArea from '../components/Chat_ChatArea';
-import Chat_Navbar from '../components/Chat_Navbar'
+import ChatNavbar from '../components/Chat_Navbar';
 
 function Chat() {
-  return (
-    <>
+    const { selectedUser, selectUser } = useChat(); // Now correctly using the useChat hook
 
-    <Chat_Navbar/>
-    <div className="flex h-screen ">
-      
-      <Sidebar />
-      <ChatArea />
-    </div>
-    </>
-  );
+    return (
+        <>
+            <ChatNavbar />
+            <div className="flex h-screen">
+                <Sidebar handleUserSelect={selectUser} />
+                <ChatArea selectedUser={selectedUser} />
+            </div>
+        </>
+    );
 }
 
 export default Chat;

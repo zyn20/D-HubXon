@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -8,11 +6,7 @@ import Root from "./Root";
 import Community from "./community/pages/Community";
 import reportWebVitals from "./reportWebVitals";
 import FreelancerHome from "./pages/Home";
-import {
-  RouterProvider,
-  createBrowserRouter,
-  Route,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter, Route } from "react-router-dom";
 import Fullviewjob from "./components/Freelancer/separate_components/Fullviewjob";
 import ProposalSubmission from "./pages/ProposalSubmission";
 import EditFreelancerProfile from "./pages/EditFreelancerProfile";
@@ -40,16 +34,14 @@ import UpdatePassword from "./pages/UpdatePassword";
 import ProductProvid from "./software_products/courses/src/contexts/ProductContext";
 import SidebarProvid from "./software_products/courses/src/contexts/SidebarContext";
 import CartProvid from "./software_products/courses/src/contexts/CartContext";
-import MyJobs from './components/Freelancer/Myjobs';
-import Chat from './pages/Chat'
-import Progress from './pages/Progress';
+import MyJobs from "./components/Freelancer/Myjobs";
+import Chat from "./pages/Chat";
+import Progress from "./pages/Progress";
 import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
-import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
-import AddPost from "./pages/AddPost"
-
-
-
+import Coursecard from "./components/Freelancer/courses_cards/Cards_page";
+import AddPost from "./pages/AddPost";
+import { ChatProvider } from "./contexts/ChatContext";
 
 const currentUser = true;
 
@@ -74,189 +66,144 @@ const router = createBrowserRouter([
         element: <MainPage />,
       },
 
-      { path: "/homepage", element: <MainPage /> },//general Path
-      { path: "login", element: <Login /> },//general Path
-      { path: "signup", element: <SignupPage /> },//general Path
-      { path: "/forgetPassword", element: <Forget_Pass /> },//general Path
-      { path: "verify", element: <VerifyOTP /> },//general Path
+      { path: "/homepage", element: <MainPage /> }, //general Path
+      { path: "login", element: <Login /> }, //general Path
+      { path: "signup", element: <SignupPage /> }, //general Path
+      { path: "/forgetPassword", element: <Forget_Pass /> }, //general Path
+      { path: "verify", element: <VerifyOTP /> }, //general Path
       { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> }, //general Path
 
-
-      
       //For Only One Time Accessable
       {
         path: "update_password",
+        element: <GeneralProtected component={<UpdatePassword />} />,
+      },
+
+      // { path: "update_password", element: <UpdatePassword /> },
+
+      { path: "/softwareproducts", element: <Software_home /> },
+      { path: "/softwareproductsone/:id", element: <Software_products /> },
+
+      //////////////////////////////////////////////////For Freelancer/////////////////////////////////////////////////////////////////
+
+      {
+        path: "freelancer/chat",
+        element: <Protected component={<Chat />} allowableuser="freelancer" />,
+      },
+
+      {
+        path: "/freelancer/viewcourses",
         element: (
-          <GeneralProtected
-            component={<UpdatePassword />}
+          <Protected component={<Coursecard />} allowableuser="freelancer" />
+        ),
+      },
+
+      {
+        path: "/freelancer/set-profile",
+        element: (
+          <Protected
+            component={<EditFreelancerProfile />}
+            allowableuser="freelancer"
           />
         ),
       },
 
-      
-      
-      // { path: "update_password", element: <UpdatePassword /> },
-     
+      {
+        path: "/freelancer/courses",
+        element: (
+          <Protected component={<AddCourses />} allowableuser="freelancer" />
+        ),
+      },
+      {
+        path: "freelancer/viewjob",
+        element: (
+          <Protected component={<Fullviewjob />} allowableuser="freelancer" />
+        ),
+      },
 
-    {path:"/softwareproducts",
-    element:<Software_home/>},
-    {path:"/softwareproductsone/:id",
-    element:<Software_products/>},
- 
+      {
+        path: "/freelancer/",
+        element: (
+          <Protected
+            component={<FreelancerDashboard />}
+            allowableuser="freelancer"
+          />
+        ),
+      },
 
-    
-    
+      {
+        path: "/freelancer/proposalsubmission",
+        element: (
+          <Protected
+            component={<ProposalSubmission />}
+            allowableuser="freelancer"
+          />
+        ),
+      },
 
-//////////////////////////////////////////////////For Freelancer/////////////////////////////////////////////////////////////////
+      {
+        path: "/freelancer/community",
+        element: (
+          <Protected component={<Community />} allowableuser="freelancer" />
+        ),
+      },
 
+      {
+        path: "/freelancer/addpost",
+        element: (
+          <Protected component={<AddPost />} allowableuser="freelancer" />
+        ),
+      },
 
-{
-  path: "freelancer/chat",
-  element: (
-    <Protected component={<Chat />} allowableuser="freelancer" />
-  ),
-},
+      {
+        path: "freelancer/my-jobs",
+        element: (
+          <Protected component={<MyJobs />} allowableuser="freelancer" />
+        ),
+      },
+      {
+        path: "freelancer/search-jobs",
+        element: <Protected component={<Home />} allowableuser="freelancer" />,
+      },
 
-{
-  path: "/freelancer/viewcourses",
-  element: (
-    <Protected component={<Coursecard />} allowableuser="freelancer" />
-  ),
-},
+      /////////////////////////////////////////////////////////////////For Client/
+      {
+        path: "/client/explore-courses",
+        element: (
+          <Protected component={<Complete_home />} allowableuser="client" />
+        ),
+      },
 
+      {
+        path: "/client/",
+        element: (
+          <Protected component={<ClientDashboard />} allowableuser="client" />
+        ),
+      },
+      {
+        path: "/client/postproject",
+        element: (
+          <Protected component={<PostProject />} allowableuser="client" />
+        ),
+      },
 
-{
-  path: "/freelancer/set-profile",
-  element: (
-    <Protected component={<EditFreelancerProfile />} allowableuser="freelancer" />
-  ),
-},
-   
+      {
+        path: "/client/set-profile",
+        element: (
+          <Protected component={<EditClientProfile />} allowableuser="client" />
+        ),
+      },
+      {
+        path: "/client/chat",
+        element: <Protected component={<Chat />} allowableuser="client" />,
+      },
 
+      {
+        path: "/client/progress",
+        element: <Protected component={<Progress />} allowableuser="client" />,
+      },
 
-
-{
-  path: "/freelancer/courses",
-  element: (
-    <Protected component={<AddCourses />} allowableuser="freelancer" />
-  ),
-},
-{
-  path: "freelancer/viewjob",
-  element: (
-    <Protected component={<Fullviewjob />} allowableuser="freelancer" />
-  ),
-},
-   
-    
-    {
-      path: "/freelancer/",
-      element: (
-        <Protected
-          component={<FreelancerDashboard />}
-          allowableuser="freelancer"
-        />
-      ),
-    },
-
-    {
-      path: "/freelancer/proposalsubmission",
-      element: (
-        <Protected
-          component={<ProposalSubmission />}
-          allowableuser="freelancer"
-        />
-      ),
-    },
-
-    {
-      path: "/freelancer/community",
-      element: (
-        <Protected
-          component={<Community />}
-          allowableuser="freelancer"
-        />
-      ),
-    },
-
-    {
-      path: "/freelancer/addpost",
-      element: (
-        <Protected
-          component={<AddPost />}
-          allowableuser="freelancer"
-        />
-      ),
-    },
-
-    {
-      path: "freelancer/my-jobs",
-      element: (
-        <Protected
-          component={<MyJobs />}
-          allowableuser="freelancer"
-        />
-      ),
-    },
-    {
-      path: "freelancer/search-jobs",
-      element: (
-        <Protected
-          component={<Home />}
-          allowableuser="freelancer"
-        />
-      ),
-    },
-
-   
-
-   
-/////////////////////////////////////////////////////////////////For Client/
-{
-  path: "/client/explore-courses",
-  element: (
-    <Protected component={<Complete_home />} allowableuser="client" />
-  ),
-},
-
-{
-  path: "/client/",
-  element: (
-    <Protected component={<ClientDashboard />} allowableuser="client" />
-  ),
-},
-{
-  path: "/client/postproject",
-  element: (
-    <Protected component={<PostProject />} allowableuser="client" />
-  ),
-} ,
-
-
-{
-  path: "/client/set-profile",
-  element: (
-    <Protected component={<EditClientProfile />} allowableuser="client" />
-  ),
-},
-{
-  path: "/client/chat",
-  element: (
-    <Protected component={<Chat />} allowableuser="client" />
-  ),
-},
-
-{
-  path: "/client/progress",
-  element: (
-    <Protected component={<Progress />} allowableuser="client" />
-  ),
-},
-    
-    {path:"/client/progress",
-    element: <Progress/>},
-
-
+      { path: "/client/progress", element: <Progress /> },
 
       //For Client
       {
@@ -271,31 +218,28 @@ const router = createBrowserRouter([
           <Protected component={<Complete_home />} allowableuser="client" />
         ),
       },
-     
-      
     ],
   },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <ProductProvider>
+  <ProductProvider>
     <ProductProvid>
       <SidebarProvider>
-      <SidebarProvid>
-        <CartProvider>
-        <CartProvid>
-          <RouterProvider router={router}>
-            <Root />
-          </RouterProvider>
-          </CartProvid>
-        </CartProvider>
+        <SidebarProvid>
+          <CartProvider>
+            <CartProvid>
+              <ChatProvider>
+                <RouterProvider router={router}>
+                  <Root />
+                </RouterProvider>
+              </ChatProvider>
+            </CartProvid>
+          </CartProvider>
         </SidebarProvid>
       </SidebarProvider>
-      </ProductProvid>
-    </ProductProvider>
-    
-  </React.StrictMode>
+    </ProductProvid>
+  </ProductProvider>
 );
 reportWebVitals();
