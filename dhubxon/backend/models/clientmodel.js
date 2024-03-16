@@ -27,3 +27,5 @@ const Client = sequelize.define("client", {
  });
 
  module.exports = Client
+
+ 

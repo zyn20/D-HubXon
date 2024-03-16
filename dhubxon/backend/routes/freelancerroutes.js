@@ -54,6 +54,7 @@ router.post("/INCREMENT_POST_COMMENT",functions.INCREMENT_POST_COMMENT);
 router.get("/fetchprofileurl",functions.fetchprofileurl);
 router.post("/deletepost",functions.DELETEPOST);
 
+router.get('/freelancers', functions.getAllFreelancers);
 
 
 
