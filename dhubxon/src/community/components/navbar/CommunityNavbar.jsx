@@ -43,14 +43,7 @@ const CommunityNavbar = () => {
           <Link onChange={handleHome} style={{ textDecoration: "none" }}>
             <span>D-Community</span>
           </Link>
-          {/* <HomeOutlined />
-          <DarkModeOutlined />
-          <GridViewOutlined /> */}
-
-          {/* <div className="search">
-            <SearchOutlined />
-            <input type="text" placeholder="Search" />
-          </div> */}
+          
         </div> 
 
         {/* Right Section */}

@@ -162,6 +162,14 @@ const AddPost = () => {
     try {
  if (image == null) {
   imageUrl = "NOT";
+  if(postData==""){
+    Swal.fire({
+      title: "Error!",
+      text: "Please Write something in Post.",
+      icon: "error",
+    });
+    return
+  }
 } else {
   imageUrl = await uploadimage();
 }
@@ -260,6 +268,15 @@ setPostData("");    } catch (error) {
             disabled={isSubmitting}
           />
         </div>
+
+  
+      {/* Conditionally render the image tag */}
+      {image && (
+        <div className="mb-4">
+          <img src={URL.createObjectURL(image)} alt="Uploaded" className="max-w-full h-auto" />
+        </div>
+      )}
+
         <div>
           <input type="file" onChange={handleImageChange} />
         </div>

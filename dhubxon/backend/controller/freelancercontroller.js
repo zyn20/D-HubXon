@@ -457,7 +457,7 @@ const getAllPost = async (req, res) => {
       const Posts = await Post.findAll();
   
       // Respond with the list of courses
-      res.status(200).json(Posts);
+      res.status(200).json(Posts.reverse());
     } catch (error) {
       // Handle errors
       console.error('Error getting courses:', error);
@@ -477,7 +477,7 @@ const getmyPost = async (req, res) => {
     });
 
     // Respond with the list of courses
-    res.status(200).json(Posts);
+    res.status(200).json(Posts.reverse());
   } catch (error) {
     // Handle errors
     console.error('Error getting courses:', error);
