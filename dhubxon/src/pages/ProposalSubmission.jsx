@@ -1,114 +1,350 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Navbar from "../components/Freelancer/Navbar_Freelancer";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+
 
 const ProposalSubmission = () => {
-  const [bidAmount, setBidAmount] = useState(200);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [title, settitle] = useState("");
+  const [description, setdescription] = useState("");
+  const [skillRequired, setskillRequired] = useState("");
+  const [projectDuration, setprojectDuration] = useState("");
+  const [pricingType, setpricingType] = useState("");
+  const [projectDeadline, setprojectDeadline] = useState("");
+  const [budget, setbudget] = useState("");
+  const [file, setfile] = useState("");
+  const [fileurl, setfileurl] = useState(null);
+  const [proposalowner, setproposalowner] = useState("");
+  const [coverletter, setcoverletter] = useState("");
+  const [projectID, setProjectId] = useState(null);
+  const [bidAmount, setBidAmount] = useState(100);
+  const [EstimatedFee, setEstimatedFee] = useState(90);
 
   const handleBidAmountChange = (e) => {
-    setBidAmount(e.target.value);
+    // Check if the input value is a valid number
+    const inputValue = parseFloat(e.target.value);
+    if (isNaN(inputValue)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Input",
+        text: "Please enter a valid number for the bid amount",
+      });
+      return;
+    }
+
+    setBidAmount(inputValue);
+    const estimatedFee = deductTenPercent(inputValue);
+    setEstimatedFee(estimatedFee);
   };
 
-  const handleSubmitProposal = () => {
-    console.log('Submitting Proposal...');
+  const handlefilesubmit = (e) => {
+    try {
+      const selectedFile = e.target.files[0];
+      if (!selectedFile) {
+        Swal.fire({
+          icon: "error",
+          title: "No File Selected",
+          text: "Please select a file to upload",
+        });
+        return;
+      }
+
+      if (selectedFile.type !== "application/pdf") {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid File Type",
+          text: "Please select a PDF file",
+        });
+        return;
+      }
+      setfile(selectedFile);
+    } catch (error) {
+      console.error("Error handling file:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while handling the file",
+      });
+    }
+
   };
+
+  const uploadFile = () => {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "hixrhbq4");
+
+      axios
+        .post("https://api.cloudinary.com/v1_1/dig2awru0/upload", formData)
+        .then((response) => {
+          console.log("Cloudinary Response:", response.data.secure_url);
+          setfileurl(response.data.secure_url);
+          resolve(response.data.secure_url);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+          reject(error);
+        });
+    });
+  };
+
+  function deductTenPercent(inputValue) {
+    if (typeof inputValue !== "number" || isNaN(inputValue)) {
+      return "Input value must be a valid number";
+    }
+    const deduction = inputValue * 0.1;
+    const result = inputValue - deduction;
+    return result;
+  }
+
+  const handleSubmitProposal = async () => {
+    console.log("Submitting Proposal...");
+    if (!coverletter  || !file) {
+      Swal.fire({
+        icon: "error",
+        title: "Incomplete Input",
+        text: "Please Input All Values",
+      });
+      return;
+    }
+    try {
+      const fileurl = await uploadFile();
+      console.log("File URL is:", fileurl,coverletter,file);
+  
+     
+  
+      const ProposalData = {
+        PROJECTID: projectID,
+        BIDAMOUNT: bidAmount,
+        COVERLETTER: coverletter,
+        FILEURL: fileurl,
+        PROPOSALOWNER: proposalowner,
+      };
+      console.log(ProposalData);
+      const response = await axios.post(
+        "http://127.0.0.1:5000/freelancer/submitproposal",
+        ProposalData
+      );
+      console.log("Response:", response);
+      if (response.status === 201) {
+        Swal.fire({
+          title: "Success!",
+          text: "Your proposal has been sent.",
+          icon: "success",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "An error occurred while sending the proposal.",
+          icon: "error",
+        });
+      }
+
+      navigate("/freelancer/search-jobs");
+
+
+    } catch (error) {
+      console.error("Error submitting proposal:", error);
+    }
+  };
+  
+
+  useEffect(() => {
+    settitle(location.state.title);
+    setdescription(location.state.description);
+    setskillRequired(location.state.skillRequired);
+    setprojectDuration(location.state.projectDuration);
+    setpricingType(location.state.pricingType);
+    setprojectDeadline(location.state.projectDeadline);
+    setbudget(location.state.budget);
+    setProjectId(location.state.ID);
+
+    if (projectID) {
+      console.log("-------------------");
+      console.log("Ali" + projectID);
+      console.log("===================");
+    }
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setproposalowner(decodedToken.freelancerData.email);
+    }
+  }, []);
 
   return (
-    <div className="flex justify-center items-center mt-8 ">
-      <div className="w-full max-w-2xl p-6  rounded-lg shadow-md bg-blue-100 mb-8">
-        <h1 className="text-3xl font-bold mb-6 text-center text-blue-950">Submit a Proposal</h1>
-        
-        {/* Proposal Settings */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Proposal Settings</h2>
-          <div className="flex justify-center">
-            <div className="w-full max-w-md">
-              <label className="block text-sm font-medium text-gray-700 text-center">Bid Amount</label>
-              <div className="mt-1 relative rounded-md">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500">$</span>
-                </div>
-                <input
-                  type="number"
-                  name="bidAmount"
-                  id="bidAmount"
-                  className="border-4 border-blue-400 h-10 focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm  rounded-md"
-                  placeholder="0.00"
-                  value={bidAmount}
-                  onChange={handleBidAmountChange}
-                />
-              </div>
+    <>
+      <Navbar />
+      <div className="flex justify-center items-center mt-8 ">
+        <div className="w-full max-w-2xl p-6  rounded-lg shadow-md bg-blue-100 mb-8">
+          <h1 className="text-3xl font-bold mb-6 text-center text-blue-950">
+            Submit a Proposal
+          </h1>
+
+          {/* Proposal Settings */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">
+              {title}
+            </h2>
+            <h1>{projectID ? projectID : "Im Not Set Yet"}</h1>
+          </div>
+
+          {/* Job Details */}
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold mb-2 text-center text-blue-950">
+              Job Details
+            </h2>
+          </div>
+
+          <div>
+            <div className="flex">
+              <h1 className="text-xl font-semibold mb-4 text-center text-blue-950">
+                SKILL REQUIRED:{" "}
+              </h1>
+              <p className="text-gray-700 mb-4 text-center  text-xl ">
+                {skillRequired}
+              </p>
+            </div>
+
+            <div className="flex">
+              <h1 className="text-xl font-semibold mb-4 text-center text-blue-950">
+                Deadline:{" "}
+              </h1>
+              <p className="text-gray-700 mb-4 text-center  text-xl ">
+                {projectDeadline}
+              </p>
+            </div>
+
+            <div className="flex">
+              <h1 className="text-xl font-semibold mb-4 text-center text-blue-950">
+                Pricing Type:{" "}
+              </h1>
+              <p className="text-gray-700 mb-4 text-center  text-xl ">
+                {pricingType}
+              </p>
+            </div>
+
+            <div className="flex">
+              <h1 className="text-xl font-semibold mb-4 text-center text-blue-950">
+                Project Budget:{" "}
+              </h1>
+              <p className="text-gray-700 mb-4 text-center  text-xl ">
+                {budget}$
+              </p>
+            </div>
+
+            <div className="flex">
+              <h1 className="text-xl font-semibold mb-4 text-center text-blue-950">
+                Project Duration:{" "}
+              </h1>
+              <p className="text-gray-700 mb-4 text-center  text-xl ">
+                {projectDuration}
+              </p>
+            </div>
+
+            <div className="flex">
+              <h1 className="text-xl font-semibold mb-4 text-center text-blue-950">
+                DESCRIPTION:{" "}
+              </h1>
+              <p className="text-gray-700 mb-4 text-center  text-xl ">
+                {description}
+              </p>
             </div>
           </div>
-        </div>
 
-        {/* Job Details */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Job Details</h2>
-          <p className="text-gray-700 mb-4 text-center">UI/UX Developer Required</p>
-          <p className="text-gray-700 mb-4 text-center">Front-End Development Posted Nov 20, 2023</p>
-          <p className="text-gray-700 mb-4 text-center">Description of the job...</p>
-        </div>
+          {/* Bid Section */}
+          <div className="mb-8 mt-3">
+            <div className="flex justify-center">
+              <div className="w-full max-w-md">
+                <label className="block text-sm font-medium text-gray-700 text-center">
+                  Bid Amount
+                </label>
+                <div className="mt-1 relative rounded-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500">$</span>
+                  </div>
+                  <input
+                    type="number"
+                    name="bidAmount"
+                    id="bidAmount"
+                    className="border-4 border-blue-400 h-10 focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm  rounded-md"
+                    placeholder="0.00"
+                    value={bidAmount}
+                    onChange={handleBidAmountChange}
+                  />
+                </div>
+              </div>
+            </div>
 
-        {/* Bid Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Bid</h2>
-          <p className="text-gray-700 mb-4 text-center">Total amount the client will see on your proposal</p>
-          <div className="mb-4 flex justify-center items-center">
-            <span className="text-gray-500">$</span>
-            <span className="text-gray-700 font-bold">{bidAmount}</span>
+            <h2 className="text-xl font-semibold mb-4 text-center text-blue-950"></h2>
+            <p className="text-gray-700 mb-4 text-center font-semibold">
+              Total amount the client will see on your proposal:{bidAmount}$
+            </p>
+
+            <p className="text-gray-700 mb-4 text-center">
+              The estimated amount you'll receive after service fees:
+              {EstimatedFee}$
+            </p>
           </div>
-          <p className="text-gray-700 mb-4 text-center">10% Freelancer Service Fee</p>
-          <div className="mb-4 flex justify-center items-center">
-            <span className="text-gray-500">-$</span>
-            <span className="text-gray-700 font-bold">20.00</span>
+
+          {/* Cover Letter */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">
+              Cover Letter
+            </h2>
+            <textarea
+              className="border-4 border-blue-400  p-4 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              rows="4"
+              placeholder="Write your cover letter..."
+              onChange={(e) => {
+                setcoverletter(e.target.value);
+              }}
+            ></textarea>
           </div>
-          <p className="text-gray-700 mb-4 text-center">The estimated amount you'll receive after service fees</p>
-          <div className="mb-4 flex justify-center items-center">
-            <span className="text-gray-500">$</span>
-            <span className="text-gray-700 font-bold">180.00</span>
+
+          {/* Attachments */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">
+              Attachments
+            </h2>
+            <input
+              type="file"
+              accept=".pdf"
+              className="block w-full text-sm text-gray-700 border-gray-300 rounded-md"
+              onChange={handlefilesubmit}
+            />
+            {/* Conditionally render the file name */}
           </div>
-        </div>
 
-        {/* Cover Letter */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Cover Letter</h2>
-          <textarea
-            className="border-4 border-blue-400  p-4 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            rows="4"
-            placeholder="Write your cover letter..."
-          ></textarea>
-        </div>
-
-        {/* Attachments */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Attachments</h2>
-          <input
-            type="file"
-            accept=".pdf, .docx, .jpg, .png"
-            className="block w-full text-sm text-gray-700 border-gray-300 rounded-md"
-          />
-        </div>
-
-        {/* Boost Proposal (optional) */}
-        <div className="mb-8">
+          {/* Boost Proposal (optional) */}
+          {/* <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Boost Proposal (optional)</h2>
           <div className="flex justify-center">
             <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
               Boost Proposal
             </button>
           </div>
-        </div>
+        </div> */}
 
-        {/* Submit Button */}
-        <div className="flex justify-center mt-6">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
-            onClick={handleSubmitProposal}
-          >
-            Submit Proposal
-          </button>
+          {/* Submit Button */}
+          <div className="flex justify-center mt-6">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+              onClick={handleSubmitProposal}
+            >
+              Submit Proposal
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

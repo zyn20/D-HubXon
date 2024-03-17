@@ -1,4 +1,6 @@
 const Freelancer = require("../models/freelancermodel");
+const Proposals = require("../models/proposals");
+
 const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
@@ -7,17 +9,12 @@ const Project = require("../models/project");
 const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");
 const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
 const emailValidator = require("deep-email-validator");
 
 const sequelize = require("../config");
-const { freemem } = require("os");
-const { Console } = require("console");
-let temporaryRecord = {};
 var user_ = {};
 var P_email = "";
 const SECRETKEY = "NATIONAL UNIVERSITY";
-
 const cloudinary=require('cloudinary').v2;
 cloudinary.config({ 
   cloud_name: 'dig2awru0', 
@@ -626,6 +623,17 @@ const fetchprofileurl = async (req, res) => {
   }
 };
 
+const SubmitProposals = async (req, res) => {
+  try {
+    const ProposalData = req.body;
+    const newProposal = await Proposals.create(ProposalData);
+    res.status(201).json({ message: "Proposal added successfully", post: newProposal });
+  } catch (error) {
+    console.error("Error adding Proposal:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 
 
@@ -649,5 +657,6 @@ module.exports = {
   INCREMENT_POST_COMMENT,
   fetchprofileurl,
   getmyPost,
-  DELETEPOST
+  DELETEPOST,
+  SubmitProposals
 };

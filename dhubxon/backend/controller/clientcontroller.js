@@ -278,6 +278,7 @@ const Postproject = async (req, res) => {
       projectDeadline: req.body.projectDeadline,
       budget: req.body.budget,
       KEYWORDS:req.body.KEYWORDS.toUpperCase(),
+      projectowner:req.body.projectowner
     };
 
     const newPost = await Project.create({

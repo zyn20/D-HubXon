@@ -3,7 +3,6 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-// import {ContractInstance} from '../contract/ContractInstance';
 import { ethers } from "ethers";
 import abi from "../contract/ContributeProjects.json";
 
@@ -173,11 +172,9 @@ const AddPost = () => {
 } else {
   imageUrl = await uploadimage();
 }
-console.log("ImageURL is:", imageUrl);
 
 const token = localStorage.getItem("token");
 const decodedToken = jwtDecode(token);
-console.log("Decoded Token:", decodedToken);
 
 const post = {
   NAME: decodedToken.freelancerData.name,

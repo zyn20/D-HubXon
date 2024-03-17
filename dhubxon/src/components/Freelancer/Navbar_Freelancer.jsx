@@ -22,7 +22,6 @@ const Navbar = () => {
   };
 
   const handleButtonClick = () => {
-    console.log('Button clicked!');
   };
   const handleLogout = () => {
   
@@ -32,7 +31,6 @@ const Navbar = () => {
       text: "Logged Out Successfully.",
       icon: "success"
     });
-    console.log("Token has been Removed");
     navigate('/login');
 
   };
@@ -41,7 +39,6 @@ const Navbar = () => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       const decodedToken = jwtDecode(token);
-      console.log("55555555555555555555555555555555555555555555Email is:",decodedToken.freelancerData.email);
       const response = await axios.get(
         "http://127.0.0.1:5000/freelancer/fetchprofileurl",
         { params: { Email: decodedToken.freelancerData.email } }
