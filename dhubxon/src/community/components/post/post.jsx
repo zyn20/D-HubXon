@@ -30,6 +30,10 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
     contract: null,
   });
 
+  const Reducecommentcount=()=>{
+    setCommentCount((prevCount) => prevCount - 1)
+  }
+
   const incrementCommentCount = () => {
     setCommentCount((prevCount) => prevCount + 1);
   };
@@ -229,6 +233,8 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
             IncrementCommentcount={incrementCommentCount}
             url={profileURL}
             CommentCount={post.COMMENTS}
+            deletecomment={Reducecommentcount}
+            setCommentOpen
           />
         )}
       </div>

@@ -509,6 +509,30 @@ const DELETEPOST = async (req, res) => {
   }
 };
 
+
+const DELETECOMMENT = async (req, res) => {
+  try {
+    await Comment.destroy({  
+      where: {
+        id: req.body.id,
+      },
+    });
+
+    // Optionally, update the post's comment count
+    const post = await Post.findOne({ where: { id: req.body.postid } });
+    if (post) {
+      post.COMMENTS -= 1;
+      await post.save();
+    }
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 const CHANGELIKE = async (req, res) => {
   console.log("'''''''''''''''''''''''''  " ,req.body.LikesCount);
   try {
@@ -658,5 +682,6 @@ module.exports = {
   fetchprofileurl,
   getmyPost,
   DELETEPOST,
-  SubmitProposals
+  SubmitProposals,
+  DELETECOMMENT
 };

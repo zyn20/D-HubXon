@@ -3,59 +3,65 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import "./comment.scss";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-const Comments = ({ postid, IncrementCommentcount, url }) => {
+const Comments = ({ postid, IncrementCommentcount, url, deletecomment ,setCommentOpen}) => {
   const [comments, setComments] = useState([]);
   const [profileURLs, setProfileURLs] = useState({});
   const [MainprofileURL, MainsetProfileURL] = useState("");
+  const [loginEmail, setloginEmail] = useState("");
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:5000/freelancer/fetchpostcomments",
+        {
+          params: {
+            POSTID: postid,
+          },
+        }
+      );
+
+      const fetchedData = response.data; 
+      setComments(fetchedData);
+      console.log("COmments are", fetchedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:5000/freelancer/fetchpostcomments",
-          {
-            params: {
-              POSTID: postid,
-            },
-          }
-        );
-
-        const fetchedData = response.data; // Modify this based on the actual response structure
-        setComments(fetchedData);
-        console.log(fetchedData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    
 
     fetchData(); // Call the async function inside useEffect
   }, []);
 
- 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-          const decodedToken = jwtDecode(token);
-          const Email=decodedToken.freelancerData.email
+    const token = localStorage.getItem("token");
+    const decodedToken = jwtDecode(token);
+    const Email = decodedToken.freelancerData.email;
+    setloginEmail(Email);
     const fetchData = async () => {
       try {
-        console.log(" Profile URL:",MainprofileURL)
-        const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofileurl', { params: { Email: Email } });
+        console.log(" Profile URL:", MainprofileURL);
+        const response = await axios.get(
+          "http://127.0.0.1:5000/freelancer/fetchprofileurl",
+          { params: { Email: Email } }
+        );
         MainsetProfileURL(response.data); // Update profileURL state with the fetched data
-        console.log(" Profile URL:",MainprofileURL)
+        console.log(" Profile URL:", MainprofileURL);
       } catch (error) {
-        console.error('Error fetching profile URL:', error);
+        console.error("Error fetching profile URL:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
-
-
   useEffect(() => {
-
-    
     const fetchProfileURLs = async () => {
       const urls = {};
       for (const comment of comments) {
@@ -71,8 +77,7 @@ const Comments = ({ postid, IncrementCommentcount, url }) => {
           urls[comment.EMAIL] = response.data;
         } catch (error) {
           console.error("Error fetching profile URL:", error);
-          // Handle error gracefully or set a default URL
-          urls[comment.EMAIL] = ""; // Set a default URL in case of error
+          urls[comment.EMAIL] = "";
         }
       }
       setProfileURLs(urls);
@@ -94,6 +99,55 @@ const Comments = ({ postid, IncrementCommentcount, url }) => {
     const dateTimeString = `${dateString} ${timeString}`;
     return dateTimeString;
   };
+
+  const handledeletecomment = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(
+            "http://127.0.0.1:5000/freelancer/deletecomment",
+            { id, postid }
+          );
+          if (response.status === 200) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+            // Delete the comment from the state
+            setComments((prevComments) =>
+              prevComments.filter((comment) => comment.id !== id)
+            );
+            // Update the comment count
+            deletecomment();
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while deleting the post.",
+              icon: "error",
+            });
+          }
+        } catch (error) {
+          console.error("Error Deleting Post:", error);
+          Swal.fire({
+            title: "Error!",
+            text: "An error occurred while deleting the post.",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+  
+  
 
   const PostComment = async (values, actions) => {
     if (!values.comment) {
@@ -118,15 +172,14 @@ const Comments = ({ postid, IncrementCommentcount, url }) => {
         "http://127.0.0.1:5000/freelancer/ADD_POST_COMMENT",
         newComment
       );
-      console.log("Post Comment sent successfully:", response.data);
-      IncrementCommentcount();
 
-      // Update state or perform any other action upon successful post
+      fetchData();
       setComments([...comments, newComment]);
+
+      IncrementCommentcount();
       actions.resetForm();
     } catch (error) {
       console.error("Error sending post data:", error);
-      // Handle error gracefully, maybe display an error message to the user
     }
   };
 
@@ -161,7 +214,14 @@ const Comments = ({ postid, IncrementCommentcount, url }) => {
             <span>{comment.NAME}</span>
             <p>{comment.CONTENT}</p>
           </div>
+
           <span className="date">{comment.TIME}</span>
+
+          {comment.EMAIL === loginEmail && (
+            <div>
+              <DeleteIcon onClick={() => handledeletecomment(comment.id)} />
+            </div>
+          )}
         </div>
       ))}
     </div>

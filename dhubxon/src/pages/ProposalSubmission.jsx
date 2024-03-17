@@ -193,7 +193,6 @@ const ProposalSubmission = () => {
             <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">
               {title}
             </h2>
-            <h1>{projectID ? projectID : "Im Not Set Yet"}</h1>
           </div>
 
           {/* Job Details */}

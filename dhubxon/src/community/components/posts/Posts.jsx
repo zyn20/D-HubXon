@@ -64,7 +64,6 @@ const Posts = ({IDENTIFIER}) => {
         setCommunityPosts(response.data); 
         }
         else{
-        console.log("FInal Value is:ONE")
         const token = localStorage.getItem("token");
         const decodedToken = jwtDecode(token);
         const response = await axios.get('http://127.0.0.1:5000/freelancer/GETcommunity_mypost', { params: { Email: decodedToken.freelancerData.email } });
