@@ -120,7 +120,7 @@ const router = createBrowserRouter([
 
 
 {
-  path: "freelancer/pricing",
+  path: "freelancer/pricing-healthcare",
   element: (
     <Protected component={<Pricing />} allowableuser="freelancer" />
   ),
@@ -128,7 +128,7 @@ const router = createBrowserRouter([
 
 
 {
-  path: "freelancer/pricing-services",
+  path: "freelancer/pricing-freelance-services",
   element: (
     <Protected component={<PricingFreelance />} allowableuser="freelancer" />
   ),

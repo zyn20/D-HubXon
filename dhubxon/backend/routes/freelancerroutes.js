@@ -57,6 +57,11 @@ router.post("/deletepost",functions.DELETEPOST);
 router.get('/freelancers', functions.getAllFreelancers);
 router.post('/create-subscription',functions.createSubscription);
 
+router.get('/subscription-status', functions.getSubscriptionStatus);
+
+router.post('/unsubscribe', functions.unsubscribe);
+
+
 
 router.get('*', function(req, res){
     res.status(404).send('404 error: page not found');

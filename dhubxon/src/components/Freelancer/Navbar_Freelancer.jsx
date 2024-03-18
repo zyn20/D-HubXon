@@ -7,14 +7,23 @@ import { IoMdMenu } from 'react-icons/io';
 import { FaComments } from 'react-icons/fa'; // Import the chat icon
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
+import { FaCaretDown } from 'react-icons/fa';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSubscriptionDropdownOpen, setIsSubscriptionDropdownOpen] = useState(false); // State to manage subscription dropdown visibility
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  const handleSubscriptionDropdownToggle = () => {
+    setIsSubscriptionDropdownOpen(!isSubscriptionDropdownOpen);
+  };
+
+ 
+
 
   const handleButtonClick = () => {
     console.log('Button clicked!');
@@ -72,6 +81,29 @@ const Navbar = () => {
                 <FaComments className="mr-1" /> Chat
               </NavLink>
             </li>
+            <li className="flex items-center">
+              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link flex items-center">
+                <FaComments className="mr-1" /> Chat
+              </NavLink>
+            </li>
+
+            <li className="relative">
+              <button onClick={handleSubscriptionDropdownToggle} className="nav-link flex items-center cursor-pointer">
+                Subscriptions <FaCaretDown className="ml-1" />
+              </button>
+              {isSubscriptionDropdownOpen && (
+                <ul className="absolute left-0 w-48 mt-2 py-2 bg-white border rounded shadow-xl">
+                  <li>
+                    <NavLink to="/freelancer/pricing-freelance-services?type=Freelance" className="block px-4 py-2 hover:bg-gray-100">Freelance Subscriptions</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/freelancer/pricing-healthcare?type=Healthcare" className="block px-4 py-2 hover:bg-gray-100">Healthcare Subscriptions</NavLink>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+
             <li>
             <button onClick={handleLogout} className="nav-link cursor-pointer">
               Logout
