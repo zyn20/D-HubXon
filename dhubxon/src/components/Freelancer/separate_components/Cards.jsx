@@ -62,7 +62,6 @@ if(tabId==="best-match"){
 
 
   const [selectedJob, setSelectedJob] = useState(null);
-
   const handleJobClick = ({ title, description }) => {
     setSelectedJob({ title, description });
   };
@@ -150,6 +149,7 @@ if(tabId==="best-match"){
     
     <Jobcard
       key={index}
+      id={project.id}
       title={project.title}
       description={project.description}
       skillRequired={project.skillRequired}
@@ -157,7 +157,7 @@ if(tabId==="best-match"){
       pricingType={project.pricingType}
       projectDeadline={project.projectDeadline}
       budget={project.budget}
-      KEYWORDS={project.KEYWORDS} // Make sure keywords is defined, use an empty array if not
+      KEYWORDS={project.KEYWORDS} 
       onClick={handleJobClick}
     />
   ))}
@@ -188,6 +188,7 @@ if(tabId==="best-match"){
     
   <Jobcard
     key={index}
+    id={project.id}
     title={project.title}
     description={project.description}
     skillRequired={project.skillRequired}
@@ -222,46 +223,9 @@ if(tabId==="best-match"){
           aria-labelledby="saved-jobs-tab"
         >
           {/* saved-jobs content here */}
-        
-          {/* <Jobcard
-  title="Cybersecurity Expert Required"
-  description="Seeking a Cybersecurity Expert to enhance the security of our online platforms. Experience with network security and ethical hacking preferred."
-  projectType="Consultancy"
-  price="$400"
-  projectTime="2 weeks ago"
-  location="On-site, London"
-  budget="$1500 - $2500"
-  keywords={["Cybersecurity", "Network Security", "Ethical Hacking"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Digital Marketing Specialist"
-  description="Digital marketing specialist needed to strategize and execute campaigns across various online platforms. Experience with social media marketing is essential."
-  projectType="Medium Term"
-  price="$350"
-  projectTime="3 days ago"
-  location="Remote or Hybrid"
-  budget="$1000 - $2000"
-  keywords={["Digital Marketing", "Social Media", "Campaign Management"]}
-  onClick={handleJobClick}
-/>
-
-<Jobcard
-  title="Content Writer for Tech Blog"
-  description="Tech company seeks a creative Content Writer to produce engaging, high-quality blog posts on current tech trends and products."
-  projectType="Freelance"
-  price="$100 per article"
-  projectTime="1 day ago"
-  location="Remote"
-  budget="$100 - $300 per article"
-  keywords={["Content Writing", "Blogging", "Tech"]} */}
-  {/* onClick={handleJobClick} */}
-{/* /> */}
-          {/* Placeholder for Job Cards */}
+          <h2 className="text-2xl font-bold mb-4">Saved Jobs</h2>
+         
        
-
-
           {selectedJob && <Fullviewjob title={selectedJob.title} description={selectedJob.description} />}
         </div>
       </div>

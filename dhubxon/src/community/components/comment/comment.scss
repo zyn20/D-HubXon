@@ -35,7 +35,7 @@
     }
 
     .comment {
-      margin: 30px 0px;
+      margin:  0px;
       display: flex;
       justify-content: space-between;
       gap: 20px;
@@ -61,6 +61,7 @@
         align-self: center;
         color: gray;
         font-size: 12px;
+        margin-left: 20px;
       }
     }
   }

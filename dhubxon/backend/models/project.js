@@ -33,6 +33,10 @@ const Project = sequelize.define("Project", {
   KEYWORDS: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  projectowner:{
+    type: DataTypes.STRING,
+    allowNull: false,
   }
 });
 

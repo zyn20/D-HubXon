@@ -50,6 +50,9 @@ import AddPost from "./pages/AddPost"
 import CardPage from "./components/Freelancer/courses_cards/Cards_page";
 import Checkout from "./courses/src/components/Checkout";
 import MembersTable from "./components/Freelancer/courses_cards/PurchaseDetail";
+import Pricing from "./pages/PricingHealth";
+import PricingFreelance from "./pages/PricingFreelance";
+
 
 
 const currentUser = true;
@@ -120,6 +123,22 @@ const router = createBrowserRouter([
   ),
 },
 
+
+{
+  path: "freelancer/pricing-healthcare",
+  element: (
+    <Protected component={<Pricing />} allowableuser="freelancer" />
+  ),
+},
+
+
+{
+  path: "freelancer/pricing-freelance-services",
+  element: (
+    <Protected component={<PricingFreelance />} allowableuser="freelancer" />
+  ),
+},
+
 {
   path: "/freelancer/viewcourses",
   element: (
@@ -176,11 +195,19 @@ const router = createBrowserRouter([
       path: "/freelancer/community",
       element: (
         <Protected
-          component={<Community />}
+          component={<Community IDENTIFIER="all"/>}
           allowableuser="freelancer"
         />
       ),
     },
+
+    
+{
+  path: "/freelancer/community/myposts",
+  element: (
+    <Protected component={<Community  IDENTIFIER="one"/>} allowableuser="freelancer" />
+  ),
+},
 
     {
       path: "/freelancer/addpost",

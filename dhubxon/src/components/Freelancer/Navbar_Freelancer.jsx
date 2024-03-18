@@ -1,19 +1,24 @@
-
-
-
-import React, { useState, useRef } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
-// import adminlogo from '../../assets/adminlogo.png';
+import React, { useEffect, useState } from 'react';
+import CircularButton from './separate_components/CircularButton';
+import profile_img from '../../assets/profile image.png';
+import { NavLink } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import logo2 from "../../assets/image.png";
 import { IoMdMenu } from 'react-icons/io';
-import { FaComments } from 'react-icons/fa'; // Import the chat icon
+import { FaComments } from 'react-icons/fa'; 
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import {jwtDecode} from 'jwt-decode';
+import axios from "axios";
+
+
+import Swal from 'sweetalert2'
+import { FaCaretDown } from 'react-icons/fa';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSubscriptionDropdownOpen, setIsSubscriptionDropdownOpen] = useState(false); // State to manage subscription dropdown visibility
+  const [profileURL, setProfileURL] = useState("");
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownAnchorRef = useRef(null);
@@ -27,18 +32,38 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleSubscriptionDropdownToggle = () => {
+    setIsSubscriptionDropdownOpen(!isSubscriptionDropdownOpen);
+  };
+
+ 
+
+
+  const handleButtonClick = () => {
+  };
   const handleLogout = () => {
-    // Perform logout actions, e.g., clear user session, redirect to login page
-    // For now, let's simulate a logout by redirecting to the login page
-    localStorage.removeItem('token');
+  
+    localStorage.removeItem("token");
     Swal.fire({
       title: 'Done!',
       text: 'Logged Out Successfully.',
       icon: 'success',
     });
-    console.log('Token has been Removed');
     navigate('/login');
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode(token);
+      const response = await axios.get(
+        "http://127.0.0.1:5000/freelancer/fetchprofileurl",
+        { params: { Email: decodedToken.freelancerData.email } }
+      );
+      setProfileURL(response.data);
+    };
+    fetchData();
+  }, []);
 
   return (
     <nav className="bg-[#E1E1E1] border-gray-200 font-poppins navbar-with-shadow py-4 fixed top-0 left-0 mb-28 right-0 z-10">
@@ -145,8 +170,91 @@ const Navbar = () => {
                 D-Community
               </NavLink>
             </li>
+            {/* Chat NavLink */}
+            <li className="flex items-center">
+              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link flex items-center">
+                <FaComments className="mr-1" /> Chat
+              </NavLink>
+            </li>
+            <li className="flex items-center">
+              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link flex items-center">
+                <FaComments className="mr-1" /> Chat
+              </NavLink>
+            </li>
+
+            <li className="relative">
+              <button onClick={handleSubscriptionDropdownToggle} className="nav-link flex items-center cursor-pointer">
+                Subscriptions <FaCaretDown className="ml-1" />
+              </button>
+              {isSubscriptionDropdownOpen && (
+                <ul className="absolute left-0 w-48 mt-2 py-2 bg-white border rounded shadow-xl">
+                  <li>
+                    <NavLink to="/freelancer/pricing-freelance-services?type=Freelance" className="block px-4 py-2 hover:bg-gray-100">Freelance Subscriptions</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/freelancer/pricing-healthcare?type=Healthcare" className="block px-4 py-2 hover:bg-gray-100">Healthcare Subscriptions</NavLink>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+
             <li>
-              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link">
+            <button onClick={handleLogout} className="nav-link cursor-pointer">
+              Logout
+            </button>
+          </li>
+          <li className="flex items-center">
+              <NavLink to="/freelancer/set-profile" activeClassName="font-semibold" className="nav-link flex items-center">
+                Profile
+              </NavLink>
+            </li>
+          </ul>
+        </div>
+
+        {/* Mobile Menu for smaller screens */}
+        <div className="flex items-center lg:order-2">
+          <button
+            onClick={handleMobileMenuToggle}
+            className="lg:hidden p-2 ml-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="mobile-menu-2"
+            aria-expanded={isMobileMenuOpen}
+          >
+            <IoMdMenu size={24} />
+          </button>
+
+          {/* Profile Button for Desktop */}
+          <CircularButton  imageUrl={profileURL} altText="profile_image" onClick={handleButtonClick} />
+        </div>
+      </div>
+
+      {/* Mobile Menu Content */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden">
+          <ul className="flex flex-col mt-4 font-medium">
+            <li>
+              <NavLink to="/" activeClassName="font-semibold" className="nav-link">
+                Home
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/find-work" activeClassName="font-semibold" className="nav-link">
+                Find Work
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/my-jobs" activeClassName="font-semibold" className="nav-link">
+                My Jobs
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/freelancer/community" activeClassName="font-semibold" className="nav-link">
+                D-Community
+              </NavLink>
+            </li>
+            {/* Chat NavLink */}
+            <li>
+              <NavLink to="/chat" activeClassName="font-semibold" className="nav-link">
                 <FaComments className="mr-1" /> Chat
               </NavLink>
             </li>

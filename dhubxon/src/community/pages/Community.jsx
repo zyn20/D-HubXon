@@ -1,21 +1,21 @@
-import React from 'react'
-import CommunityNavbar from '../components/navbar/CommunityNavbar'
-import Leftbar from '../components/leftBar/Leftbar';
-import RightBar from '../components/rightBar/RightBar';
-import CommunityHome from '../components/home/CommunityHome';
+import React from "react";
+import CommunityHome from "../components/home/CommunityHome";
+import Navbar from "../../components/Freelancer/Navbar_Freelancer";
 
-const Community = () => {
+const Community = ({ IDENTIFIER }) => {
   return (
     <>
-    <CommunityNavbar/>
-    <div >
-        {/* <Leftbar/> */}
-        <div style={{flex: 6}}>
-        <CommunityHome/>
+      <div className="sticky top-0 z-50">
+        <Navbar />
+      </div>
+
+      <div>
+        <div style={{ flex: 6 }}>
+          <CommunityHome IDENTIFIER={IDENTIFIER} />
         </div>
-        {/* <RightBar/> */}
-    </div>
+      </div>
     </>
-  )
-}
+  );
+};
+
 export default Community;

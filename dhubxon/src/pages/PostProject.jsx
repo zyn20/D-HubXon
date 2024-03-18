@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Navbar_Client from "../components/client/Navbar";
+import { jwtDecode } from "jwt-decode";
+
 
 const PostProject = () => {
   const [title, setTitle] = useState("");
@@ -14,11 +16,11 @@ const PostProject = () => {
   const [KEYWORDS, setKEYWORDS] = useState();
   const [customSkill, setCustomSkill] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("");
+  const [projectowner,setprojectowner]=useState("");
 
   const navigate = useNavigate();
 
   const validation = () => {
-    console.log("Title length is:",title.length)
     const enteredDeadline = new Date(projectDeadline).getTime();
     const currentDateTime = new Date().getTime();
     const errors = {};
@@ -69,7 +71,20 @@ const PostProject = () => {
     return true;
   };
 
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setprojectowner(decodedToken.clientData.email);
+    }
+  }, []); 
+
+
   const handleSubmit = async (e) => {
+  
+
+
     e.preventDefault();
     if (!validation()) {
       return;
@@ -88,6 +103,7 @@ const PostProject = () => {
           projectDeadline,
           budget,
           KEYWORDS,
+          projectowner
         }
       );
 

@@ -12,50 +12,60 @@ import { SearchOutlined } from "@mui/icons-material";
 import { HomeOutlined } from "@mui/icons-material";
 import { GridViewOutlined } from "@mui/icons-material";
 import { DarkModeOutlined } from "@mui/icons-material";
-import img from "../../../assets/image.png";
+import img from "../../../assets/profile image.png";
+import { jwtDecode } from "jwt-decode";
 
 
 
 const CommunityNavbar = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode(token);
 
   const handleUploadPost = () => {
     navigate("/freelancer/addpost");
     // console.log('Upload post clicked');
   };
 
+  const handleMyPosts = () => {
+    navigate("/freelancer/community/myposts");
+    
+  };
+  const handleHome = () => {
+    navigate("/freelancer/community");
+    
+  };
   return (
     <>
       <div className="navbar">
         {/* Left Section */}
         <div className="left">
-          <Link to="/community" style={{ textDecoration: "none" }}>
+          <Link onChange={handleHome} style={{ textDecoration: "none" }}>
             <span>D-Community</span>
           </Link>
-          <HomeOutlined />
-          <DarkModeOutlined />
-          <GridViewOutlined />
-
-          <div className="search">
-            <SearchOutlined />
-            <input type="text" placeholder="Search" />
-          </div>
-        </div>
+          
+        </div> 
 
         {/* Right Section */}
-        <div className="right">
+        <div className="right justify-center mr-9 ml-9">
+        <button onClick={handleHome} className="upload-button">
+            Home
+          </button>
+          <button onClick={handleMyPosts} className="upload-button">
+            My Posts
+          </button>
           <button onClick={handleUploadPost} className="upload-button">
             Upload Post
           </button>
-          <PersonOutline />
+          {/* <PersonOutline />
           <EmailIcon />
-          <NotificationsOutlined />
+          <NotificationsOutlined /> */}
         </div>
 
         {/* User Section */}
         <div className="user">
           {/* <img src={img} alt="" /> */}
-          <span>Zain</span>
+          <span>{decodedToken.freelancerData.name}</span>
         </div>
       </div>
     </>

@@ -3,10 +3,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 const POST = sequelize.define("post", {
  
-    // POSTID: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false
-    // },
+ 
     NAME: {
       type: DataTypes.STRING,
       allowNull: false
@@ -34,7 +31,16 @@ const POST = sequelize.define("post", {
 EMAIL: {
    type: DataTypes.STRING,
    allowNull: false
+},
+IMAGEURL: {
+  type: DataTypes.STRING,
+  allowNull: false
+},
+BLOCKCHAININDEX: {
+  type: DataTypes.INTEGER,
+  allowNull: true
 }
+
  });
 
  module.exports = POST
