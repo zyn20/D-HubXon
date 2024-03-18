@@ -3,7 +3,6 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-// import {ContractInstance} from '../contract/ContractInstance';
 import { ethers } from "ethers";
 import abi from "../contract/ContributeProjects.json";
 
@@ -162,14 +161,20 @@ const AddPost = () => {
     try {
  if (image == null) {
   imageUrl = "NOT";
+  if(postData==""){
+    Swal.fire({
+      title: "Error!",
+      text: "Please Write something in Post.",
+      icon: "error",
+    });
+    return
+  }
 } else {
   imageUrl = await uploadimage();
 }
-console.log("ImageURL is:", imageUrl);
 
 const token = localStorage.getItem("token");
 const decodedToken = jwtDecode(token);
-console.log("Decoded Token:", decodedToken);
 
 const post = {
   NAME: decodedToken.freelancerData.name,
@@ -260,6 +265,15 @@ setPostData("");    } catch (error) {
             disabled={isSubmitting}
           />
         </div>
+
+  
+      {/* Conditionally render the image tag */}
+      {image && (
+        <div className="mb-4">
+          <img src={URL.createObjectURL(image)} alt="Uploaded" className="max-w-full h-auto" />
+        </div>
+      )}
+
         <div>
           <input type="file" onChange={handleImageChange} />
         </div>

@@ -1,69 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import CircularButton from './separate_components/CircularButton';
 import profile_img from '../../assets/profile image.png';
 import { NavLink } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import { IoMdMenu } from 'react-icons/io';
-import { FaComments } from 'react-icons/fa'; 
+import { FaComments } from 'react-icons/fa'; // Import the chat icon
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
-import axios from "axios";
-
-
 import Swal from 'sweetalert2'
-import { FaCaretDown } from 'react-icons/fa';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSubscriptionDropdownOpen, setIsSubscriptionDropdownOpen] = useState(false); // State to manage subscription dropdown visibility
-  const [profileURL, setProfileURL] = useState("");
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleSubscriptionDropdownToggle = () => {
-    setIsSubscriptionDropdownOpen(!isSubscriptionDropdownOpen);
-  };
-
- 
-
-
   const handleButtonClick = () => {
+    console.log('Button clicked!');
   };
   const handleLogout = () => {
-  
+    // Perform logout actions, e.g., clear user session, redirect to login page
+    // For now, let's simulate a logout by redirecting to the login page
     localStorage.removeItem("token");
     Swal.fire({
       title: "Done!",
       text: "Logged Out Successfully.",
       icon: "success"
     });
+    console.log("Token has been Removed");
     navigate('/login');
 
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      const decodedToken = jwtDecode(token);
-      const response = await axios.get(
-        "http://127.0.0.1:5000/freelancer/fetchprofileurl",
-        { params: { Email: decodedToken.freelancerData.email } }
-      );
-      setProfileURL(response.data);
-    };
-    fetchData();
-  }, []);
 
   return (
     <nav className="bg-gray-100 border-gray-200 dark:bg-gray-900 font-poppins navbar-with-shadow py-4">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto">
         <NavLink to="#" className="flex items-center">
+          
           <img src={logo} className="h-6 mr-3 sm:h-9" alt="Logo" />
+       
         </NavLink>
 
+        {/* Centered NavLinks for Desktop */}
         <div className="hidden lg:flex lg:justify-center">
           <ul className="flex mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
             <li>
@@ -93,29 +72,6 @@ const Navbar = () => {
                 <FaComments className="mr-1" /> Chat
               </NavLink>
             </li>
-            <li className="flex items-center">
-              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link flex items-center">
-                <FaComments className="mr-1" /> Chat
-              </NavLink>
-            </li>
-
-            <li className="relative">
-              <button onClick={handleSubscriptionDropdownToggle} className="nav-link flex items-center cursor-pointer">
-                Subscriptions <FaCaretDown className="ml-1" />
-              </button>
-              {isSubscriptionDropdownOpen && (
-                <ul className="absolute left-0 w-48 mt-2 py-2 bg-white border rounded shadow-xl">
-                  <li>
-                    <NavLink to="/freelancer/pricing-freelance-services?type=Freelance" className="block px-4 py-2 hover:bg-gray-100">Freelance Subscriptions</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/freelancer/pricing-healthcare?type=Healthcare" className="block px-4 py-2 hover:bg-gray-100">Healthcare Subscriptions</NavLink>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-
             <li>
             <button onClick={handleLogout} className="nav-link cursor-pointer">
               Logout
@@ -141,7 +97,7 @@ const Navbar = () => {
           </button>
 
           {/* Profile Button for Desktop */}
-          <CircularButton  imageUrl={profileURL} altText="profile_image" onClick={handleButtonClick} />
+          <CircularButton  imageUrl={profile_img} altText="profile_image" onClick={handleButtonClick} />
         </div>
       </div>
 

@@ -33,8 +33,7 @@ var Name;
          decodedToken = jwtDecode(token);
         Email=decodedToken.freelancerData.email
         Name=decodedToken.freelancerData.name;
-  console.log("Email in Fetch Data:",Email);
-  console.log("Name in Fetch Data:",Name);
+ 
 
   const response = await axios.get('http://127.0.0.1:5000/freelancer/fetchprofiledata', {
     params: {

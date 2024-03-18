@@ -1,24 +1,22 @@
 const Freelancer = require("../models/freelancermodel");
+const Proposals = require("../models/proposals");
+
 const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const Subscription = require("../models/subcriptions");
+const CommentReply = require("../models/commentreply");
 
 const Project = require("../models/project");
 const crypto = require("crypto");
 const { sendVerificationEmail } = require("./nodemailer/email");
 const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
 const emailValidator = require("deep-email-validator");
 
 const sequelize = require("../config");
-const { freemem } = require("os");
-const { Console } = require("console");
-let temporaryRecord = {};
 var user_ = {};
 var P_email = "";
 const SECRETKEY = "NATIONAL UNIVERSITY";
-
 const cloudinary=require('cloudinary').v2;
 cloudinary.config({ 
   cloud_name: 'dig2awru0', 
@@ -458,7 +456,7 @@ const getAllPost = async (req, res) => {
       const Posts = await Post.findAll();
   
       // Respond with the list of courses
-      res.status(200).json(Posts);
+      res.status(200).json(Posts.reverse());
     } catch (error) {
       // Handle errors
       console.error('Error getting courses:', error);
@@ -478,7 +476,7 @@ const getmyPost = async (req, res) => {
     });
 
     // Respond with the list of courses
-    res.status(200).json(Posts);
+    res.status(200).json(Posts.reverse());
   } catch (error) {
     // Handle errors
     console.error('Error getting courses:', error);
@@ -513,6 +511,50 @@ const DELETEPOST = async (req, res) => {
   }
 };
 
+
+const DELETECOMMENT = async (req, res) => {
+  try {
+    await Comment.destroy({  
+      where: {
+        id: req.body.id,
+      },
+    });
+
+    // Optionally, update the post's comment count
+    const post = await Post.findOne({ where: { id: req.body.postid } });
+    if (post) {
+      post.COMMENTS -= 1;
+      await post.save();
+    }
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+const DELETEREPLYCOMMENT = async (req, res) => {
+  try {
+    await Comment.destroy({  
+      where: {
+        id: req.body.id,
+      },
+    });
+
+    // Optionally, update the post's comment count
+    
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 const CHANGELIKE = async (req, res) => {
   console.log("'''''''''''''''''''''''''  " ,req.body.LikesCount);
   try {
@@ -536,8 +578,6 @@ const CHANGELIKE = async (req, res) => {
 };
 
 const ADD_POST_COMMENT = async (req, res) => {
-
-
   try {
     const CommentData = req.body;
 console.log("Post Data:",CommentData);
@@ -550,6 +590,21 @@ INCREMENT_POST_COMMENT(CommentData.POSTID);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+const ADD_REPLY_COMMENT = async (req, res) => {
+  try {
+    const CommentData = req.body;
+console.log("Post Data:",CommentData);
+    // Assuming your FreelancerProfile model is correctly defined
+    const newComment = await CommentReply.create(CommentData);
+    res.status(201).json({ message: "Comment added successfully", Comment: newComment });
+  } catch (error) {
+    console.error("Error adding Comment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 const INCREMENT_POST_COMMENT = async (postid) => {
   // console.log("'''''''''''''''''''''''''  " ,req.body.commentCount);
@@ -585,6 +640,29 @@ const fetchpostcomments = async (req, res) => {
       where: {
         //   email: user_.Email,
         POSTID: req.query.POSTID,
+      },
+    });
+
+    console.log(AllComments);
+      res.send(AllComments);
+    
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+const fetchreplycomments = async (req, res) => {
+  
+  console.log(req.body);
+  console.log("ID in Comment Fetch API:", req.query.COMMENTID);
+
+  try {
+    const AllComments = await CommentReply.findAll({
+      where: {
+        //   email: user_.Email,
+        COMMENTID: req.query.COMMENTID,
       },
     });
 
@@ -636,6 +714,17 @@ const getAllFreelancers = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+const SubmitProposals = async (req, res) => {
+  try {
+    const ProposalData = req.body;
+    const newProposal = await Proposals.create(ProposalData);
+    res.status(201).json({ message: "Proposal added successfully", post: newProposal });
+  } catch (error) {
+    console.error("Error adding Proposal:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 
 const createSubscription = async (req, res) => {
@@ -768,4 +857,9 @@ module.exports = {
   createSubscription,
   getSubscriptionStatus,
   unsubscribe,
+  SubmitProposals,
+  DELETECOMMENT,
+  ADD_REPLY_COMMENT,
+  fetchreplycomments,
+  DELETEREPLYCOMMENT
 };
