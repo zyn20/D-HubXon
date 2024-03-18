@@ -55,7 +55,7 @@ router.get("/fetchprofileurl",functions.fetchprofileurl);
 router.post("/deletepost",functions.DELETEPOST);
 
 router.get('/freelancers', functions.getAllFreelancers);
-
+router.post('/create-subscription',functions.createSubscription);
 
 
 router.get('*', function(req, res){

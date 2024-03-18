@@ -2,6 +2,7 @@ const Freelancer = require("../models/freelancermodel");
 const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const Subscription = require("../models/subcriptions");
 
 const Project = require("../models/project");
 const crypto = require("crypto");
@@ -636,6 +637,30 @@ const getAllFreelancers = async (req, res) => {
   }
 };
 
+const createSubscription = async (req, res) => {
+  try {
+    // Extract subscription details from the request body
+    console.log('Request Body:', req.body);
+    const { subscriptionType, subscribed, tenure, deductionAmount, packageType, useremail } = req.body;
+
+    // Create a new subscription record in the database
+    const newSubscription = await Subscription.create({
+      subscriptionType,
+      subscribed,
+      tenure,
+      deductionAmount,
+      packageType,
+      useremail
+    });
+
+    // Send a success response with the created subscription data
+    res.status(201).json(newSubscription);
+  } catch (error) {
+    // If there's an error, send an error response
+    console.error('Error creating subscription:', error);
+    res.status(500).json({ error: 'Unable to create subscription' });
+  }
+};
 
 
 
@@ -661,4 +686,5 @@ module.exports = {
   getmyPost,
   DELETEPOST,
   getAllFreelancers,
+  createSubscription,
 };
