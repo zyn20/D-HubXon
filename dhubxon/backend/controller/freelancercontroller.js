@@ -4,6 +4,7 @@ const Proposals = require("../models/proposals");
 const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const CommentReply = require("../models/commentreply");
 
 const Project = require("../models/project");
 const crypto = require("crypto");
@@ -533,6 +534,26 @@ const DELETECOMMENT = async (req, res) => {
 };
 
 
+
+const DELETEREPLYCOMMENT = async (req, res) => {
+  try {
+    await Comment.destroy({  
+      where: {
+        id: req.body.id,
+      },
+    });
+
+    // Optionally, update the post's comment count
+    
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 const CHANGELIKE = async (req, res) => {
   console.log("'''''''''''''''''''''''''  " ,req.body.LikesCount);
   try {
@@ -556,8 +577,6 @@ const CHANGELIKE = async (req, res) => {
 };
 
 const ADD_POST_COMMENT = async (req, res) => {
-
-
   try {
     const CommentData = req.body;
 console.log("Post Data:",CommentData);
@@ -570,6 +589,21 @@ INCREMENT_POST_COMMENT(CommentData.POSTID);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+const ADD_REPLY_COMMENT = async (req, res) => {
+  try {
+    const CommentData = req.body;
+console.log("Post Data:",CommentData);
+    // Assuming your FreelancerProfile model is correctly defined
+    const newComment = await CommentReply.create(CommentData);
+    res.status(201).json({ message: "Comment added successfully", Comment: newComment });
+  } catch (error) {
+    console.error("Error adding Comment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 const INCREMENT_POST_COMMENT = async (postid) => {
   // console.log("'''''''''''''''''''''''''  " ,req.body.commentCount);
@@ -605,6 +639,29 @@ const fetchpostcomments = async (req, res) => {
       where: {
         //   email: user_.Email,
         POSTID: req.query.POSTID,
+      },
+    });
+
+    console.log(AllComments);
+      res.send(AllComments);
+    
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+const fetchreplycomments = async (req, res) => {
+  
+  console.log(req.body);
+  console.log("ID in Comment Fetch API:", req.query.COMMENTID);
+
+  try {
+    const AllComments = await CommentReply.findAll({
+      where: {
+        //   email: user_.Email,
+        COMMENTID: req.query.COMMENTID,
       },
     });
 
@@ -683,5 +740,8 @@ module.exports = {
   getmyPost,
   DELETEPOST,
   SubmitProposals,
-  DELETECOMMENT
+  DELETECOMMENT,
+  ADD_REPLY_COMMENT,
+  fetchreplycomments,
+  DELETEREPLYCOMMENT
 };

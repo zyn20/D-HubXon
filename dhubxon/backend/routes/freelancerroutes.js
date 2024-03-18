@@ -49,11 +49,15 @@ router.get("/GETcommunity_post",functions.getAllPost);
 router.get("/GETcommunity_mypost",functions.getmyPost);
 router.post("/CHANGELIKEcommunity_post",functions.CHANGELIKE);
 router.post("/ADD_POST_COMMENT",functions.ADD_POST_COMMENT);
+router.post("/ADD_REPLY_COMMENT",functions.ADD_REPLY_COMMENT);
 router.get("/fetchpostcomments",functions.fetchpostcomments);
+router.get("/fetchreplycomments",functions.fetchreplycomments);
 router.post("/INCREMENT_POST_COMMENT",functions.INCREMENT_POST_COMMENT);
 router.get("/fetchprofileurl",functions.fetchprofileurl);
 router.post("/deletepost",functions.DELETEPOST);
 router.post("/deletecomment",functions.DELETECOMMENT);
+router.post("/deleteReplycomment",functions.DELETEREPLYCOMMENT);
+
 router.post("/submitproposal",functions.SubmitProposals);
 
 
