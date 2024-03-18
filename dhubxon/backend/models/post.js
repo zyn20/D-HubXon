@@ -3,10 +3,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 const POST = sequelize.define("post", {
  
-    // POSTID: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false
-    // },
+ 
     NAME: {
       type: DataTypes.STRING,
       allowNull: false

@@ -370,6 +370,18 @@ const fetchprofiledata = async (req, res) => {
   }
 };
 
+
+const getAllClients = async (req, res) => {
+  try {
+    const clients = await Client.findAll(); // Sequelize method to find all records
+    res.status(200).json(clients);
+  } catch (error) {
+    console.error("Error fetching all clients:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
 module.exports = {
   signIn,
   signUp,
@@ -381,4 +393,5 @@ module.exports = {
   setProfile,
   fetchprofiledata,
   Re_send_OTP,
+  getAllClients,
 };

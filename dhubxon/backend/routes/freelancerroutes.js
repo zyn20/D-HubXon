@@ -60,6 +60,12 @@ router.post("/deleteReplycomment",functions.DELETEREPLYCOMMENT);
 
 router.post("/submitproposal",functions.SubmitProposals);
 
+router.get('/freelancers', functions.getAllFreelancers);
+router.post('/create-subscription',functions.createSubscription);
+
+router.get('/subscription-status', functions.getSubscriptionStatus);
+
+router.post('/unsubscribe', functions.unsubscribe);
 
 
 

@@ -5,6 +5,7 @@ const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const CommentReply = require("../models/commentreply");
+const Subscription = require("../models/subcriptions");
 
 const Project = require("../models/project");
 const crypto = require("crypto");
@@ -715,7 +716,120 @@ const SubmitProposals = async (req, res) => {
   }
 };
 
+const getAllFreelancers = async (req, res) => {
+  try {
+    const freelancers = await Freelancer.findAll(); // Sequelize method to find all records
+    res.status(200).json(freelancers);
+  } catch (error) {
+    console.error("Error fetching all freelancers:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
+
+const createSubscription = async (req, res) => {
+  try {
+    const { subscriptionType, tenure, deductionAmount, packageType, useremail } = req.body;
+
+    // Check if there's already a subscription of the same type for the user
+    const existingSubscription = await Subscription.findOne({
+      where: {
+        useremail,
+        subscriptionType // Add subscriptionType to the query
+      }
+    });
+
+    if (existingSubscription) {
+      return res.status(409).json({ message: `User already has a ${subscriptionType} subscription.` });
+    }
+
+    // Proceed to create a new subscription if not already subscribed to this type
+    const newSubscription = await Subscription.create({
+      subscriptionType,
+      subscribed: true, // Assuming a new subscription means they are subscribed
+      tenure,
+      deductionAmount,
+      packageType,
+      useremail
+    });
+
+    res.status(201).json(newSubscription);
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    res.status(500).json({ error: 'Unable to create subscription' });
+  }
+};
+
+
+
+
+
+
+
+
+// Existing getSubscriptionStatus function
+const getSubscriptionStatus = async (req, res) => {
+  try {
+    const useremail = req.query.useremail;
+
+    if (!useremail) {
+      return res.status(400).json({ error: 'User email is required' });
+    }
+
+    // Fetch all subscriptions for the user, instead of just one
+    const subscriptions = await Subscription.findAll({ where: { useremail } });
+
+    if (subscriptions.length === 0) {
+      return res.status(404).json({ message: 'No subscriptions found for this user' });
+    }
+
+    // Map the subscriptions to a response format that lists all subscription details
+    const subscriptionStatuses = subscriptions.map(subscription => ({
+      subscriptionType: subscription.subscriptionType,
+      subscribed: subscription.subscribed,
+      tenure: subscription.tenure,
+      deductionAmount: subscription.deductionAmount,
+      packageType: subscription.packageType
+    }));
+
+    res.status(200).json(subscriptionStatuses);
+  } catch (error) {
+    console.error('Error fetching subscription statuses:', error);
+    res.status(500).json({ error: 'Unable to fetch subscription statuses' });
+  }
+};
+
+
+// Function to handle unsubscribe requests
+const unsubscribe = async (req, res) => {
+  try {
+    const { useremail, subscriptionType } = req.body; // Include subscriptionType in the request body
+
+    if (!useremail || !subscriptionType) {
+      return res.status(400).json({ error: 'User email and subscription type are required for unsubscribe action.' });
+    }
+
+    // Attempt to find the subscription associated with the user and type
+    const subscription = await Subscription.findOne({ where: { useremail, subscriptionType } });
+
+    if (!subscription) {
+      return res.status(404).json({ message: 'No subscription found for this user with the specified type.' });
+    }
+
+    // Check if the user is already unsubscribed
+    if (!subscription.subscribed) {
+      return res.status(400).json({ message: 'User is already unsubscribed from the specified subscription type.' });
+    }
+
+    // Update the subscription to indicate the user is no longer subscribed
+    await subscription.update({ subscribed: false });
+
+    res.status(200).json({ message: `Successfully unsubscribed from ${subscriptionType}.` });
+  } catch (error) {
+    console.error('Error processing unsubscribe request:', error);
+    res.status(500).json({ error: 'Unable to process unsubscribe request.' });
+  }
+};
 
 
 module.exports = {
@@ -743,5 +857,9 @@ module.exports = {
   DELETECOMMENT,
   ADD_REPLY_COMMENT,
   fetchreplycomments,
-  DELETEREPLYCOMMENT
+  DELETEREPLYCOMMENT,
+  getAllFreelancers,
+  createSubscription,
+  getSubscriptionStatus,
+  unsubscribe,
 };

@@ -47,7 +47,8 @@ import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
 import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
 import AddPost from "./pages/AddPost"
-
+import Pricing from "./pages/PricingHealth";
+import PricingFreelance from "./pages/PricingFreelance";
 
 
 
@@ -114,6 +115,22 @@ const router = createBrowserRouter([
   path: "freelancer/chat",
   element: (
     <Protected component={<Chat />} allowableuser="freelancer" />
+  ),
+},
+
+
+{
+  path: "freelancer/pricing-healthcare",
+  element: (
+    <Protected component={<Pricing />} allowableuser="freelancer" />
+  ),
+},
+
+
+{
+  path: "freelancer/pricing-freelance-services",
+  element: (
+    <Protected component={<PricingFreelance />} allowableuser="freelancer" />
   ),
 },
 
