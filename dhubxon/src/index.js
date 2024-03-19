@@ -52,6 +52,7 @@ import Checkout from "./courses/src/components/Checkout";
 import MembersTable from "./components/Freelancer/courses_cards/PurchaseDetail";
 import Pricing from "./pages/PricingHealth";
 import PricingFreelance from "./pages/PricingFreelance";
+import Proposal from "./pages/ProposalCard";
 
 
 
@@ -108,6 +109,9 @@ const router = createBrowserRouter([
     element:<Software_products/>},
     {path:"/coursecard",
     element:<CardPage/>},
+    {path:"/proposals",
+    element:<Proposal/>},
+
 
     {path:"/productstable",
     element:<MembersTable/>},
