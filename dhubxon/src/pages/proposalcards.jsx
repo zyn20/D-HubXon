@@ -21,7 +21,7 @@ const colorClasses = {
 };
 
 
-const Card = ({id, title, balance, color, duration, pricingType }) => {
+const Card = ({id, title, balance, color, duration, pricingType,status  }) => {
 
 
   const navigate = useNavigate(); // Initialize the navigate function
@@ -36,12 +36,13 @@ const Card = ({id, title, balance, color, duration, pricingType }) => {
   const classes = colorClasses[color] || colorClasses.green;
 
   return (
-    <div className="p-4 sm:w-1/2 lg:w-1/3 w-full">
-      <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-white shadow-md shadow-indigo-50">
+    // Set a fixed width and a minimum height for each card
+    <div className="p-4 md:w-1/3 w-full flex flex-col items-stretch">
+      <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-white shadow-md shadow-indigo-50 min-h-[300px] w-full">
         <div className="w-full flex justify-between items-center">
           <h2 className="text-gray-900 text-lg font-bold text-center">{title}</h2>
           <div className={`w-24 h-24 rounded-full flex justify-center items-center shadow-2xl border-white border-dashed border-2 ${classes.shadow} bg-gradient-to-tr ${classes.gradientFrom} ${classes.gradientTo}`}>
-            <div className="text-white text-2xl">Pending</div>
+            <div className="text-white text-2xl">{status}</div>
           </div>
         </div>
         <div className="mt-2 w-full">
@@ -58,10 +59,20 @@ const Card = ({id, title, balance, color, duration, pricingType }) => {
             <h3 className={`text-xl font-bold ${classes.text}`}>${balance}</h3>
           </div>
         </div>
-       
-        <button onClick={handleViewProposalsClick} className={`mt-6 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none self-start`}>
-          View proposals
-        </button>
+        {status === 'Active' ? (
+          <>
+            <button onClick={() => navigate(`/details/${id}`)} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
+              Details
+            </button>
+            <button onClick={() => navigate(`/complete/${id}`)} className={`mt-2 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
+              Complete Project
+            </button>
+          </>
+        ) : (
+          <button onClick={handleViewProposalsClick} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
+            View Proposals
+          </button>
+        )}
       </div>
     </div>
   );

@@ -38,12 +38,13 @@ const Proposal = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-wrap justify-center">
       {/* Map through the proposals state array and render a Card for each proposal */}
       {proposals.map((proposal) => (
         <Card
           key={proposal.id}
           id={proposal.id}
+          status={proposal.status}
           title={proposal.title}
           balance={proposal.budget}
           color="green" // Use logic here if you want to determine color based on some property

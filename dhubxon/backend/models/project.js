@@ -1,3 +1,4 @@
+
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config");
 
@@ -36,6 +37,16 @@ const Project = sequelize.define("Project", {
   },
   projectowner:{
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  takenby: {
+    type: DataTypes.STRING,
+    defaultValue: 'none', // Default value set to 'none'
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'Pending', // Default value set to 'Pending'
     allowNull: false,
   }
 });

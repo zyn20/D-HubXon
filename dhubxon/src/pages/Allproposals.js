@@ -6,7 +6,8 @@ const TableComponent = () => {
   const [coverLetter, setCoverLetter] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-
+  const [currentProposalOwner, setCurrentProposalOwner] = useState('');
+  const [currentProjectId, setCurrentProjectId] = useState('');
   useEffect(() => {
     const fetchProposals = async () => {
       const projectId = localStorage.getItem('project_id');
@@ -32,8 +33,27 @@ const TableComponent = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-  const handleAcceptClick = () => {
+  const handleConfirmAccept = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/client/update-project', {
+        id: currentProjectId,
+        takenby: currentProposalOwner
+      });
+      console.log(response.data); // Or handle success as you see fit
+      setShowConfirmationModal(false); // Close the modal after successful update
+      // Optionally, refresh proposals list or navigate the user away
+    } catch (error) {
+      console.error('Error updating project:', error);
+      // Handle error (e.g., display an error message)
+    }
+  };
+  
+  // const handleAcceptClick = () => {
+  //   setShowConfirmationModal(true);
+  // };
+  const handleAcceptClick = (proposalOwner, projectId) => {
+    setCurrentProposalOwner(proposalOwner);
+    setCurrentProjectId(projectId);
     setShowConfirmationModal(true);
   };
 
@@ -65,7 +85,7 @@ const TableComponent = () => {
                       <td className="py-5 px-2 bg-white border-b border-r border-[#E8E8E8] flex justify-center items-center gap-4">
                         <a href={proposal.FILEURL} target="_blank" rel="noopener noreferrer" className="border border-green-500 py-2 px-6 text-green-500 inline-block rounded hover:bg-green-500 hover:text-white">Open CV</a>
                         <button onClick={() => handleViewCoverLetter(proposal.COVERLETTER)} className="border border-green-500 py-2 px-6 text-green-500 inline-block rounded hover:bg-green-500 hover:text-white">View Cover Letter</button>
-                        <button onClick={handleAcceptClick} className="bg-green-500 py-2 px-6 text-white inline-block rounded hover:bg-green-600">Accept</button>
+                        <button onClick={() => handleAcceptClick(proposal.PROPOSALOWNER, proposal.PROJECTID)} className="bg-green-500 py-2 px-6 text-white inline-block rounded hover:bg-green-600">Accept</button>
                       </td>
                     </tr>
                   ))}
@@ -105,7 +125,7 @@ const TableComponent = () => {
                 <p className="text-sm text-gray-600 mt-2">By accepting, you will select this proposal and decline all others.</p>
               </div>
               <div className="flex justify-center">
-                <button onClick={handleModalClose} className="text-white bg-green-500 hover:bg-green-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">Yes</button>
+                <button onClick={handleConfirmAccept} className="text-white bg-green-500 hover:bg-green-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2">Yes</button>
                 <button onClick={handleModalClose} className="text-gray-500 bg-white hover:bg-gray-100 border border-gray-200 rounded-lg text-sm px-5 py-2.5 hover:text-gray-900 focus:z-10">Cancel</button>
               </div>
             </div>

@@ -7,10 +7,10 @@ const courseController = require("../controller/coursescontroller");
 const { handlePurchase } = require('../controller/purchasecontroller'); // Adjust the path as needed
 const { getProposalsByOwner }= require('../controller/projects');
 const { getProposalsByProjectId }= require('../controller/propsal');
-
+const {   updateProject }= require('../controller/updateproject');
 router.post('/purchase', handlePurchase);
 
-
+router.post('/update-project', updateProject);
 
 router.post("/projects", getProposalsByOwner);
 router.post("/proposals", getProposalsByProjectId);
