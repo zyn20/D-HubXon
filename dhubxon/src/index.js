@@ -53,7 +53,7 @@ import MembersTable from "./components/Freelancer/courses_cards/PurchaseDetail";
 import Pricing from "./pages/PricingHealth";
 import PricingFreelance from "./pages/PricingFreelance";
 import Proposal from "./pages/ProposalCard";
-
+import TableComponent from "./pages/Allproposals";
 
 
 const currentUser = true;
@@ -111,7 +111,8 @@ const router = createBrowserRouter([
     element:<CardPage/>},
     {path:"/proposals",
     element:<Proposal/>},
-
+    {path:"/allproposals",
+    element:<TableComponent/>},
 
     {path:"/productstable",
     element:<MembersTable/>},

@@ -1,4 +1,5 @@
 
+import { useNavigate } from 'react-router-dom';
 const colorClasses = {
   green: {
     text: 'text-green-500',
@@ -19,27 +20,54 @@ const colorClasses = {
   // Add more colors as needed
 };
 
-const Card = ({ title, balance, color }) => {
+
+const Card = ({id, title, balance, color, duration, pricingType }) => {
+
+
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  // Event handler for clicking the button
+  const handleViewProposalsClick = () => {
+    localStorage.setItem('project_id', id); // Store the project ID in local storage
+    navigate('/allproposals'); // Navigate to the desired page. Replace '/some-other-page' with your target path
+  };
+
   // Fallback to 'green' if the specified color is not found
   const classes = colorClasses[color] || colorClasses.green;
 
   return (
-    <div className="p-4 sm:w-1/2 lg:w-1/3 w-full hover:scale-105 duration-500">
-      <div className="flex items-center justify-between p-4 rounded-lg bg-white shadow-md shadow-indigo-50">
-        <div>
-          <h2 className="text-gray-900 text-lg font-bold">{title}</h2>
-          <h3 className={`mt-2 text-xl font-bold ${classes.text} text-left`}>+ {balance} ₭</h3>
-          <p className="text-sm font-semibold text-gray-400">Last Transaction</p>
-          <button className={`text-sm mt-6 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
-            View proposals
-          </button>
+    <div className="p-4 sm:w-1/2 lg:w-1/3 w-full">
+      <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-white shadow-md shadow-indigo-50">
+        <div className="w-full flex justify-between items-center">
+          <h2 className="text-gray-900 text-lg font-bold text-center">{title}</h2>
+          <div className={`w-24 h-24 rounded-full flex justify-center items-center shadow-2xl border-white border-dashed border-2 ${classes.shadow} bg-gradient-to-tr ${classes.gradientFrom} ${classes.gradientTo}`}>
+            <div className="text-white text-2xl">Pending</div>
+          </div>
         </div>
-        <div className={`w-32 h-32 rounded-full flex justify-center items-center shadow-2xl border-white border-dashed border-2 ${classes.shadow} ${`bg-gradient-to-tr ${classes.gradientFrom} ${classes.gradientTo}`}`}>
-          <div className="text-white text-2xl">Active</div>
+        <div className="mt-2 w-full">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-gray-500">Duration:</span>
+            <h3 className={`text-xl font-bold ${classes.text}`}>{duration}</h3>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-gray-500">Pricing Type:</span>
+            <h3 className={`text-xl font-bold ${classes.text}`}>{pricingType}</h3>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold text-gray-500">Budget:</span>
+            <h3 className={`text-xl font-bold ${classes.text}`}>${balance}</h3>
+          </div>
         </div>
+       
+        <button onClick={handleViewProposalsClick} className={`mt-6 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none self-start`}>
+          View proposals
+        </button>
       </div>
     </div>
   );
 };
 
 export default Card;
+
+
+
