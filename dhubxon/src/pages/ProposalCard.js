@@ -46,6 +46,7 @@ const Proposal = () => {
           takenby={proposal.takenby}
           title={proposal.title}
           balance={proposal.budget}
+          projectDeadline={proposal.projectDeadline}
           color="green"
           duration={proposal.projectDuration}
           pricingType={proposal.pricingType}
