@@ -54,7 +54,7 @@ import Pricing from "./pages/PricingHealth";
 import PricingFreelance from "./pages/PricingFreelance";
 import Proposal from "./pages/ProposalCard";
 import TableComponent from "./pages/Allproposals";
-
+import TableComponentOne from "./pages/Onproposal";
 
 const currentUser = true;
 
@@ -113,6 +113,10 @@ const router = createBrowserRouter([
     element:<Proposal/>},
     {path:"/allproposals",
     element:<TableComponent/>},
+    {path:"/oneproposal",
+    element:<TableComponentOne/>},
+
+
 
     {path:"/productstable",
     element:<MembersTable/>},

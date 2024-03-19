@@ -2,52 +2,51 @@
 
 
 import React, { useState, useEffect } from 'react';
+
+import { useLocation } from 'react-router-dom';
+
 import axios from 'axios';
 import Card from './proposalcards';
 
 const Proposal = () => {
   const [proposals, setProposals] = useState([]);
+  const location = useLocation(); // Access the current location object
 
   useEffect(() => {
-    // Function to fetch proposals
-    const fetchProposals = async () => {
-      // Retrieve the token from local storage
-      const token = localStorage.getItem('token'); // Ensure 'token' is the key you've used to save your token
+    // A function to parse the query parameters
+    const queryParams = new URLSearchParams(location.search);
+    const refreshParam = queryParams.get('refresh'); // Access a specific query parameter, e.g., 'refresh'
 
-      // Check for the token's existence
+    const fetchProposals = async () => {
+      const token = localStorage.getItem('token');
       if (!token) {
         console.error('No token found in local storage.');
-        // Handle lack of token, e.g., redirect to login
         return;
       }
 
       try {
-        // Endpoint where your API is hosted
         const endpoint = 'http://127.0.0.1:5000/client/projects';
-        
-        // Make the API call with the token in the request body
         const response = await axios.post(endpoint, { token });
         setProposals(response.data);
       } catch (error) {
         console.error('Error fetching proposals:', error);
-        // Handle error, e.g., set error state, show notification, etc.
       }
     };
 
     fetchProposals();
-  }, []);
+  }, [location]); // Add `location` as a dependency to `useEffect` to re-fetch data when the query parameters change
 
   return (
     <div className="flex flex-wrap justify-center">
-      {/* Map through the proposals state array and render a Card for each proposal */}
       {proposals.map((proposal) => (
         <Card
           key={proposal.id}
           id={proposal.id}
           status={proposal.status}
+          takenby={proposal.takenby}
           title={proposal.title}
           balance={proposal.budget}
-          color="green" // Use logic here if you want to determine color based on some property
+          color="green"
           duration={proposal.projectDuration}
           pricingType={proposal.pricingType}
         />
@@ -55,5 +54,4 @@ const Proposal = () => {
     </div>
   );
 };
-
 export default Proposal;

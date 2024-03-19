@@ -1,5 +1,6 @@
 
 import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle } from 'react-icons/fa';
 const colorClasses = {
   green: {
     text: 'text-green-500',
@@ -21,7 +22,7 @@ const colorClasses = {
 };
 
 
-const Card = ({id, title, balance, color, duration, pricingType,status  }) => {
+const Card = ({id, title, balance, color, duration, pricingType,status,takenby  }) => {
 
 
   const navigate = useNavigate(); // Initialize the navigate function
@@ -30,6 +31,10 @@ const Card = ({id, title, balance, color, duration, pricingType,status  }) => {
   const handleViewProposalsClick = () => {
     localStorage.setItem('project_id', id); // Store the project ID in local storage
     navigate('/allproposals'); // Navigate to the desired page. Replace '/some-other-page' with your target path
+  };
+  const handleDetailsClick = () => {
+    localStorage.setItem('taken', takenby);
+    navigate('/oneproposal'); // Navigate to the details page for the given project ID
   };
 
   // Fallback to 'green' if the specified color is not found
@@ -61,14 +66,19 @@ const Card = ({id, title, balance, color, duration, pricingType,status  }) => {
         </div>
         {status === 'Active' ? (
           <>
-            <button onClick={() => navigate(`/details/${id}`)} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
+            <button  onClick={handleDetailsClick } className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
               Details
             </button>
             <button onClick={() => navigate(`/complete/${id}`)} className={`mt-2 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
               Complete Project
             </button>
           </>
-        ) : (
+        ) : status === 'Done' ? (
+          <div className="mt-auto text-green-500 flex items-center justify-center">
+            <FaCheckCircle className="mr-2" /> Completed Successfully!!!!
+          </div>
+        ):
+         (
           <button onClick={handleViewProposalsClick} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
             View Proposals
           </button>

@@ -1,38 +1,3 @@
-// const jwt = require('jsonwebtoken');
-// const Proposals = require('../models/proposals'); // Adjust the path to where your models are
-
-// const getProposalsByOwner = async (req, res) => {
-//   try {
-//     // Decode the token received from the body without verification
-//     const decodedToken = jwt.decode(req.body.token);
-
-//     // Check if the decoded token is null or doesn't contain clientData
-//     if (!decodedToken || !decodedToken.clientData) {
-//       return res.status(400).send('Invalid token data.');
-//     }
-
-//     // Extract the email from the decoded token
-//     const ownerEmail = decodedToken.clientData.email;
-
-//     // Find all proposals where the PROPOSALOWNER matches the email
-//     const proposals = await Proposals.findAll({
-//       where: {
-//         PROPOSALOWNER: ownerEmail,
-//       },
-//     });
-
-//     // Send the proposals in the response
-//     res.json(proposals);
-//   } catch (error) {
-//     // Handle any errors
-//     console.error('Error fetching proposals by owner:', error);
-//     res.status(500).send('An error occurred while fetching proposals.');
-//   }
-// };
-
-// module.exports = {
-//   getProposalsByOwner,
-// };
 
 
 
@@ -64,6 +29,39 @@ const getProposalsByProjectId = async (req, res) => {
   }
 };
 
+// module.exports = {
+//   getProposalsByProjectId,
+// };
+
+// const Proposals = require('../models/proposals'); // Adjust the path to where your models are
+
+const getProposalsByTakenBy = async (req, res) => {
+  try {
+    // Get taken from the request body
+    const { taken } = req.body;
+
+    // Validate that taken is provided
+    if (!taken) {
+      return res.status(400).send('Taken variable is required.');
+    }
+
+    // Find all proposals where the takenby matches the taken from the request
+    const proposals = await Proposals.findOne({
+      where: {
+        PROPOSALOWNER: taken,
+      },
+    });
+
+    // Send the proposals in the response
+    res.json(proposals);
+  } catch (error) {
+    // Handle any errors
+    console.error('Error fetching proposals by takenby:', error);
+    res.status(500).send('An error occurred while fetching proposals.');
+  }
+};
+
 module.exports = {
+  getProposalsByTakenBy,
   getProposalsByProjectId,
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TableComponent = () => {
   const [proposals, setProposals] = useState([]);
@@ -8,6 +9,7 @@ const TableComponent = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [currentProposalOwner, setCurrentProposalOwner] = useState('');
   const [currentProjectId, setCurrentProjectId] = useState('');
+  const navigate = useNavigate()
   useEffect(() => {
     const fetchProposals = async () => {
       const projectId = localStorage.getItem('project_id');
@@ -42,6 +44,8 @@ const TableComponent = () => {
       console.log(response.data); // Or handle success as you see fit
       setShowConfirmationModal(false); // Close the modal after successful update
       // Optionally, refresh proposals list or navigate the user away
+      const uniqueTimestamp = new Date().getTime();
+    navigate(`/proposals?refresh=${uniqueTimestamp}`);
     } catch (error) {
       console.error('Error updating project:', error);
       // Handle error (e.g., display an error message)
