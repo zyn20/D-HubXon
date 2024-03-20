@@ -47,38 +47,37 @@ exports.sendMessage = async (req, res) => {
   }
 };
 exports.getMessagesBetweenUsers = async (req, res) => {
-  const { fromUserEmail, toUserEmail } = req.body;
-
-  try {
-      // Fetch messages where the current user is either the sender or receiver
-      const messages = await Message.findAll({
-          where: {
-              [Op.or]: [
-                  { fromUserEmail: fromUserEmail, toUserEmail: toUserEmail },
-                  { fromUserEmail: toUserEmail, toUserEmail: fromUserEmail } 
-              ]
-          },
-          order: [['createdAt', 'ASC']] // Assuming you might want to order messages by creation time
+    const { fromUserEmail, toUserEmail } = req.query; // Using query parameters for a GET request
+  
+    // Check if both emails are provided
+    if (!fromUserEmail || !toUserEmail) {
+      return res.status(400).json({
+        message: "Both 'fromUserEmail' and 'toUserEmail' query parameters are required."
       });
-
-      if (messages.length > 0) {
-          res.status(200).json({
-              message: 'Messages retrieved successfully',
-              data: messages
-          });
-      } else {
-          res.status(404).json({ message: 'No messages found between the specified users' });
-      }
-  } catch (error) {
-      console.error('Error retrieving messages:', error);
-      res.status(500).send('Error while fetching messages');
-  }
-};
-
-
-
-
-
-
-
-
+    }
+  
+    try {
+        // Fetch messages where the current user is either the sender or receiver
+        const messages = await Message.findAll({
+            where: {
+                [Op.or]: [
+                    { fromUserEmail: fromUserEmail, toUserEmail: toUserEmail },
+                    { fromUserEmail: toUserEmail, toUserEmail: fromUserEmail } 
+                ]
+            },
+            order: [['createdAt', 'ASC']] // Assuming you might want to order messages by creation time
+        });
+  
+        if (messages.length > 0) {
+            res.status(200).json({
+                message: 'Messages retrieved successfully',
+                data: messages
+            });
+        } else {
+            res.status(404).json({ message: 'No messages found between the specified users' });
+        }
+    } catch (error) {
+        console.error('Error retrieving messages:', error);
+        res.status(500).send('Error while fetching messages');
+    }
+  };

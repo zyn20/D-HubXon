@@ -304,7 +304,7 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+
     <ProductProvider>
     <ProductProvid>
       <SidebarProvider>
@@ -321,6 +321,6 @@ root.render(
       </ProductProvid>
     </ProductProvider>
     
-  </React.StrictMode>
+  
 );
 reportWebVitals();
