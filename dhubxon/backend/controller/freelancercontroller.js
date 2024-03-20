@@ -4,8 +4,8 @@ const Proposals = require("../models/proposals");
 const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
-const Subscription = require("../models/subcriptions");
 const CommentReply = require("../models/commentreply");
+const Subscription = require("../models/subcriptions");
 
 const Project = require("../models/project");
 const crypto = require("crypto");
@@ -705,15 +705,6 @@ const fetchprofileurl = async (req, res) => {
   }
 };
 
-const getAllFreelancers = async (req, res) => {
-  try {
-    const freelancers = await Freelancer.findAll(); // Sequelize method to find all records
-    res.status(200).json(freelancers);
-  } catch (error) {
-    console.error("Error fetching all freelancers:", error);
-    res.status(500).send("Internal Server Error");
-  }
-};
 const SubmitProposals = async (req, res) => {
   try {
     const ProposalData = req.body;
@@ -725,6 +716,15 @@ const SubmitProposals = async (req, res) => {
   }
 };
 
+const getAllFreelancers = async (req, res) => {
+  try {
+    const freelancers = await Freelancer.findAll(); // Sequelize method to find all records
+    res.status(200).json(freelancers);
+  } catch (error) {
+    console.error("Error fetching all freelancers:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 
 const createSubscription = async (req, res) => {
@@ -861,5 +861,9 @@ module.exports = {
   DELETECOMMENT,
   ADD_REPLY_COMMENT,
   fetchreplycomments,
-  DELETEREPLYCOMMENT
+  DELETEREPLYCOMMENT,
+  getAllFreelancers,
+  createSubscription,
+  getSubscriptionStatus,
+  unsubscribe,
 };

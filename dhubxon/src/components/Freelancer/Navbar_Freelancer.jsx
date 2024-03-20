@@ -16,8 +16,10 @@ import { FaCaretDown } from 'react-icons/fa';
 const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSubscriptionDropdownOpen, setIsSubscriptionDropdownOpen] = useState(false); // State to manage subscription dropdown visibility
+  // const [isSubscriptionDropdownOpen, setIsSubscriptionDropdownOpen] = useState(false); // State to manage subscription dropdown visibility
+  // const [profileURL, setProfileURL] = useState("");
   const [profileURL, setProfileURL] = useState("");
+  const [isSubscriptionDropdownOpen, setIsSubscriptionDropdownOpen] = useState(false); // State to manage subscription dropdown visibility
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);

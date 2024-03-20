@@ -1,3 +1,6 @@
+
+
+
 import "./post.scss";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
@@ -12,7 +15,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ethers } from "ethers";
 import abi from "./ContributeProjects.json";
-
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 const Post = ({ post, IDENTIFIER, onDelete }) => {
   var id = post.id;
   const EtherumPrice = 3932;
@@ -178,18 +182,32 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
 
         <div className="flex flex-col justify-center ">
           <p className="m-2">{post.CONTENT}</p>
-          {post.IMAGEURL != "NOT" && (
-            <div>
-              <img
-                className="  object-contain max-w-full h-[60vh] mt-6 mb-4"
-                src={post.IMAGEURL}
-                alt=""
-              />
-            </div>
-          )}
+
+
+          
+          {post.PICTURES && (
+  <div className="max-w-2xl mx-auto">
+    <Carousel autoPlay infiniteLoop showThumbs={false}>
+      {post.PICTURES.map((picture, index) => (
+        <div key={index} className="">
+          <img src={picture} alt={`slide ${index + 1}`} style={{ maxHeight: "600px" }} />
+        </div>
+      ))}
+    </Carousel>
+  </div>
+)}
+
+
+
+
+
+
+
+
+
         </div>
 
-        <div className="info">
+        <div className="info mt-4">
           <div className="item" onClick={LIKED}>
             {liked ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
             {LikesCount}
@@ -243,3 +261,4 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
 };
 
 export default Post;
+
