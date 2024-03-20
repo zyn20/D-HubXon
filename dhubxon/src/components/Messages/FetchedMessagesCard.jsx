@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
 
 const FetchedMessagesCard = ({ selectedUser }) => {
     const [chatMessages, setChatMessages] = useState({ data: [] });
   const [loading, setLoading] = useState(false);
+
+ 
 
   useEffect(() => {
     const fetchChatMessages = async () => {
@@ -12,8 +17,6 @@ const FetchedMessagesCard = ({ selectedUser }) => {
         console.error('No token found or no user selected');
         return;
       }
-
-      // Decode the JWT token to get the current user's email
       const decodedToken = jwtDecode(token);
       const fromUserEmail = decodedToken?.freelancerData?.email || decodedToken?.clientData?.email;
       console.log(fromUserEmail);
@@ -53,18 +56,29 @@ const FetchedMessagesCard = ({ selectedUser }) => {
   if (loading) {
     return <p>Loading messages...</p>;
   }
-  return (
+
+return (
     <div className="fetched-messages-container">
     {chatMessages.data.map((msg, index) => (
-      <div key={index} className={`message is from ${msg.fromUserEmail} $`}>
-        <p>Message is From ${msg.fromUserEmail}</p>
-        {msg.content}
-
+      <div key={index} className="message-card bg-gray-100 shadow-md rounded-lg p-4 mb-4">
+        <div className=''>
+          <div className="flex items-center">
+            <FontAwesomeIcon icon={faUser} className="user-icon text-gray-600 mr-2" />
+            <p className="user-name text-lg font-semibold text-gray-900"></p>
+          </div>
+        </div>
+        <div className="message-content mt-2">
+          <p className="message-text text-gray-800">{msg.content}</p>
+        </div>
       </div>
     ))}
   </div>
+  
   );
   
+
+
+
       };
 export default FetchedMessagesCard;
 
