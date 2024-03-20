@@ -206,6 +206,18 @@ const AddPost = () => {
       }
     }
 
+
+
+    if(images.length==0 && postData ==""){
+      Swal.fire({
+        title: "Error!",
+        text: "Please Add Something.",
+        icon: "error",
+      });
+      return
+
+    }
+
     let imageUrls = [];
     if (images.length > 0) {
       imageUrls = await uploadImages();
@@ -292,15 +304,16 @@ const AddPost = () => {
               Share Your Thoughts
             </label>
             <input
-              type="text"
-              id="postData"
-              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter your post data"
-              value={postData}
-              onChange={handleInputChange}
-              disabled={isSubmitting}
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            />
+  type="text"
+  id="postData"
+  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+  placeholder="Enter your post data"
+  value={postData}
+  onChange={handleInputChange}
+  disabled={isSubmitting}
+  class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+/>
+
           </div>
         </div>
 
