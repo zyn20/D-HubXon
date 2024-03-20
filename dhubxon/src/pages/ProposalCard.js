@@ -2,7 +2,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-
+import Navbar_Client from '../components/client/Navbar';
 import { useLocation } from 'react-router-dom';
 
 import axios from 'axios';
@@ -37,7 +37,9 @@ const Proposal = () => {
   }, [location]); // Add `location` as a dependency to `useEffect` to re-fetch data when the query parameters change
 
   return (
-    <div className="flex flex-wrap justify-center">
+    <>
+    <Navbar_Client/>
+    <div className="flex flex-wrap justify-center mt-10">
       {proposals.map((proposal) => (
         <Card
           key={proposal.id}
@@ -53,6 +55,7 @@ const Proposal = () => {
         />
       ))}
     </div>
+    </>
   );
 };
 export default Proposal;

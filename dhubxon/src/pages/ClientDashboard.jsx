@@ -1,6 +1,6 @@
 import React from 'react';
 import image from '../assets/1.png';
-import Navbar_Client from '../components/client/Navbar'
+import Navbar_Client from '../components/client/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { faGraduationCap, faLaptopCode } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
