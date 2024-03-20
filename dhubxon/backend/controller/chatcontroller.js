@@ -81,3 +81,55 @@ exports.getMessagesBetweenUsers = async (req, res) => {
         res.status(500).send('Error while fetching messages');
     }
   };
+
+
+  exports.getmsg = async (req, res) => {
+    const { fromUserEmail, toUserEmail } = req.query;
+
+    if (!fromUserEmail || !toUserEmail) {
+        return res.status(400).json({
+            message: "Both 'fromUserEmail' and 'toUserEmail' query parameters are required."
+        });
+    }
+
+    try {
+        const messages = await Message.findAll({
+            where: {
+                [Op.or]: [
+                    { fromUserEmail: fromUserEmail, toUserEmail: toUserEmail },
+                    { fromUserEmail: toUserEmail, toUserEmail: fromUserEmail }
+                ]
+            },
+            order: [['createdAt', 'ASC']]
+        });
+
+        const userEmails = messages.map(msg => msg.fromUserEmail);
+        // Unique emails for minimizing database queries
+        const uniqueUserEmails = [...new Set(userEmails)];
+
+        const clients = await Client.findAll({ where: { Email: uniqueUserEmails }, attributes: ['Email', 'Name'] });
+        const freelancers = await Freelancer.findAll({ where: { Email: uniqueUserEmails }, attributes: ['Email', 'Name'] });
+
+        // Combine and index by email for quick lookup
+        const nameByEmail = {};
+        clients.concat(freelancers).forEach(user => nameByEmail[user.Email] = user.Name);
+
+        // Enrich messages with username
+        const enrichedMessages = messages.map(message => ({
+            ...message.toJSON(),
+            fromUserName: nameByEmail[message.fromUserEmail] || 'Unknown User'
+        }));
+
+        if (messages.length > 0) {
+            res.json({
+                message: 'Messages retrieved successfully',
+                data: enrichedMessages
+            });
+        } else {
+            res.status(404).json({ message: 'No messages found between the specified users' });
+        }
+    } catch (error) {
+        console.error('Error retrieving messages:', error);
+        res.status(500).send('Error while fetching messages');
+    }
+};

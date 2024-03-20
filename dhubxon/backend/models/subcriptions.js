@@ -32,19 +32,6 @@ const Subscription = sequelize.define('Subscription', {
   }
 });
 
-// Define associations for subscriptions owned by freelancers
-Freelancer.hasMany(Subscription, {
-  foreignKey: 'useremail', // Name of the foreign key column in the Subscription table
-  sourceKey: 'Email', // Name of the referenced column in the Freelancer table
-  constraints: false, // Enforce foreign key constraints at the database level
-  as: 'subscriptions' // Alias for the association
-});
 
-// Define association for the user (freelancer) associated with a subscription
-Subscription.belongsTo(Freelancer, {
-  foreignKey: 'useremail', // Name of the foreign key column in the Subscription table
-  targetKey: 'Email', // Name of the referenced column in the Freelancer table
-  constraints: false // Enforce foreign key constraints at the database level
-});
 
 module.exports = Subscription;

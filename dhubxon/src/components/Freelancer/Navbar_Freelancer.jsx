@@ -95,11 +95,7 @@ const Navbar = () => {
                 <FaComments className="mr-1" /> Chat
               </NavLink>
             </li>
-            <li className="flex items-center">
-              <NavLink to="/freelancer/chat" activeClassName="font-semibold" className="nav-link flex items-center">
-                <FaComments className="mr-1" /> Chat
-              </NavLink>
-            </li>
+           
 
             <li className="relative">
               <button onClick={handleSubscriptionDropdownToggle} className="nav-link flex items-center cursor-pointer">
