@@ -5,7 +5,7 @@ import Layout from '../Root'
 export default function LoginPage() {
   return (
 
-    <div className="bg-blue-100 h-screen flex flex-col justify-center items-center">
+    <div className="bg-[#E1E1E1] h-screen flex flex-col justify-center items-center">
       <div className="bg-white border border-gray-300 rounded-lg p-8 shadow-md max-w-md w-full">
         <Header
           heading="Login to your account"

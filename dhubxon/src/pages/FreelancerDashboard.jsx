@@ -132,7 +132,7 @@ var Name;
               <p><strong>Current Projects:</strong> <span className="text-blue-600">3 active</span></p>
               {/* Replace below divs with actual progress bars */}
               <div className="bg-gray-200 rounded h-2 w-full">
-                <div className="bg-blue-600 h-2 rounded" style={{ width: '60%' }}></div>
+                <div className="bg-blue-600 h-2 rounded" style={{ width: '50%' }}></div>
               </div>
               <p><strong>Pending Invitations:</strong> <span className="text-yellow-600">2 pending</span></p>
               <div className="bg-gray-200 rounded h-2 w-full">
@@ -140,7 +140,7 @@ var Name;
               </div>
               <p><strong>Completed Projects:</strong> <span className="text-green-600">12 completed</span></p>
               <div className="bg-gray-200 rounded h-2 w-full">
-                <div className="bg-green-600 h-2 rounded" style={{ width: '100%' }}></div>
+                <div className="bg-green-600 h-2 rounded" style={{ width: '70%' }}></div>
               </div>
             </div>
           </div>
@@ -201,7 +201,7 @@ var Name;
       <Navbar_Freelancer />
     
       {/* Banner Section */}
-      <div className="w-full max-w-[1400px] h-[200px] bg-blue-900 rounded-xl overflow-hidden flex justify-center items-center my-10">
+      <div className="w-full max-w-[1400px] h-[200px] bg-blue-900 rounded-xl overflow-hidden flex justify-center mt-[100px] items-center my-10">
         <div className="z-10 text-white text-center">
           <p className='text-xl lg:text-3xl font-poppins'>Welcome to Freelancer Dashboard</p>
           <p className='text-xl lg:text-3xl font-poppins'>Good Evening Zain!</p>

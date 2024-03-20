@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CircularButton from './separate_components/CircularButton';
-import profile_img from '../../assets/profile image.png';
+// import profile_img from '../../assets/profile image.png';
 import { NavLink } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import { IoMdMenu } from 'react-icons/io';

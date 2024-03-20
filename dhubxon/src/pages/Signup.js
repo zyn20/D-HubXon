@@ -5,13 +5,13 @@ export default function SignupPage(){
     return(
     
         
-      <div className="bg-blue-100 h-screen flex flex-col justify-center items-center">
+      <div className="bg-[#E1E1E1] h-screen flex flex-col justify-center items-center">
       <div className="bg-white border border-gray-300 rounded-lg p-8 shadow-md max-w-md w-full">
         <Header
-          heading="Login to your account"
-          paragraph="Don't have an account yet?"
-          linkName="Signup"
-          linkUrl="/signup"
+          heading="Join Our Community Today"
+          paragraph=" Have an account?"
+          linkName="Login"
+          linkUrl="/login"
         />
         <Signup />
       </div>

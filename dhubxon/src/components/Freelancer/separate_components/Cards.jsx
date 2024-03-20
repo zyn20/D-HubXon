@@ -67,7 +67,7 @@ if(tabId==="best-match"){
   };
 
   return (
-    <div className="mx-auto w-[1280px] bg-white border border-gray-200 rounded-lg shadow dark:bg-blue-800 dark:border-gray-700">
+    <div className="mb-[80px] mx-auto w-[1280px] bg-white border border-gray-200 rounded-lg shadow dark:bg-blue-800 dark:border-gray-700">
       {/* Tab for small screens */}
       <div className="sm:hidden">
         <label htmlFor="tabs" className="sr-only">
@@ -124,19 +124,7 @@ if(tabId==="best-match"){
         </li>
 
         {/* saved-jobs Tab */}
-        <li
-          className={`w-full ${activeTab === "saved-jobs" ? "active-tab" : ""}`}
-        >
-          <button
-            onClick={() => handleTabClick("saved-jobs")}
-            type="button"
-            className={`inline-block w-full p-4 rounded-se-lg ${
-              activeTab === "saved-jobs" ? "bg-blue-900 text-white" : "bg-white"
-            } focus:outline-none`}
-          >
-            Saved Jobs
-          </button>
-        </li>
+       
       </ul>
 
       {/* Tab content */}
@@ -227,7 +215,7 @@ if(tabId==="best-match"){
 
         {/* saved-jobs Tab Content */}
         <div
-          className={`p-4 bg-white rounded-lg dark:bg-gray-800 ${
+          className={`p-4  bg-white rounded-lg dark:bg-gray-800 ${
             activeTab === "saved-jobs" ? "" : "hidden"
           }`}
           id="saved-jobs"

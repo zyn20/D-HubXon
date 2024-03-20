@@ -4,7 +4,25 @@ const checkforDuplicate = require("../middleware/checkforduplicate");
 const checkRecord = require("../middleware/check_existing_record");
 const Functions = require("../controller/clientcontroller");
 const courseController = require("../controller/coursescontroller");
+const { handlePurchase } = require('../controller/purchasecontroller'); // Adjust the path as needed
+const { getProposalsByOwner }= require('../controller/projects');
+const { getProposalsByProjectId }= require('../controller/propsal');
+const { getProposalsByTakenBy}= require('../controller/propsal');
 
+
+const {   updateProject }= require('../controller/updateproject');
+const {  completeProject }= require('../controller/updateproject');
+
+
+router.post('/purchase', handlePurchase);
+
+router.post('/update-project', updateProject);
+router.post('/complete-project', completeProject);
+
+
+router.post("/projects", getProposalsByOwner);
+router.post("/proposals", getProposalsByProjectId);
+router.post("/oneproposals", getProposalsByTakenBy);
 router.get("/courses", courseController.getAllCourses);
 router.post("/signUp", checkforDuplicate, Functions.signUp);
 router.post("/signIn", Functions.signIn);

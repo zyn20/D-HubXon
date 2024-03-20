@@ -4,14 +4,29 @@ const functions = require('../controller/freelancercontroller');
 const checkDuplicate=require('../middleware/checkforduplicate');
 const checkRecord=require("../middleware/check_existing_record");
 const courseController = require('../controller/coursescontroller');
+const { searchPurchasesByItemId } = require('../controller/purchasecontroller');
 
 
+// const path = require('path'); // Import the path module
 
-const path = require('path'); // Import the path module
+// const multer = require('multer');
+
+// // Set up storage directory (you might want to customize this)
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/'); // the folder where files will be saved
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//   }
+// });
+
+// const upload = multer({ storage: storage });
+
 
 const multer = require('multer');
+const path = require('path');
 
-// Set up storage directory (you might want to customize this)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/'); // the folder where files will be saved
@@ -23,15 +38,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Setup to handle multiple fields
+const fileFields = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'zipFile', maxCount: 1 }
+]);
 
 
 
+// router.post('/courses', upload.single('image'), courseController.addCourse);
 
-router.post('/courses', upload.single('image'), courseController.addCourse);
-
-
+router.post('/courses', fileFields, courseController.addCourse);
+router.delete('/course/:courseId', courseController.deleteCourseById);
+router.post('/courseOne',courseController.getCoursesByEmail);
+router.post('/purchaseitem',searchPurchasesByItemId);
 
 // router.post('/courses', courseController.addCourse);
+
 router.post('/signIn',functions.signIn);
 router.post('/signUp', checkDuplicate,functions.signUp);
 router.post('/verify', functions.verify) ;
@@ -44,6 +67,8 @@ router.get("/fetchprofiledata",functions.fetchprofiledata);
 router.post("/resendOTP",functions.Re_send_OTP);
 router.get("/fetchBESTMATCHES",functions.BESTMATCH);
 router.get("/fetchcourses",courseController.getAllCourses);
+
+
 router.post("/ADDcommunity_post",functions.addPost);
 router.get("/GETcommunity_post",functions.getAllPost);
 router.get("/GETcommunity_mypost",functions.getmyPost);

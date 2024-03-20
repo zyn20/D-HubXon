@@ -47,10 +47,14 @@ import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
 import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
 import AddPost from "./pages/AddPost"
+import CardPage from "./components/Freelancer/courses_cards/Cards_page";
+import Checkout from "./courses/src/components/Checkout";
+import MembersTable from "./components/Freelancer/courses_cards/PurchaseDetail";
 import Pricing from "./pages/PricingHealth";
 import PricingFreelance from "./pages/PricingFreelance";
-
-
+import Proposal from "./pages/ProposalCard";
+import TableComponent from "./pages/Allproposals";
+import TableComponentOne from "./pages/Onproposal";
 
 const currentUser = true;
 
@@ -81,7 +85,7 @@ const router = createBrowserRouter([
       { path: "/forgetPassword", element: <Forget_Pass /> },//general Path
       { path: "verify", element: <VerifyOTP /> },//general Path
       { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> }, //general Path
-
+      { path: "/cart", element: <Checkout /> },
 
       
       //For Only One Time Accessable
@@ -103,9 +107,19 @@ const router = createBrowserRouter([
     element:<Software_home/>},
     {path:"/softwareproductsone/:id",
     element:<Software_products/>},
- 
+    {path:"/coursecard",
+    element:<CardPage/>},
+    {path:"/proposals",
+    element:<Proposal/>},
+    {path:"/allproposals",
+    element:<TableComponent/>},
+    {path:"/oneproposal",
+    element:<TableComponentOne/>},
 
-    
+
+
+    {path:"/productstable",
+    element:<MembersTable/>},
     
 
 //////////////////////////////////////////////////For Freelancer/////////////////////////////////////////////////////////////////
@@ -137,7 +151,7 @@ const router = createBrowserRouter([
 {
   path: "/freelancer/viewcourses",
   element: (
-    <Protected component={<Coursecard />} allowableuser="freelancer" />
+    <Protected component={<AddCourses />} allowableuser="freelancer" />
   ),
 },
 
@@ -155,7 +169,7 @@ const router = createBrowserRouter([
 {
   path: "/freelancer/courses",
   element: (
-    <Protected component={<AddCourses />} allowableuser="freelancer" />
+    <Protected component={<Coursecard />} allowableuser="freelancer" />
   ),
 },
 {

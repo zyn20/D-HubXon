@@ -19,7 +19,7 @@ export default function Header({
             </h2>
             <p className=" text-center text-sm text-gray-600 mt-5">
             {paragraph} {' '}
-            <Link to={linkUrl} className="font-medium text-purple-600 hover:text-purple-500">
+            <Link to={linkUrl} className="font-medium text-blue-500 hover:text-blue-700">
                 {linkName}
             </Link>
             </p>
