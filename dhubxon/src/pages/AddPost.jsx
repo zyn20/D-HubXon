@@ -5,16 +5,20 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ethers } from "ethers";
 import abi from "../contract/ContributeProjects.json";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Button } from "@material-tailwind/react";
 
 const AddPost = () => {
   var blockchainindex = -1;
-  // const [blockchainindex, setblockchainindex] = useState(-1);
   const [postData, setPostData] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [image, setImage] = useState(null);
-  const [Postimageurl, setimageurl] = useState(null);
-  const [contribute, setContribute] = useState(false); // Toggle for enabling/disabling contribution
+  const [images, setImages] = useState([]);
+  const [Postimageurls, setImageUrls] = useState([]);
+  const [contribute, setContribute] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [metamaskAddress,setmetamaskAddress]=useState("Not Connected");
   const [Projectindex, setProjectindex] = useState(-1);
   const [state, setState] = useState({
     provider: null,
@@ -30,55 +34,91 @@ const AddPost = () => {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const files = e.target.files;
+    const newImages = [...images];
+    const newImageUrls = [...Postimageurls];
+
+    for (let i = 0; i < files.length; i++) {
+      newImages.push(files[i]);
+      newImageUrls.push(URL.createObjectURL(files[i]));
+    }
+
+    setImages(newImages);
+    setImageUrls(newImageUrls);
   };
 
   useEffect(() => {
     const template = async () => {
       const contractAddress = "0x024F0132dBA92E47dEfF82cB0d901E71c47FdF60";
       const contractABI = abi.abi;
-
+  
       try {
         const { ethereum } = window;
-
-        window.ethereum.on("accountsChanged", () => {
-          window.location.reload();
+  
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected");
+  
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+  
+          setState({ provider, signer, contract });
+          setContract(state.contract);
+  
+          console.log("useeffect Contract Data is:", state);
         });
-
+  
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-
+  
         const contract = new ethers.Contract(
           contractAddress,
           contractABI,
           signer
         );
-
+  
         setState({ provider, signer, contract });
         setContract(state.contract);
-
+  
         console.log("useeffect Contract Data is:", state);
       } catch (error) {
         console.log(error);
       }
     };
-
+  
     template();
   }, []);
+  
 
-  const uploadimage = () => {
+  const uploadImages = async () => {
+    const uploadedImageUrls = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const imageUrl = await uploadImage(images[i]);
+      uploadedImageUrls.push(imageUrl);
+    }
+
+    return uploadedImageUrls;
+  };
+
+  const uploadImage = (image) => {
     return new Promise((resolve, reject) => {
-      const formdata = new FormData();
-      formdata.append("file", image);
-      formdata.append("upload_preset", "hixrhbq4");
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "hixrhbq4");
+
       axios
         .post(
           "https://api.cloudinary.com/v1_1/dig2awru0/image/upload",
-          formdata
+          formData
         )
         .then((response) => {
           console.log("Cloudinary Response is:", response.data.secure_url);
-          setimageurl(response.data.secure_url);
           resolve(response.data.secure_url);
         })
         .catch((error) => {
@@ -96,7 +136,7 @@ const AddPost = () => {
             .request({ method: "eth_requestAccounts" })
             .then((accounts) => {
               const selectedAddress = accounts[0];
-              console.log("MetaMask Address:", selectedAddress);
+              setmetamaskAddress(`Connected:${selectedAddress}`);
 
               setIsChecked(true);
             })
@@ -134,15 +174,23 @@ const AddPost = () => {
     return dateTimeString;
   };
 
+  const handleDeleteImage = (index) => {
+    const newImages = [...images];
+    const newImageUrls = [...Postimageurls];
+    newImages.splice(index, 1);
+    newImageUrls.splice(index, 1);
+    setImages(newImages);
+    setImageUrls(newImageUrls);
+  };
 
   const handleSubmit = async (e) => {
-    var imageUrl;
     e.preventDefault();
     setIsSubmitting(true);
-  
+
     if (isChecked == true) {
       try {
-        const latestProjectIdBigNumber = await state.contract.getLatestProject();
+        const latestProjectIdBigNumber =
+          await state.contract.getLatestProject();
         const latestProjectIdInteger = ethers.utils
           .parseUnits(latestProjectIdBigNumber.toString(), "wei")
           .toNumber();
@@ -153,140 +201,176 @@ const AddPost = () => {
           title: "Transaction Canceled",
           text: "The transaction was canceled by the user.",
         });
-        setIsSubmitting(false); 
-        return; 
+        setIsSubmitting(false);
+        return;
       }
     }
-  
-    try {
- if (image == null) {
-  imageUrl = "NOT";
-  if(postData==""){
-    Swal.fire({
-      title: "Error!",
-      text: "Please Write something in Post.",
-      icon: "error",
-    });
-    return
-  }
-} else {
-  imageUrl = await uploadimage();
-}
 
-const token = localStorage.getItem("token");
-const decodedToken = jwtDecode(token);
-
-const post = {
-  NAME: decodedToken.freelancerData.name,
-  PICTURE: imageUrl,
-  TIME: getCurrentDateTimeString(),
-  CONTENT: postData,
-  LIKES: 0,
-  COMMENTS: 0,
-  EMAIL: decodedToken.freelancerData.email,
-  IMAGEURL: imageUrl,
-  BLOCKCHAININDEX: blockchainindex,
-};
-
-const response = await axios.post(
-  "http://127.0.0.1:5000/freelancer/ADDcommunity_post",
-  post
-);
-
-if (response.status === 201) {
-  Swal.fire({
-    title: "Success!",
-    text: "Your post has been added.",
-    icon: "success",
-  });
-} else {
-  Swal.fire({
-    title: "Error!",
-    text: "An error occurred while adding the post.",
-    icon: "error",
-  });
-}
-
-console.log("Post data sent successfully:", response.data);
-navigate("/freelancer/community");
-
-setPostData("");    } catch (error) {
-      console.error("Error sending post data:", error);
-    } finally {
-      setIsSubmitting(false);
+    let imageUrls = [];
+    if (images.length > 0) {
+      imageUrls = await uploadImages();
     }
+
+    const token = localStorage.getItem("token");
+    const decodedToken = jwtDecode(token);
+
+    const post = {
+      NAME: decodedToken.freelancerData.name,
+      PICTURES: imageUrls,
+      TIME: getCurrentDateTimeString(),
+      CONTENT: postData,
+      LIKES: 0,
+      COMMENTS: 0,
+      EMAIL: decodedToken.freelancerData.email,
+      // IMAGEURL: imageUrls,
+      BLOCKCHAININDEX: blockchainindex,
+    };
+
+    const response = await axios.post(
+      "http://127.0.0.1:5000/freelancer/ADDcommunity_post",
+      post
+    );
+
+    if (response.status === 201) {
+      Swal.fire({
+        title: "Success!",
+        text: "Your post has been added.",
+        icon: "success",
+      });
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: "An error occurred while adding the post.",
+        icon: "error",
+      });
+    }
+
+    console.log("Post data sent successfully:", response.data);
+    navigate("/freelancer/community");
+
+    setPostData("");
+
+    console.log("images urls:", imageUrls);
+
+    
+
+    setIsSubmitting(false);
   };
-  
 
   return (
     <div className="container mx-auto mt-8 bg-gray-100 shadow-md rounded-lg p-8">
       <h1 className="text-2xl font-bold mb-4 text-indigo-600">Add a Post</h1>
       <form onSubmit={handleSubmit}>
-        <div name="contribute" className="justify-end">
-          <label className="themeSwitcherTwo relative inline-flex cursor-pointer select-none items-center">
-            <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={handlecontributetoggle}
-              className="sr-only"
+        <div className="flex mb-3">
+        <button
+          type="button"
+          onClick={handlecontributetoggle}
+          class="flex items-center justify-center w-48 text-black bg-white border border-black h-14 rounded-xl"
+        >
+          <div class="mr-3">
+            <img
+              src="https://docs.material-tailwind.com/icons/metamask.svg"
+              alt="metamask"
+              className="h-6 w-6"
             />
-            
-            <span
-              className={`slider mx-4 flex h-8 w-[60px] items-center rounded-full p-1 duration-200 ${
-                isChecked ? "bg-[#413eed]" : "bg-[#CCCCCE]"
-              }`}
-            >
-              <span
-                className={`dot h-6 w-6 rounded-full bg-white duration-200 ${
-                  isChecked ? "translate-x-[28px]" : ""
-                }`}
-              ></span>
-            </span>
-            <span className="label flex items-center text-sm font-medium text-black">
-              Enable Contribution
-            </span>
-          </label>
+          </div>
+          <div>
+            <div class=" font-bold">Connect to </div>
+            <div class=" font-bold">Metamask </div>
+
+          </div>
+        </button>
+<div className="mt-8 ml-1">{metamaskAddress}</div>
         </div>
 
         <div className="mb-4">
+          <div class="w-full px-3">
+            <label
+              class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              for="grid-password"
+            >
+              Share Your Thoughts
+            </label>
+            <input
+              type="text"
+              id="postData"
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter your post data"
+              value={postData}
+              onChange={handleInputChange}
+              disabled={isSubmitting}
+              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            />
+          </div>
+        </div>
+
+        {/* Image preview */}
+        {images.length > 0 && (
+          <div className="mb-2">
+            <Carousel infiniteLoop>
+              {Postimageurls.map((imageUrl, index) => (
+                <div key={index} className="h-64 relative">
+                  <img
+                    src={imageUrl}
+                    alt={`Uploaded ${index}`}
+                    className="object-contain max-h-full max-w-full"
+                  />
+                  <button
+                    className="absolute top-2 right-2 bg-white rounded-full p-2"
+                    onClick={() => handleDeleteImage(index)}
+                  >
+                    <DeleteIcon />
+                  </button>
+                </div>
+              ))}
+            </Carousel>
+          </div>
+        )}
+
+        {/* <div>
+          <input type="file" onChange={handleImageChange} multiple />
+        </div> */}
+
+        <div class="rounded-md border border-indigo-500 bg-gray-50 p-4 shadow-md w-36 ml-2">
           <label
-            htmlFor="postData"
-            className="block text-sm font-medium text-gray-700"
+            for="upload"
+            class="flex flex-col items-center gap-2 cursor-pointer"
           >
-            Post Data
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-10 w-10 fill-white stroke-indigo-500"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <span class="text-gray-600 font-medium">Upload file</span>
           </label>
           <input
-            type="text"
-            id="postData"
-            className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Enter your post data"
-            value={postData}
-            onChange={handleInputChange}
-            disabled={isSubmitting}
+            id="upload"
+            type="file"
+            class="hidden"
+            onChange={handleImageChange}
+            multiple
           />
         </div>
 
-  
-      {/* Conditionally render the image tag */}
-      {image && (
-        <div className="mb-4">
-          <img src={URL.createObjectURL(image)} alt="Uploaded" className="max-w-full h-auto" />
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className={`bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300 mt-3 ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Adding Post..." : "Add Post"}
+          </button>
         </div>
-      )}
-
-        <div>
-          <input type="file" onChange={handleImageChange} />
-        </div>
-
-        <button
-          type="submit"
-          className={`bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300 ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Adding Post..." : "Add Post"}
-        </button>
       </form>
     </div>
   );
