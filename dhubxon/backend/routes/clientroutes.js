@@ -35,6 +35,8 @@ router.post("/post_project", Functions.Postproject);
 router.get("/fetchprofiledata", Functions.fetchprofiledata);
 router.post("/resendOTP", Functions.Re_send_OTP);
 router.get("/clients",Functions.getAllClients);
+router.get("/fetchprofileurl",Functions.fetchprofileurl);
+
 
 router.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");

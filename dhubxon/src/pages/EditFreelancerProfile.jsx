@@ -198,8 +198,7 @@ const SetupProfile = () => {
 
       uploadimage()
         .then(async (imageUrl) => {
-          console.log("IMAGE URLLL:", imageUrl); // Accessing imageurl after it's been updated
-          // Code to submit the form with imageUrl included
+          console.log("IMAGE URLLL:", imageUrl); 
           try {
             const token = localStorage.getItem("token");
             const decodedToken = jwtDecode(token);

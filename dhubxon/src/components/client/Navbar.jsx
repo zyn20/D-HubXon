@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef,useEffect } from 'react';
 import CircularButton from '../../components/Freelancer/separate_components/CircularButton';
 
 import { NavLink , Link} from 'react-router-dom';
@@ -7,9 +7,12 @@ import { IoMdMenu } from 'react-icons/io';
 import { FaComments } from 'react-icons/fa'; // Import the chat icon
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
+import {jwtDecode} from 'jwt-decode';
+import axios from "axios";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [profileURL, setProfileURL] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownAnchorRef = useRef(null);
@@ -20,9 +23,19 @@ const Navbar = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // const handleMobileMenuToggle = () => {
-  //   setIsMobileMenuOpen(!isMobileMenuOpen);
-  // };
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode(token);
+      const response = await axios.get(
+        "http://127.0.0.1:5000/client/fetchprofileurl",
+        { params: { Email: decodedToken.clientData.email } }
+      );
+      // console.log("Navbar Imag
+      setProfileURL(response.data);
+    };
+    fetchData();
+  }, []);
 
 
   const handleButtonClick = () => {
@@ -93,11 +106,11 @@ const Navbar = () => {
 
           <div ref={dropdownAnchorRef} className="relative">
             {/* Replace the image source below with your profile image */}
-            <img src={logo} alt="Profile" className="w-8 h-8 rounded-full cursor-pointer" onClick={handleDropdownToggle} />
+            <img src={profileURL} alt="Profile" className="w-8 h-8 rounded-full cursor-pointer" onClick={handleDropdownToggle} />
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
-                <Link to="/client/set-profil" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Link to="/client/set-profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   Profile
                 </Link>
                 <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">

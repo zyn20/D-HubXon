@@ -265,6 +265,36 @@ const update_password = async (req, res) => {
   }
 };
 
+
+const fetchprofileurl = async (req, res) => {
+  console.log("Email in Fetchprofileurl:", req.query.Email);
+  try {
+    const Email = req.query.Email;
+
+    // Check if a user with the given email already exists
+    const existingUser = await ClientProfile.findOne({
+      where: {
+        email: Email,
+      },
+    });
+    console.log("exist user is:", existingUser);
+
+    if (!existingUser) {
+      // If the user does not exist, send a constant string e.g "xyz"
+      res.status(200).json("https://res.cloudinary.com/dig2awru0/image/upload/v1708116157/WhatsApp_Image_2024-02-17_at_01.33.28_b9e28513_xtihdt.jpg");
+    } else {
+      // If the user exists, send the existing PROFILEURL
+      console.log("exist user is:", existingUser.ProfileURL);
+      res.status(200).json(existingUser.ProfileURL);
+    }
+
+  } catch (error) {
+    // Handle errors, send an error response, or log the error
+    console.error("Error Fetching profileURL:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const Postproject = async (req, res) => {
   console.log("------------------------------");
   console.log(req.body.title);
@@ -306,6 +336,7 @@ const setProfile = async (req, res) => {
       contactphone: req.body.contactphone,
       companydescription: req.body.companydescription,
       projectposted: req.body.projectposted,
+      ProfileURL:req.body.imageUrl,
       email: Email,
     };
 
@@ -394,4 +425,5 @@ module.exports = {
   fetchprofiledata,
   Re_send_OTP,
   getAllClients,
+  fetchprofileurl
 };
