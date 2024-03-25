@@ -9,6 +9,8 @@ const SetupProfile = () => {
   const [imageurl, setimageurl] = useState(InitialImage);
   const [image, setImage] = useState(null);
   const [changeimage,setchangeimage]=useState(false);
+    const [isLoading, setIsLoading] = useState(false); // New state variable
+
   const [formData, setFormData] = useState({
     email: "",
     city: "",
@@ -249,6 +251,16 @@ const SetupProfile = () => {
 
   return (
     <div className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-md p-6 mt-10 bg-blue-100 mb-8">
+
+{isLoading && (
+          <div className="flex items-center justify-center h-screen fixed top-0 left-0 right-0 bottom-0 bg-opacity-50 bg-gray-700">
+            <div className="relative">
+              <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+              <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+            </div>
+          </div>
+        )}
+
       <h2 className="text-2xl font-poppins font-bold text-center mb-5">
         Basic Profile Setup
       </h2>
