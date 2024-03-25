@@ -1,5 +1,6 @@
 const Freelancer = require("../models/freelancermodel");
 const Proposals = require("../models/proposals");
+const { Sequelize } = require('sequelize');
 
 const FreelancerProfile = require("../models/freelancerprofile");
 const Post = require("../models/post");
@@ -716,15 +717,96 @@ const SubmitProposals = async (req, res) => {
   }
 };
 
+// const getAllFreelancers = async (req, res) => {
+//   try {
+//     const freelancers = await Freelancer.findAll(); // Sequelize method to find all records
+//     res.status(200).json(freelancers);
+//   } catch (error) {
+//     console.error("Error fetching all freelancers:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// };
+
+
+
+// const getAllFreelancers = async (req, res) => {
+//   try {
+//     const projects = await Project.findAll({
+//       attributes: ['takenby'], // Fetch only the takenby field
+//       where: {
+//         takenby: {
+//           [Sequelize.Op.not]: 'none' // Fetch only projects where takenby is not 'none'
+//         }
+//       }
+//     });
+// console.log(projects);
+//     // Extract unique email addresses from projects
+//     const takenByArray = projects.map(project => project.takenby);
+//     const uniqueTakenBy = [...new Set(takenByArray)];
+
+//     // Now you have an array of unique email addresses of freelancers who have taken a project
+//     // You can further process this data as needed
+
+//     res.status(200).json(uniqueTakenBy);
+//   } catch (error) {
+//     console.error("Error fetching freelancers with projects:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// };
+
+
+
 const getAllFreelancers = async (req, res) => {
   try {
-    const freelancers = await Freelancer.findAll(); // Sequelize method to find all records
+    const projects = await Project.findAll({
+      where: {
+        takenby: {
+          [Sequelize.Op.not]: 'none'
+        }
+      }
+    });
+
+    // Extract unique email addresses from projects
+    const takenByArray = projects.map(project => project.takenby);
+    const uniqueTakenBy = [...new Set(takenByArray)];
+
+    // Fetch complete freelancer objects based on the unique email addresses
+    const freelancers = await Freelancer.findAll({
+      where: {
+        Email: {
+          [Sequelize.Op.in]: uniqueTakenBy // Find freelancers whose email is in the uniqueTakenBy array
+        }
+      }
+    });
+
     res.status(200).json(freelancers);
   } catch (error) {
-    console.error("Error fetching all freelancers:", error);
+    console.error("Error fetching freelancers with projects:", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+
+// const getAllFreelancers = async (req, res) => {
+//   try {
+//     const freelancers = await Freelancer.findAll({
+//       include: [{
+//         model: Project,
+//         where: {
+//           takenby: {
+//             [Sequelize.Op.not]: 'none' // Filter out projects where takenby is not 'none'
+//           }
+//         }
+//       }]
+//     });
+//     res.status(200).json(freelancers);
+//   } catch (error) {
+//     console.error("Error fetching freelancers:", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// };
+
 
 
 const createSubscription = async (req, res) => {

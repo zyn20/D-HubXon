@@ -83,12 +83,39 @@ exports.getMessagesBetweenUsers = async (req, res) => {
   };
 
 
-  exports.getmsg = async (req, res) => {
-    const { fromUserEmail, toUserEmail } = req.query;
+  exports.deleteMessage = async (req, res) => {
+    const { messageId } = req.params; // Extract the message ID from request parameters
 
-    if (!fromUserEmail || !toUserEmail) {
+    try {
+        // Find the message by ID
+        const message = await Message.findByPk(messageId);
+
+        // Check if the message exists
+        if (!message) {
+            return res.status(404).json({ message: `Message with ID ${messageId} not found.` });
+        }
+
+        // Delete the message
+        await message.destroy();
+
+        // Respond with success message
+        res.status(200).json({ message: 'Message deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        res.status(500).send('Error while deleting message.');
+    }
+};
+
+
+
+
+
+exports.getmsg = async (req, res) => {
+    const { fromUserEmail, toUserEmail, fromUserType } = req.query;
+
+    if (!fromUserEmail || !toUserEmail || !fromUserType) {
         return res.status(400).json({
-            message: "Both 'fromUserEmail' and 'toUserEmail' query parameters are required."
+            message: "'fromUserEmail', 'toUserEmail', and 'fromUserType' query parameters are required."
         });
     }
 
@@ -104,20 +131,24 @@ exports.getMessagesBetweenUsers = async (req, res) => {
         });
 
         const userEmails = messages.map(msg => msg.fromUserEmail);
-        // Unique emails for minimizing database queries
         const uniqueUserEmails = [...new Set(userEmails)];
 
-        const clients = await Client.findAll({ where: { Email: uniqueUserEmails }, attributes: ['Email', 'Name'] });
-        const freelancers = await Freelancer.findAll({ where: { Email: uniqueUserEmails }, attributes: ['Email', 'Name'] });
+        let user;
+        if (fromUserType === 'freelancer') {
+            user = await Freelancer.findOne({ 
+                where: { Email: fromUserEmail }, 
+                attributes: ['Email', 'Name'] 
+            });
+        } else {
+            user = await Client.findOne({ 
+                where: { Email: fromUserEmail }, 
+                attributes: ['Email', 'Name'] 
+            });
+        }
 
-        // Combine and index by email for quick lookup
-        const nameByEmail = {};
-        clients.concat(freelancers).forEach(user => nameByEmail[user.Email] = user.Name);
-
-        // Enrich messages with username
         const enrichedMessages = messages.map(message => ({
             ...message.toJSON(),
-            fromUserName: nameByEmail[message.fromUserEmail] || 'Unknown User'
+            fromUserName: user ? user.Name : 'Unknown User'
         }));
 
         if (messages.length > 0) {

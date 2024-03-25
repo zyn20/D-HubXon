@@ -12,6 +12,7 @@ const messageroute = require("./routes/messageroutes");
 const check_record = require("./middleware/check_existing_record");
 const Freelancer = require("./models/freelancermodel");
 const Client = require("./models/clientmodel");
+const { Sequelize, DataTypes } = require("sequelize");
 const { CronJob } = require("cron");
 //const fileUpload = require("express-fileupload");
 app.use(bodyParser.json());

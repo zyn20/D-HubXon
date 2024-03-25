@@ -7,6 +7,7 @@ const { sendVerificationEmail } = require("./nodemailer/email");
 const { Console } = require("console");
 const jwt = require("jsonwebtoken");
 const emailValidator = require("deep-email-validator");
+const { Sequelize } = require('sequelize');
 
 
 var old_data = {};
@@ -371,12 +372,35 @@ const fetchprofiledata = async (req, res) => {
 };
 
 
+
+
+
 const getAllClients = async (req, res) => {
   try {
-    const clients = await Client.findAll(); // Sequelize method to find all records
+    const projects = await Project.findAll({
+      where: {
+        projectowner: {
+          [Sequelize.Op.not]: 'none'
+        }
+      }
+    });
+
+    // Extract unique email addresses of project owners
+    const projectOwnerArray = projects.map(project => project.projectowner);
+    const uniqueProjectOwners = [...new Set(projectOwnerArray)];
+
+    // Fetch complete client objects based on the unique email addresses
+    const clients = await Client.findAll({
+      where: {
+        Email: {
+          [Sequelize.Op.in]: uniqueProjectOwners
+        }
+      }
+    });
+
     res.status(200).json(clients);
   } catch (error) {
-    console.error("Error fetching all clients:", error);
+    console.error("Error fetching clients with projects:", error);
     res.status(500).send("Internal Server Error");
   }
 };

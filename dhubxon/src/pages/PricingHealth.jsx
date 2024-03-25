@@ -12,11 +12,13 @@ import {
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode"; // Corrected import
+import  DataForClaim  from "../components/Subscriptions/DataForClaim";
 
 const PricingHealth = () => {
   const [isYearly, setIsYearly] = useState(false);
   let [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
+  const [showClaimForm, setShowClaimForm] = useState(false);
   const [userSubscription, setUserSubscription] = useState(null);
   const subscriptionType = searchParams.get("type"); // Default to 'Healthcare' if not specified
 
@@ -65,6 +67,14 @@ const PricingHealth = () => {
     { name: "Family Health Plans", Icon: FaUsers },
     { name: "Double Savings Benefit", Icon: FaPiggyBank },
   ];
+
+  const handleClaimClick = () => {
+    setShowClaimForm(true); // Show the claim form when the button is clicked
+  };
+
+  const handleCloseClaimForm = () => {
+    setShowClaimForm(false); // Close the claim form
+  };
 
   const packages = [
     {
@@ -225,48 +235,106 @@ const PricingHealth = () => {
             <span className="text-blue-700 font-medium">Yearly (Save 20%)</span>
           </div>
         </div>
-
-        {/* Code for displaying the component */}
+  
+        {/* Claim button */}
+        <div className="text-center mb-8">
+          <button
+            onClick={handleClaimClick}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Claim
+          </button>
+        </div>
+  
+        {/* Render the claim form if showClaimForm state is true */}
+        {showClaimForm && <DataForClaim onClose={handleCloseClaimForm} />}
+  
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {packages.map((pkg, index) => (
-           <div key={index} className={`rounded-xl shadow-xl bg-white p-8 transition duration-500 ${userSubscription?.packageType === pkg.name ? 'ring-4 ring-blue-500' : 'hover:shadow-2xl'}`}>
-           <h3 className="text-2xl font-bold text-blue-800 mb-5">{pkg.name}</h3>
-
-
-              {/* Additional package details and Subscribe button */}
+            <div
+              key={index}
+              className={`rounded-xl shadow-xl bg-white p-8 transition duration-500 ${
+                userSubscription?.packageType === pkg.name
+                  ? "ring-4 ring-blue-500"
+                  : "hover:shadow-2xl"
+              }`}
+            >
+              <h3 className="text-2xl font-bold text-blue-800 mb-5">{pkg.name}</h3>
+  
+              {/* Package details */}
               <div className="text-lg mb-5">
-              <span className="font-bold">
-                ${isYearly ? pkg.priceYearly : pkg.priceMonthly}
-              </span>
-              <span className="text-gray-600"> / {isYearly ? 'yr' : 'mo'}</span>
-            </div>
-
-
+                <span className="font-bold">
+                  ${isYearly ? pkg.priceYearly : pkg.priceMonthly}
+                </span>
+                <span className="text-gray-600">
+                  {" "}
+                  / {isYearly ? "yr" : "mo"}
+                </span>
+              </div>
+  
+              {/* Features */}
               <ul className="space-y-3 mb-8">
-              {features.map((feature, featureIndex) => (
-                <li key={featureIndex} className="flex items-center">
-                  <feature.Icon className={`text-xl mr-2 ${pkg.includes[featureIndex] ? 'text-blue-500' : 'text-gray-400'}`} />
-                  <span className={`${pkg.includes[featureIndex] ? 'text-gray-700' : 'text-gray-400'}`}>{feature.name}</span>
-                  <span className="ml-auto">
-                    {pkg.includes[featureIndex] ? <FaCheckCircle className="text-green-500" /> : <FaRegCircle className="text-gray-300" />}
-                  </span>
-                </li>
-              ))}
+                {features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center">
+                    <feature.Icon
+                      className={`text-xl mr-2 ${
+                        pkg.includes[featureIndex]
+                          ? "text-blue-500"
+                          : "text-gray-400"
+                      }`}
+                    />
+                    <span
+                      className={`${
+                        pkg.includes[featureIndex]
+                          ? "text-gray-700"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {feature.name}
+                    </span>
+                    <span className="ml-auto">
+                      {pkg.includes[featureIndex] ? (
+                        <FaCheckCircle className="text-green-500" />
+                      ) : (
+                        <FaRegCircle className="text-gray-300" />
+                      )}
+                    </span>
+                  </li>
+                ))}
               </ul>
-
-              {userSubscription?.packageType === pkg.name ? (
-              <button onClick={handleUnsubscribe} className="w-full py-3 text-white bg-red-500 rounded-lg font-medium hover:bg-red-600 transition duration-300">Unsubscribe</button>
-            ) : (
-              <button onClick={() => handleSubscribe(pkg.name, isYearly ? pkg.priceYearly : pkg.priceMonthly)} className="w-full py-3 text-white bg-blue-500 rounded-lg font-medium hover:bg-blue-600 transition duration-300">Choose Plan</button>
-            )}
-
-             
+  
+              {/* Subscription button */}
+              <div className="flex justify-center">
+                {userSubscription?.packageType === pkg.name ? (
+                  <button
+                    onClick={handleUnsubscribe}
+                    className="w-full py-3 text-white bg-red-500 rounded-lg font-medium hover:bg-red-600 transition duration-300"
+                  >
+                    Unsubscribe
+                  </button>
+                ) : (
+                  <button
+                    onClick={() =>
+                      handleSubscribe(
+                        pkg.name,
+                        isYearly ? pkg.priceYearly : pkg.priceMonthly
+                      )
+                    }
+                    className="w-full py-3 text-white bg-blue-500 rounded-lg font-medium hover:bg-blue-600 transition duration-300"
+                  >
+                    Choose Plan
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
       </div>
     </div>
   );
+  
+  
 };
 
 export default PricingHealth;
+

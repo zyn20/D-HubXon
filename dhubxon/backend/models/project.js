@@ -37,6 +37,7 @@ const Project = sequelize.define("Project", {
   },
   projectowner:{
     type: DataTypes.STRING,
+    defaultValue: 'none',
     allowNull: false,
   },
   takenby: {

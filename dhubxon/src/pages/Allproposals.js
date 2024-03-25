@@ -13,6 +13,7 @@ const TableComponent = () => {
   useEffect(() => {
     const fetchProposals = async () => {
       const projectId = localStorage.getItem('project_id');
+      console.log('Project id is  : ',projectId)
       if (!projectId) {
         console.error('No project ID found in local storage.');
         return;

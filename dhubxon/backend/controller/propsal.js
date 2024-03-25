@@ -1,7 +1,5 @@
 
-
-
-const Proposals = require('../models/proposals'); // Adjust the path to where your models are
+const Proposals = require('../models/proposals'); 
 
 const getProposalsByProjectId = async (req, res) => {
   try {

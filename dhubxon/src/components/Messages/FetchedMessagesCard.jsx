@@ -15,6 +15,9 @@ const FetchedMessagesCard = ({ selectedUser, chatMessages, UserName}) => {
   // Use the UserName directly from the selectedUser prop if available
   const userName = UserName;
 
+
+  
+
   if (!chatMessages.data.length) {
     return <p>No messages to display.</p>; // Show a message if no chat data
   }
@@ -27,7 +30,7 @@ const FetchedMessagesCard = ({ selectedUser, chatMessages, UserName}) => {
             <div className="flex items-center">
               <FontAwesomeIcon icon={faUser} className="user-icon text-gray-600 mr-2" />
               {/* Use the userName for displaying the user's name */}
-              <p className="user-name text-lg font-semibold text-gray-900">{msg.fromUserName}</p>
+              <p className="user-name text-lg font-semibold text-gray-900">{msg.fromUserEmail} {console.log(msg)}</p>
             </div>
           </div>
           <div className="message-content mt-2">
