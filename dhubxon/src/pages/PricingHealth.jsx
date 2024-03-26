@@ -240,7 +240,7 @@ const PricingHealth = () => {
         <div className="text-center mb-8">
           <button
             onClick={handleClaimClick}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Claim
           </button>

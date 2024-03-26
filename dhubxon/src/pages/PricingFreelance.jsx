@@ -4,11 +4,13 @@ import { FaCheckCircle, FaRegCircle, FaRocket, FaUserAstronaut, FaStar, FaUsers,
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode"; 
+import  DataForClaim  from "../components/SubscribeButtons/DataForClaim";
 
 const Pricing = () => {
   const [isYearly, setIsYearly] = useState(false);
   let [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
+  const [showClaimForm, setShowClaimForm] = useState(false);
   const [userSubscription, setUserSubscription] = useState(null);
   const subscriptionType = searchParams.get("type"); // Default to 'Healthcare' if not specified
   const togglePlan = () => setIsYearly(!isYearly);
@@ -58,6 +60,14 @@ const Pricing = () => {
     { name: 'Stellar Success Managers', Icon: FaStar }
   ];
 
+
+  const handleClaimClick = () => {
+    setShowClaimForm(true); // Show the claim form when the button is clicked
+  };
+
+  const handleCloseClaimForm = () => {
+    setShowClaimForm(false); // Close the claim form
+  };
   const packages = [
     {
       name: 'Launch Pad',
@@ -216,6 +226,19 @@ const Pricing = () => {
           <span className="text-sm font-medium text-purple-700">YEARLY</span>
         </div>
       </div>
+
+       {/* Claim button */}
+       <div className="text-center mb-8">
+          <button
+            onClick={handleClaimClick}
+            className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Claim
+          </button>
+        </div>
+  
+        {/* Render the claim form if showClaimForm state is true */}
+        {showClaimForm && <DataForClaim onClose={handleCloseClaimForm} />}
 
         {/* Code for displaying the component */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
