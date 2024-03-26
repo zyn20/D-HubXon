@@ -7,6 +7,7 @@ const Post = require("../models/post");
 const Comment = require("../models/comment");
 const CommentReply = require("../models/commentreply");
 const Subscription = require("../models/subcriptions");
+const ClaimSubscription = require("../models/ClaimSubscription");
 
 const Project = require("../models/project");
 const crypto = require("crypto");
@@ -913,6 +914,20 @@ const unsubscribe = async (req, res) => {
   }
 };
 
+const createClaimSubscription = async (req, res) => {
+  try {
+    const ClaimData = req.body;
+    const newClaimData = await ClaimSubscription.create(ClaimData);
+    res.status(201).json({ message: "Data added successfully", data: newClaimData });
+  } catch (error) {
+    console.error("Error adding Claim Subscription:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+
 
 module.exports = {
   signIn,
@@ -948,4 +963,5 @@ module.exports = {
   createSubscription,
   getSubscriptionStatus,
   unsubscribe,
+  createClaimSubscription,
 };

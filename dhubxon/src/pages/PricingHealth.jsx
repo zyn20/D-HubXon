@@ -12,7 +12,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode"; // Corrected import
-import  DataForClaim  from "../components/Subscriptions/DataForClaim";
+import  DataForClaim  from "../components/SubscribeButtons/DataForClaim";
 
 const PricingHealth = () => {
   const [isYearly, setIsYearly] = useState(false);
