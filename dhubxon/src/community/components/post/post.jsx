@@ -59,7 +59,7 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
   }, [post]);
 
   useEffect(() => {
-    console.log("Updated state:", state);
+    // console.log("Updated state:", state);
   }, [state]);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
 
         setState({ provider, signer, contract });
 
-        console.log("useeffect Contract Data is 2:", state);
+        // console.log("useeffect Contract Data is 2:", state);
       } catch (error) {
         console.log(error);
       }
@@ -114,7 +114,7 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
     }
     try {
       const contributionInEther = ContributionAmmount / EtherumPrice;
-      console.log("Price in Ethers:", contributionInEther);
+      // console.log("Price in Ethers:", contributionInEther);
       const amount = {
         value: ethers.utils.parseEther(contributionInEther.toString()),
       };
@@ -156,7 +156,7 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
         console.error("Error sending post data:", error);
       }
     }
-    console.log("I am in Like Function:", post.id);
+    // console.log("I am in Like Function:", post.id);
   };
 
   return (

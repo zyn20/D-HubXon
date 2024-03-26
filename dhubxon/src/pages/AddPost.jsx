@@ -193,6 +193,13 @@ const AddPost = () => {
 
     if (isChecked == true) {
       try {
+
+
+        const createproject=await state.contract.createProject(postData);
+        console.log("Hash:",createproject.hash);
+
+
+
         const latestProjectIdBigNumber =
           await state.contract.getLatestProject();
         const latestProjectIdInteger = ethers.utils
