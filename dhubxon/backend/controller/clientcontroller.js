@@ -42,7 +42,6 @@ const signUp = async (req, res) => {
   try {
     const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
     console.log(verificationCode);
-
     const { valid, reason, validators } = await isEmailValid(req.body.Email);
     console.log("Reason is:",reason);
     if (!valid) {

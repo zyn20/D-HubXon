@@ -238,7 +238,6 @@ const AddPost = () => {
       LIKES: 0,
       COMMENTS: 0,
       EMAIL: decodedToken.freelancerData.email,
-      // IMAGEURL: imageUrls,
       BLOCKCHAININDEX: blockchainindex,
     };
 
@@ -269,7 +268,7 @@ const AddPost = () => {
     console.log("images urls:", imageUrls);
 
     
-    setIsLoading(false); // Set loading state to true when submitting form
+    setIsLoading(true); // Set loading state to true when submitting form
 
     setIsSubmitting(false);
   };
