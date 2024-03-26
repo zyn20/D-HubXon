@@ -1,5 +1,6 @@
 const Client = require("../models/clientmodel");
 const ClientProfile = require("../models/clientprofile");
+const Proposal=require("../models/proposals")
 const Project = require("../models/project");
 const sequelize = require("../config");
 const crypto = require("crypto");
@@ -7,12 +8,14 @@ const { sendVerificationEmail } = require("./nodemailer/email");
 const { Console } = require("console");
 const jwt = require("jsonwebtoken");
 const emailValidator = require("deep-email-validator");
+const DisputeRequests=require("../models/disputeRequests")
+// const Sequelize = require('sequelize');
 const { Sequelize } = require('sequelize');
 
 
 var old_data = {};
 let temporaryUsersrecord = {};
-var user_ = {};
+var user_ = {};                       
 
 
 const SECRETKEY="NATIONAL UNIVERSITY";
@@ -43,7 +46,6 @@ const signUp = async (req, res) => {
   try {
     const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
     console.log(verificationCode);
-
     const { valid, reason, validators } = await isEmailValid(req.body.Email);
     console.log("Reason is:",reason);
     if (!valid) {
@@ -266,6 +268,36 @@ const update_password = async (req, res) => {
   }
 };
 
+
+const fetchprofileurl = async (req, res) => {
+  console.log("Email in Fetchprofileurl:", req.query.Email);
+  try {
+    const Email = req.query.Email;
+
+    // Check if a user with the given email already exists
+    const existingUser = await ClientProfile.findOne({
+      where: {
+        email: Email,
+      },
+    });
+    console.log("exist user is:", existingUser);
+
+    if (!existingUser) {
+      // If the user does not exist, send a constant string e.g "xyz"
+      res.status(200).json("https://res.cloudinary.com/dig2awru0/image/upload/v1708116157/WhatsApp_Image_2024-02-17_at_01.33.28_b9e28513_xtihdt.jpg");
+    } else {
+      // If the user exists, send the existing PROFILEURL
+      console.log("exist user is:", existingUser.ProfileURL);
+      res.status(200).json(existingUser.ProfileURL);
+    }
+
+  } catch (error) {
+    // Handle errors, send an error response, or log the error
+    console.error("Error Fetching profileURL:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const Postproject = async (req, res) => {
   console.log("------------------------------");
   console.log(req.body.title);
@@ -307,6 +339,7 @@ const setProfile = async (req, res) => {
       contactphone: req.body.contactphone,
       companydescription: req.body.companydescription,
       projectposted: req.body.projectposted,
+      ProfileURL:req.body.imageUrl,
       email: Email,
     };
 
@@ -406,6 +439,79 @@ const getAllClients = async (req, res) => {
 };
 
 
+const getProjectbyid = async (req, res) => {
+  try {
+    const existingProject = await Project.findOne({
+      where: {
+        id: req.query.PROJECTID,
+      },
+    });
+
+    if (existingProject) {
+      res.send(existingProject);
+    } else {
+      res.status(404).send("Project not found");
+    }
+  } catch (error) {
+    console.error("Error fetching project data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+const SubmitDisputeRequest = async (req, res) => {
+  try {
+    const ProposalData = req.body;
+    const newProposal = await DisputeRequests.create(ProposalData);
+    res.status(201).json({ message: "Proposal added successfully", DisputeRequests: newProposal });
+  } catch (error) {
+    console.error("Error adding Proposal:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+const deleteproposals = async (req, res) => {
+  const proposalId = req.body.ProposalID;
+
+  try {
+    // Find the proposal by its ID
+    const proposal = await Proposal.findByPk(proposalId);
+    if (!proposal) {
+      return res.status(404).send("Proposal not found");
+    }
+
+    // Get the ProjectID of the proposal
+    const projectId = proposal.PROJECTID;
+
+    // Find all proposals with the same ProjectID
+    const proposals = await Proposal.findAll({
+      where: {
+        PROJECTID: projectId,
+      },
+    });
+
+    // Filter out the proposal with the specified ProposalID
+    const proposalsToDelete = proposals.filter(p => p.id !== proposalId);
+
+    // Delete the filtered proposals
+    for (const p of proposalsToDelete) {
+      await p.destroy();
+    }
+
+    res.status(200).send("Proposals deleted successfully");
+  } catch (error) {
+    console.error("Error deleting proposals:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
+
+
 module.exports = {
   signIn,
   signUp,
@@ -418,4 +524,9 @@ module.exports = {
   fetchprofiledata,
   Re_send_OTP,
   getAllClients,
+  fetchprofileurl,
+  getProjectbyid,
+  deleteproposals,
+SubmitDisputeRequest
+
 };

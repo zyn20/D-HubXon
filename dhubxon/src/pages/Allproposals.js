@@ -56,7 +56,15 @@ const TableComponent = () => {
   // const handleAcceptClick = () => {
   //   setShowConfirmationModal(true);
   // };
-  const handleAcceptClick = (proposalOwner, projectId) => {
+  const handleAcceptClick = async(proposalOwner, projectId,ProposalId) => {
+
+    //delete all proposals
+
+    const response = await axios.post('http://127.0.0.1:5000/client/deleteallotherproposals', {
+      ProposalID:ProposalId
+    });
+
+
     setCurrentProposalOwner(proposalOwner);
     setCurrentProjectId(projectId);
     setShowConfirmationModal(true);
@@ -90,7 +98,7 @@ const TableComponent = () => {
                       <td className="py-5 px-2 bg-white border-b border-r border-[#E8E8E8] flex justify-center items-center gap-4">
                         <a href={proposal.FILEURL} target="_blank" rel="noopener noreferrer" className="border border-green-500 py-2 px-6 text-green-500 inline-block rounded hover:bg-green-500 hover:text-white">Open CV</a>
                         <button onClick={() => handleViewCoverLetter(proposal.COVERLETTER)} className="border border-green-500 py-2 px-6 text-green-500 inline-block rounded hover:bg-green-500 hover:text-white">View Cover Letter</button>
-                        <button onClick={() => handleAcceptClick(proposal.PROPOSALOWNER, proposal.PROJECTID)} className="bg-green-500 py-2 px-6 text-white inline-block rounded hover:bg-green-600">Accept</button>
+                        <button onClick={() => handleAcceptClick(proposal.PROPOSALOWNER, proposal.PROJECTID,proposal.id)} className="bg-green-500 py-2 px-6 text-white inline-block rounded hover:bg-green-600">Accept</button>
                       </td>
                     </tr>
                   ))}

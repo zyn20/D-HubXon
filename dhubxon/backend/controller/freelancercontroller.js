@@ -313,9 +313,11 @@ const Allproject = async (req, res) => {
 
 const setProfile = async (req, res) => {
   // console.log("Profile URL:",req.body.imageurl);
+  console.log("I am in Set Profile");
   try {
     const Email = req.body.Email; // Assuming P_email is a constant
-    console.log(P_email);
+    console.log("Email in SetProfile:", Email);
+    console.log(req.body);
     const data = {
       city: req.body.city,
       country: req.body.country,

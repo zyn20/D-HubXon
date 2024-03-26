@@ -35,6 +35,10 @@ const ClientProfile = sequelize.define("ClientProfile", {
   projectposted: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  ProfileURL:{
+    type: DataTypes.STRING,
+    allowNull: true,
   }
 });
 

@@ -27,6 +27,39 @@ const getProposalsByProjectId = async (req, res) => {
   }
 };
 
+
+
+
+
+const getoneProposalsByProjectId = async (req, res) => {
+  try {
+    const { project_id } = req.query;
+
+    if (!project_id) {
+      return res.status(400).json({ error: 'Project ID is required.' });
+    }
+
+    const proposal = await Proposals.findOne({
+      where: {
+        PROJECTID: project_id,
+      },
+    });
+
+    // Check if the proposal exists
+    if (!proposal) {
+      return res.status(404).json({ error: 'Proposal not found.' });
+    }
+
+    // Send the proposal in the response
+    res.json(proposal);
+  } catch (error) {
+    // Handle any errors
+    console.error('Error fetching proposal by project ID:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the proposal.' });
+  }
+};
+
+
 // module.exports = {
 //   getProposalsByProjectId,
 // };
@@ -62,4 +95,5 @@ const getProposalsByTakenBy = async (req, res) => {
 module.exports = {
   getProposalsByTakenBy,
   getProposalsByProjectId,
+  getoneProposalsByProjectId
 };

@@ -9,6 +9,8 @@ const SetupProfile = () => {
   const [imageurl, setimageurl] = useState(InitialImage);
   const [image, setImage] = useState(null);
   const [changeimage,setchangeimage]=useState(false);
+    const [isLoading, setIsLoading] = useState(false); // New state variable
+
   const [formData, setFormData] = useState({
     email: "",
     city: "",
@@ -20,7 +22,7 @@ const SetupProfile = () => {
     languages: "",
     education: "",
     certifications: "",
-    employmentHistory: "",
+    employmentHistory: "",                                                
     otherExperiences: "",
     KEYWORDS: "",
   });
@@ -106,9 +108,14 @@ const SetupProfile = () => {
       }
     });
   };
-  
+
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Set isLoading to true to show the loading screen
+    setIsLoading(true);
+  
     const city = formData.city;
     const country = formData.country;
     const headline = formData.headline;
@@ -121,10 +128,10 @@ const SetupProfile = () => {
     const employmentHistory = formData.employmentHistory;
     const otherExperiences = formData.otherExperiences;
     const KEYWORDS = formData.KEYWORDS.toUpperCase();
-
-    /////////////////////////////////////////////////////////////
-
+  
     const errors = {};
+  
+    // Validation code here...
 
     if (isNumeric(city)) errors.city = "City should not contain numeric values";
     if (isNumeric(country))
@@ -174,82 +181,235 @@ const SetupProfile = () => {
     if (KEYWORDS.length < 1 || KEYWORDS.length > 50) {
       errors.KEYWORDS = "KEYWORDS should be between 1 and 50 characters";
     }
-
+  
     if (Object.keys(errors).length > 0) {
       // Handle validation errors, e.g., show an error message
       Swal.fire({
         icon: "error",
         title: "Validation Error",
-        html: Object.values(errors)
-          .map((error) => `<p>${error}</p>`)
-          .join(""),
+        html: Object.values(errors).map((error) => `<p>${error}</p>`).join(""),
       });
-    
+  
+      // Set isLoading back to false to hide the loading screen
+      setIsLoading(false);
+      return;
     }
+  
+    try {
+      // Upload image and get imageUrl
+      const imageUrl = await uploadimage();
+  
+      // Get token from localStorage
+      const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode(token);
 
-    
+      console.log("decodedToken is:",decodedToken);
+      // console.log("Token is:",token);
 
-    e.preventDefault();
-    if (("Length is:", Object.keys(errors).length === 0)) {
-      e.preventDefault();
-      console.log("Form submitted:", formData);
+      const Email = decodedToken.freelancerData.email;
+      console.log("Email is:",Email);
 
-      console.log("Length is:", Object.keys(errors).length);
-
-      uploadimage()
-        .then(async (imageUrl) => {
-          console.log("IMAGE URLLL:", imageUrl); // Accessing imageurl after it's been updated
-          // Code to submit the form with imageUrl included
-          try {
-            const token = localStorage.getItem("token");
-            const decodedToken = jwtDecode(token);
-            const Email = decodedToken.freelancerData.email;
-            console.log(decodedToken.freelancerData.email);
-            console.log("Image is:", image);
-            const response = await axios.post(
-              "http://127.0.0.1:5000/freelancer/setprofile",
-              {
-                Email,
-                city,
-                country,
-                headline,
-                headlineDescription,
-                portfolioDescription,
-                skills,
-                languages,
-                education,
-                certifications,
-                employmentHistory,
-                otherExperiences,
-                KEYWORDS,
-                imageUrl,
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-            Swal.fire({
-              title: "Done!",
-              text: "Your Profile has been Updated Successfully.",
-              icon: "success",
-            });
-            navigate("/freelancer/");
-
-            console.log("Response:", response.data);
-          } catch (error) {
-            // Handle errors, e.g., show an error message
-            console.error("Error submitting form:", error);
-          }
-        })
-        .catch((error) => {
-          console.error("Error uploading image:", error);
-        });
-      console.log("IMAGE URL:", imageurl);
+      const response = await axios.post(
+                    "http://127.0.0.1:5000/freelancer/setprofile",
+                    {
+                      Email,
+                      city,
+                      country,
+                      headline,
+                      headlineDescription,
+                      portfolioDescription,
+                      skills,
+                      languages,
+                      education,
+                      certifications,
+                      employmentHistory,
+                      otherExperiences,
+                      KEYWORDS,
+                      imageUrl,
+                      headers: {
+                        "Content-Type": "multipart/form-data",
+                      },
+                    }
+                  );
+  
+      // Show success message
+      Swal.fire({
+        title: "Done!",
+        text: "Your Profile has been Updated Successfully.",
+        icon: "success",
+      });
+  
+      // Navigate to the freelancer page
+      navigate("/freelancer/");
+    } catch (error) {
+      // Handle errors, e.g., show an error message
+      console.error("Error submitting form:", error);
+      Swal.fire("Error Occurred");
+    } finally {
+      // Set isLoading back to false after submission
+      setIsLoading(false);
     }
   };
+  
+
+
+
+
+
+
+  
+
+  // const handleSubmit = async (e) => {
+  //   const city = formData.city;
+  //   const country = formData.country;
+  //   const headline = formData.headline;
+  //   const headlineDescription = formData.headlineDescription;
+  //   const portfolioDescription = formData.portfolioDescription;
+  //   const skills = formData.skills;
+  //   const languages = formData.languages;
+  //   const education = formData.education;
+  //   const certifications = formData.certifications;
+  //   const employmentHistory = formData.employmentHistory;
+  //   const otherExperiences = formData.otherExperiences;
+  //   const KEYWORDS = formData.KEYWORDS.toUpperCase();
+
+  //   /////////////////////////////////////////////////////////////
+
+  //   const errors = {};
+
+  //   if (isNumeric(city)) errors.city = "City should not contain numeric values";
+  //   if (isNumeric(country))
+  //     errors.country = "Country should not contain numeric values";
+
+  //   if (headline.length < 5 || headline.length > 100) {
+  //     errors.headline = "Headline should be between 5 and 100 characters";
+  //   }
+
+  //   if (headlineDescription.length < 50 || headlineDescription.length > 200) {
+  //     errors.headlineDescription =
+  //       "Description should be between 50 and 200 characters";
+  //   }
+
+  //   if (portfolioDescription.length < 50 || portfolioDescription.length > 500) {
+  //     errors.portfolioDescription =
+  //       "Portfolio description should be between 50 and 500 characters";
+  //   }
+
+  //   if (skills.length < 1 || skills.length > 500) {
+  //     errors.skills =
+  //       "Skill Description should be between 1 and 500 characters";
+  //   }
+  //   if (languages.length < 1 || languages.length > 50) {
+  //     errors.languages = "language should be between 1 and 50 characters";
+  //   }
+
+  //   if (education.length < 1 || education.length > 50) {
+  //     errors.education = "Education should be between 1 and 50 characters";
+  //   }
+
+  //   if (certifications.length < 1 || certifications.length > 50) {
+  //     errors.certifications =
+  //       "certifications should be between 1 and 50 characters";
+  //   }
+
+  //   if (employmentHistory.length < 1 || employmentHistory.length > 50) {
+  //     errors.employmentHistory =
+  //       "employmentHistory should be between 1 and 50 characters";
+  //   }
+
+  //   if (otherExperiences.length < 1 || otherExperiences.length > 50) {
+  //     errors.otherExperiences =
+  //       "otherExperiences should be between 1 and 50 characters";
+  //   }
+
+  //   if (KEYWORDS.length < 1 || KEYWORDS.length > 50) {
+  //     errors.KEYWORDS = "KEYWORDS should be between 1 and 50 characters";
+  //   }
+
+  //   if (Object.keys(errors).length > 0) {
+  //     // Handle validation errors, e.g., show an error message
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Validation Error",
+  //       html: Object.values(errors)
+  //         .map((error) => `<p>${error}</p>`)
+  //         .join(""),
+  //     });
+    
+  //   }
+
+    
+
+  //   e.preventDefault();
+  //   if (("Length is:", Object.keys(errors).length === 0)) {
+  //     e.preventDefault();
+  //     console.log("Form submitted:", formData);
+
+  //     console.log("Length is:", Object.keys(errors).length);
+
+  //     uploadimage()
+  //       .then(async (imageUrl) => {
+  //         console.log("IMAGE URLLL:", imageUrl); 
+  //         try {
+  //           const token = localStorage.getItem("token");
+  //           const decodedToken = jwtDecode(token);
+  //           const Email = decodedToken.freelancerData.email;
+  //           console.log(decodedToken.freelancerData.email);
+  //           console.log("Image is:", image);
+  //           const response = await axios.post(
+  //             "http://127.0.0.1:5000/freelancer/setprofile",
+  //             {
+  //               Email,
+  //               city,
+  //               country,
+  //               headline,
+  //               headlineDescription,
+  //               portfolioDescription,
+  //               skills,
+  //               languages,
+  //               education,
+  //               certifications,
+  //               employmentHistory,
+  //               otherExperiences,
+  //               KEYWORDS,
+  //               imageUrl,
+  //               headers: {
+  //                 "Content-Type": "multipart/form-data",
+  //               },
+  //             }
+  //           );
+  //           Swal.fire({
+  //             title: "Done!",
+  //             text: "Your Profile has been Updated Successfully.",
+  //             icon: "success",
+  //           });
+  //           navigate("/freelancer/");
+
+  //           console.log("Response:", response.data);
+  //         } catch (error) {
+  //           // Handle errors, e.g., show an error message
+  //           console.error("Error submitting form:", error);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error uploading image:", error);
+  //       });
+  //     console.log("IMAGE URL:", imageurl);
+  //   }
+  // };
 
   return (
     <div className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-md p-6 mt-10 bg-blue-100 mb-8">
+
+{isLoading && (
+          <div className="flex items-center justify-center h-screen fixed top-0 left-0 right-0 bottom-0 bg-opacity-50 bg-gray-700">
+            <div className="relative">
+              <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+              <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+            </div>
+          </div>
+        )}
+
       <h2 className="text-2xl font-poppins font-bold text-center mb-5">
         Basic Profile Setup
       </h2>

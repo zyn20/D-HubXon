@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import Navbar from "../components/Freelancer/Navbar_Freelancer";
+// import Navbar from "../components/Freelancer/Navbar_Freelancer";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -25,6 +25,8 @@ const ProposalSubmission = () => {
   const [projectID, setProjectId] = useState(null);
   const [bidAmount, setBidAmount] = useState(100);
   const [EstimatedFee, setEstimatedFee] = useState(90);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [otherCategory, setOtherCategory] = useState('');
   const [isLoading,setisLoading]=useState(false)
 
   const handleBidAmountChange = (e) => {
@@ -44,6 +46,21 @@ const ProposalSubmission = () => {
     setEstimatedFee(estimatedFee);
   };
 
+
+  const handleCategoryChange = (event) => {
+    const { value } = event.target;
+    setSelectedCategory(value);
+    if (value !== 'Other') {
+      setOtherCategory('');
+    }
+  };
+
+  const handleOtherCategoryChange = (event) => {
+    setOtherCategory(event.target.value);
+  };
+
+
+
   const handlefilesubmit = (e) => {
     try {
       const selectedFile = e.target.files[0];
@@ -56,14 +73,6 @@ const ProposalSubmission = () => {
         return;
       }
 
-      if (selectedFile.type !== "application/pdf") {
-        Swal.fire({
-          icon: "error",
-          title: "Invalid File Type",
-          text: "Please select a PDF file",
-        });
-        return;
-      }
       setfile(selectedFile);
     } catch (error) {
       console.error("Error handling file:", error);
@@ -106,43 +115,64 @@ const ProposalSubmission = () => {
   }
 
   const handleSubmitProposal = async () => {
-    console.log("Submitting Proposal...");
     setisLoading(true);
+    console.log("Submitting Proposal...");
     if (!coverletter  || !file) {
       Swal.fire({
         icon: "error",
         title: "Incomplete Input",
         text: "Please Input All Values",
       });
-      setisLoading(false);
-
+      setisLoading(false)
       return;
     }
     try {
       const fileurl = await uploadFile();
       console.log("File URL is:", fileurl,coverletter,file);
+
+      const token = localStorage.getItem("token");
+      const decodedToken = jwtDecode(token);
+      const Email = decodedToken.clientData.email;
   
-     
+      var Category=";"
+     if(selectedCategory==''){
+        Category=otherCategory
+     }
+     else{
+        Category=selectedCategory
+     }
+
+     const proposal = await axios.get(
+      "http://127.0.0.1:5000/client/oneproposal",
+      {
+        params: {
+          project_id: location.state.PROJECTID
+        }
+      }
+    );
+
+
   
       const ProposalData = {
-        PROJECTID: projectID,
-        BIDAMOUNT: bidAmount,
+        PROJECTID: location.state.PROJECTID,
+        Category: Category,
         COVERLETTER: coverletter,
         FILEURL: fileurl,
-        PROPOSALOWNER: proposalowner,
+        DISPUTEREQUESTOWNER: Email,
+        PROPOSALFILEURL:proposal.data.FILEURL
       };
       console.log(ProposalData);
       const response = await axios.post(
-        "http://127.0.0.1:5000/freelancer/submitproposal",
+        "http://127.0.0.1:5000/client/submitDisputeRequest",
         ProposalData
       );
       console.log("Response:", response);
-      setisLoading(false);
+      setisLoading(false)
 
       if (response.status === 201) {
         Swal.fire({
           title: "Success!",
-          text: "Your proposal has been sent.",
+          text: "Your Request has been sent.",
           icon: "success",
         });
       } else {
@@ -153,7 +183,7 @@ const ProposalSubmission = () => {
         });
       }
 
-      navigate("/freelancer/search-jobs");
+      navigate("/client");
 
 
     } catch (error) {
@@ -163,32 +193,53 @@ const ProposalSubmission = () => {
   
 
   useEffect(() => {
-    settitle(location.state.title);
-    setdescription(location.state.description);
-    setskillRequired(location.state.skillRequired);
-    setprojectDuration(location.state.projectDuration);
-    setpricingType(location.state.pricingType);
-    setprojectDeadline(location.state.projectDeadline);
-    setbudget(location.state.budget);
-    setProjectId(location.state.ID);
-
-    if (projectID) {
-      console.log("-------------------");
-      console.log("Ali" + projectID);
-      console.log("===================");
-    }
-
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      setproposalowner(decodedToken.freelancerData.email);
-    }
-  }, []);
+    let source = axios.CancelToken.source(); // Create a cancel token source
+    
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:5000/client/getprojectbyid",
+          {
+            params: {
+              PROJECTID: location.state.PROJECTID,
+            },
+            cancelToken: source.token, // Pass the cancel token to the axios request
+          }
+        );
+  
+        const fetchedData = response.data;
+        console.log("Fetched Data:", fetchedData);
+  
+        settitle(fetchedData.title);
+        setdescription(fetchedData.description);
+        setskillRequired(fetchedData.skillRequired);
+        setprojectDuration(fetchedData.projectDuration);
+        setpricingType(fetchedData.pricingType);
+        setprojectDeadline(fetchedData.projectDeadline);
+        setbudget(fetchedData.budget);
+        setProjectId(fetchedData.ID);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else {
+          console.error("Error fetching project data:", error);
+        }
+      }
+    };
+  
+    fetchData();
+  
+    return () => {
+      source.cancel("Component unmounted"); 
+    };
+  }, [location.state.PROJECTID]);
+  
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="flex justify-center items-center mt-8 ">
+
       {isLoading && (
           <div className="flex items-center justify-center h-screen fixed top-0 left-0 right-0 bottom-0 bg-opacity-50 bg-gray-700">
             <div className="relative">
@@ -275,43 +326,41 @@ const ProposalSubmission = () => {
 
           {/* Bid Section */}
           <div className="mb-8 mt-3">
-            <div className="flex justify-center">
-              <div className="w-full max-w-md">
-                <label className="block text-sm font-medium text-gray-700 text-center">
-                  Bid Amount
-                </label>
-                <div className="mt-1 relative rounded-md">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500">$</span>
-                  </div>
-                  <input
-                    type="number"
-                    name="bidAmount"
-                    id="bidAmount"
-                    className="border-4 border-blue-400 h-10 focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm  rounded-md"
-                    placeholder="0.00"
-                    value={bidAmount}
-                    onChange={handleBidAmountChange}
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="w-full max-w-md mt-4 ml-[8vw]">
+        <label className="block text-sm font-medium text-gray-700">
+          Category of Disputes
+        </label>
+        {selectedCategory !== 'Other' ? (
+          <select
+            className="border-4 border-blue-400 h-10 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-1 sm:text-sm rounded-md"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
+            <option value="">Select Category</option>
+            <option value="Quality of Work">Quality of Work</option>
+            <option value="Payment Dispute">Payment Dispute</option>
+            <option value="Deadline Missed">Deadline Missed</option>
+            <option value="Communication Issue">Communication Issue</option>
+            <option value="Other">Other</option>
+          </select>
+        ) : (
+          <input
+            type="text"
+            className="border-4 border-blue-400 h-10 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 sm:text-sm rounded-md"
+            placeholder="Enter Category"
+            value={otherCategory}
+            onChange={handleOtherCategoryChange}
+          />
+        )}
+      </div>
 
-            <h2 className="text-xl font-semibold mb-4 text-center text-blue-950"></h2>
-            <p className="text-gray-700 mb-4 text-center font-semibold">
-              Total amount the client will see on your proposal:{bidAmount}$
-            </p>
-
-            <p className="text-gray-700 mb-4 text-center">
-              The estimated amount you'll receive after service fees:
-              {EstimatedFee}$
-            </p>
+            
           </div>
 
           {/* Cover Letter */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">
-              Cover Letter
+             Write Your Issue Detail
             </h2>
             <textarea
               className="border-4 border-blue-400  p-4 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -326,26 +375,17 @@ const ProposalSubmission = () => {
           {/* Attachments */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">
-              Attachments
+              Add ScreenShots
             </h2>
             <input
               type="file"
-              accept=".pdf"
+              accept="image/*"
               className="block w-full text-sm text-gray-700 border-gray-300 rounded-md"
               onChange={handlefilesubmit}
             />
-            {/* Conditionally render the file name */}
           </div>
 
-          {/* Boost Proposal (optional) */}
-          {/* <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-center text-blue-950">Boost Proposal (optional)</h2>
-          <div className="flex justify-center">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
-              Boost Proposal
-            </button>
-          </div>
-        </div> */}
+          
 
           {/* Submit Button */}
           <div className="flex justify-center mt-6">

@@ -23,6 +23,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Forget_Pass from "./pages/Forget_Pass";
 import PostProject from "./pages/PostProject";
+import DisputeSubmission from "./pages/DisputeSubmission";
 import VerifyOTP from "./pages/VerifyOTP";
 import VerifyOTP_forgetpassword from "./pages/VerifyOTP_ForgetPassword";
 import Protected from "./components/Auth/Protected";
@@ -273,7 +274,12 @@ const router = createBrowserRouter([
   ),
 } ,
 
-
+{
+  path: "/client/DisputeSubmission",
+  element: (
+    <Protected component={<DisputeSubmission />} allowableuser="client" />
+  ),
+},
 {
   path: "/client/set-profile",
   element: (

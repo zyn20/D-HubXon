@@ -6,7 +6,7 @@ import {jwtDecode} from 'jwt-decode';
 
 import Fullviewjob from "./Fullviewjob";
 
-const Cards = () => {
+const   Cards = () => {
   const [most_recent, setMostRecent] = useState([]);
   const [Best_Match, setBESTMATCH] = useState([]);
 
@@ -15,7 +15,9 @@ const Cards = () => {
   const fetch_recent = async () => {
     try {
       const response = await axios.post('http://127.0.0.1:5000/freelancer/AllProjects');
-      setMostRecent(response.data);
+      const reversedData = response.data.reverse(); // Reverse the data array
+
+      setMostRecent(reversedData);
     } catch (error) {
       console.error('Error fetching recent projects:', error);
       
@@ -36,8 +38,8 @@ const Cards = () => {
         },
       });
   
-      // Assuming the data you need is in response.data
-      setBESTMATCH(response.data);
+      const reversedData = response.data.reverse(); 
+      setBESTMATCH(reversedData);
     } catch (error) {
       console.error('Error fetching BESTMATCH:', error);
       // Handle the error or log it as needed
@@ -145,8 +147,12 @@ if(tabId==="best-match"){
           <h2 className="text-2xl font-bold mb-4">Best Matches</h2>
           {/* Placeholder for Job Cards */}
           
-          {Best_Match.map((project, index) => (
-    
+         
+
+
+{Best_Match
+  .filter(project => project.status !== 'Done')
+  .map((project, index) => (
     <Jobcard
       key={index}
       id={project.id}
@@ -161,6 +167,7 @@ if(tabId==="best-match"){
       onClick={handleJobClick}
     />
   ))}
+
 
 {/*  */}
 
@@ -184,22 +191,26 @@ if(tabId==="best-match"){
   {/* Placeholder for Job Cards */}
 
 
-  {most_recent.map((project, index) => (
-    
-  <Jobcard
-    key={index}
-    id={project.id}
-    title={project.title}
-    description={project.description}
-    skillRequired={project.skillRequired}
-    projectDuration={project.projectDuration}
-    pricingType={project.pricingType}
-    projectDeadline={project.projectDeadline}
-    budget={project.budget}
-    KEYWORDS={project.KEYWORDS} // Make sure keywords is defined, use an empty array if not
-    onClick={handleJobClick}
-  />
+
+
+{most_recent
+  .filter(project => project.status !== 'Done')
+  .map((project, index) => (
+    <Jobcard
+      key={index}
+      id={project.id}
+      title={project.title}
+      description={project.description}
+      skillRequired={project.skillRequired}
+      projectDuration={project.projectDuration}
+      pricingType={project.pricingType}
+      projectDeadline={project.projectDeadline}
+      budget={project.budget}
+      KEYWORDS={project.KEYWORDS || []} // Make sure keywords is defined, use an empty array if not
+      onClick={handleJobClick}
+    />
 ))}
+
 
 
 

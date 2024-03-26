@@ -8,6 +8,7 @@ const { handlePurchase } = require('../controller/purchasecontroller'); // Adjus
 const { getProposalsByOwner }= require('../controller/projects');
 const { getProposalsByProjectId }= require('../controller/propsal');
 const { getProposalsByTakenBy}= require('../controller/propsal');
+const { getoneProposalsByProjectId}= require('../controller/propsal');
 
 
 const {   updateProject }= require('../controller/updateproject');
@@ -20,6 +21,7 @@ router.post('/update-project', updateProject);
 router.post('/complete-project', completeProject);
 
 
+router.get("/oneproposal", getoneProposalsByProjectId);
 router.post("/projects", getProposalsByOwner);
 router.post("/proposals", getProposalsByProjectId);
 router.post("/oneproposals", getProposalsByTakenBy);
@@ -35,6 +37,13 @@ router.post("/post_project", Functions.Postproject);
 router.get("/fetchprofiledata", Functions.fetchprofiledata);
 router.post("/resendOTP", Functions.Re_send_OTP);
 router.get("/clients",Functions.getAllClients);
+router.get("/fetchprofileurl",Functions.fetchprofileurl);
+router.get("/getprojectbyid",Functions.getProjectbyid);
+router.post("/deleteallotherproposals",Functions.deleteproposals);
+router.post("/submitDisputeRequest",Functions.SubmitDisputeRequest);
+
+
+
 
 router.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");

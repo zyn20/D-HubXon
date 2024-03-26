@@ -29,7 +29,7 @@ const DefaultSidebar = () => {
                 </Typography>
             </div>
             <List>
-                <div className="mt-[5vw] mr-[2vm]">
+                <div className="mt-[2vw] mr-[2vm]">
                     <ListItem>
                         <ListItemPrefix>
                             <HomeIcon className="h-5 w-5" />

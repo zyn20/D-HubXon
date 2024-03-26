@@ -16,9 +16,9 @@ const Client = require("./models/clientmodel");
 
 const { Sequelize, DataTypes } = require("sequelize");
 const { CronJob } = require("cron");
-//const fileUpload = require("express-fileupload");
+// const fileUpload = require("express-fileupload");
 app.use(bodyParser.json());
-//app.use(fileUpload({ useTempFiles: true }));
+// app.use(fileUpload({ useTempFiles: true }));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
