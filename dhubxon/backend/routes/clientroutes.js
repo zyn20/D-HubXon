@@ -36,6 +36,11 @@ router.get("/fetchprofiledata", Functions.fetchprofiledata);
 router.post("/resendOTP", Functions.Re_send_OTP);
 router.get("/clients",Functions.getAllClients);
 router.get("/fetchprofileurl",Functions.fetchprofileurl);
+router.get("/getprojectbyid",Functions.getProjectbyid);
+router.post("/deleteallotherproposals",Functions.deleteproposals);
+router.post("/submitDisputeRequest",Functions.SubmitDisputeRequest);
+
+
 
 
 router.get("*", function (req, res) {

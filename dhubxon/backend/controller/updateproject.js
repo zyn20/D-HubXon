@@ -1,4 +1,5 @@
 const Project = require('../models/project'); // Adjust the path as necessary
+const Proposal=require("../models/proposals")
 
 // Controller to update the project
 const updateProject = async (req, res) => {

@@ -37,20 +37,24 @@ const Card = ({id, title, balance, color, duration, pricingType,status,takenby  
   };
   const handleDetailsClick = () => {
     localStorage.setItem('taken', takenby);
-    navigate('/oneproposal'); // Navigate to the details page for the given project ID
+    navigate('/oneproposal'); 
   };
   const handleCompleteProjectClick = async () => {
     try {
-      // Send a POST request to your backend
+      
       await axios.post('http://127.0.0.1:5000/client/complete-project', { id });
-      // Navigate to a confirmation or success page, or refresh the current page to show updated status
-       // Adjust the route as needed
+    
        window.location.reload();
     } catch (error) {
       console.error('Error completing project:', error);
-      // Optionally, handle the error, e.g., by showing an error message to the user
     }
   };
+
+const handleRequestClick=()=>{
+  navigate("/client/DisputeSubmission",{ state: { PROJECTID:id} });  
+
+}
+
 
   // Fallback to 'green' if the specified color is not found
   const classes = colorClasses[color] || colorClasses.green;
@@ -112,23 +116,29 @@ const Card = ({id, title, balance, color, duration, pricingType,status,takenby  
           </div>
         </div>
         {status === 'Active' ? (
-          <>
+          <div className='flex space-x-4'>
             <button  onClick={handleDetailsClick } className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
               Details
             </button>
             <button onClick={handleCompleteProjectClick} className={`mt-2 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
               Complete Project
             </button>
-          </>
+            <button onClick={handleRequestClick} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
+            Request
+          </button>
+          </div>
         ) : status === 'Done' ? (
           <div className="mt-auto text-green-500 flex items-center justify-center">
             <FaCheckCircle className="mr-2" /> Completed Successfully!!!!
           </div>
         ):
          (
+          <div className='flex  space-x-4'>
           <button onClick={handleViewProposalsClick} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
             View Proposals
           </button>
+          
+          </div>
         )}
       </div>
     </div>
