@@ -9,9 +9,11 @@ const sequelizee = require("./config");
 const freelancerroute = require("./routes/freelancerroutes");
 const clientroute = require("./routes/clientroutes");
 const messageroute = require("./routes/messageroutes");
+const validatorroute = require("./routes/validatorroutes");
 const check_record = require("./middleware/check_existing_record");
 const Freelancer = require("./models/freelancermodel");
 const Client = require("./models/clientmodel");
+
 const { Sequelize, DataTypes } = require("sequelize");
 const { CronJob } = require("cron");
 //const fileUpload = require("express-fileupload");
@@ -24,6 +26,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/freelancer", freelancerroute);
 app.use("/client", clientroute);
+app.use("/validator",validatorroute);
 app.use("/message", messageroute);
 app.use("/forgetpassword", check_record);
 app.get("*", function (req, res) {
