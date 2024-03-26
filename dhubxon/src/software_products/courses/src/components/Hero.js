@@ -18,11 +18,11 @@ const Hero = () => {
         >
           <div className="font-bold flex items-center uppercase text-blue-500 mb-4">
             <div className="w-10 h-[2px] mr-3 bg-cyan-700 text-blue-500"></div>
-            Explore Courses
+            Explore Products
           </div>
           <h1 className="uppercase text-[55px] md:text-[70px] leading-[1.1] mb-4 font-bold text-blue-500">
-            Unlock Your Potential With
-            <span className="font-light md:pl-36"> Well Crafted Courses</span>
+          Seize the Future
+            <span className="font-light md:pl-36">With Well Crafted Products</span>
             
           </h1>
         </motion.div>
