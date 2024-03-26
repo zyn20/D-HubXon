@@ -17,6 +17,7 @@ import Fullviewjob from "./components/Freelancer/separate_components/Fullviewjob
 import ProposalSubmission from "./pages/ProposalSubmission";
 import EditFreelancerProfile from "./pages/EditFreelancerProfile";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
+import ValidatorDashboard from "./pages/ValidatorDashboard";
 import EditProfile from "./pages/EditProfile";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -316,6 +317,11 @@ const router = createBrowserRouter([
           <Protected component={<Complete_home />} allowableuser="client" />
         ),
       },
+      {
+        path: "/validator/dashboard",
+        element: <ValidatorDashboard />
+      },
+      
      
       
     ],
