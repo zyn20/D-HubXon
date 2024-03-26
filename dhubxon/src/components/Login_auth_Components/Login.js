@@ -62,7 +62,7 @@ const authenticateUser = async () => {
     }
 
     try {
-      const validatorResponse = await axios.post('http://localhost:5000/validator/signin', { email, pass });
+      const validatorResponse = await axios.post('http://127.0.0.1:5000/validator/signin', { email, pass });
     
       if (validatorResponse.status === 200) {
         console.log("Validator Sign-in successful!");
