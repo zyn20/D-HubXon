@@ -209,8 +209,6 @@ const SetupProfile = () => {
       const Email = decodedToken.freelancerData.email;
       console.log("Email is:",Email);
 
-      
-
       const response = await axios.post(
                     "http://127.0.0.1:5000/freelancer/setprofile",
                     {

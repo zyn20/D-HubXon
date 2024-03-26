@@ -12,6 +12,7 @@ import { Button } from "@material-tailwind/react";
 
 const AddPost = () => {
   var blockchainindex = -1;
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
   const [postData, setPostData] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState([]);
@@ -185,6 +186,9 @@ const AddPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Set loading state to true when submitting form
+
+
     setIsSubmitting(true);
 
     if (isChecked == true) {
@@ -265,12 +269,23 @@ const AddPost = () => {
     console.log("images urls:", imageUrls);
 
     
+    setIsLoading(false); // Set loading state to true when submitting form
 
     setIsSubmitting(false);
   };
 
   return (
     <div className="container mx-auto mt-8 bg-gray-100 shadow-md rounded-lg p-8">
+
+{isLoading && (
+          <div className="flex items-center justify-center h-screen fixed top-0 left-0 right-0 bottom-0 bg-opacity-50 bg-gray-700">
+            <div className="relative">
+              <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+              <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+            </div>
+          </div>
+        )}
+
       <h1 className="text-2xl font-bold mb-4 text-indigo-600">Add a Post</h1>
       <form onSubmit={handleSubmit}>
         <div className="flex mb-3">
