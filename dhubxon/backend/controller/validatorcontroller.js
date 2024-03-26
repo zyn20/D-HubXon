@@ -41,7 +41,7 @@ const signup = async (req, res) => {
 
   const signIn = async (req, res) => {
     try {
-      // Extract email and password from request body
+      
       const { email, password } = req.body;
   
       // Validate incoming data (you can use a validation library like Joi or express-validator)
