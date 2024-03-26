@@ -947,6 +947,33 @@ const FetchRequest =  async (req, res) => {
   }
 }
 
+const FetchSubscriptionDetail = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    // Fetch the Subscriptions based on the provided email
+    const subscriptions = await Subscription.findAll({
+      where: {
+        useremail: email
+      }
+    });
+
+    // If there are no subscriptions found for the email, return 404
+    if (!subscriptions || subscriptions.length === 0) {
+      return res.status(404).json({ message: 'No subscriptions found for the provided email' });
+    }
+
+    // If subscriptions are found, return them as a response
+    res.json(subscriptions);
+  } catch (error) {
+    // If there's an error, return 500 Internal Server Error
+    console.error('Error fetching subscriptions:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+
 
 
 module.exports = {
@@ -985,4 +1012,5 @@ module.exports = {
   unsubscribe,
   createClaimSubscription,
   FetchRequest,
+  FetchSubscriptionDetail,
 };

@@ -15,7 +15,7 @@ const Home = () => {
   // get only men's and women's clothing category
   const filteredProducts = products.filter((item) => {
     return (
-      item.category === "Design and Multimedia" || item.category === "Data Analysis" || item.category === "Video editing" || item.category === "AI" || item.category === "UML" || item.category === "Writing"
+      item.category === "Graphics Designing" || item.category === "Web Development" || item.category === "Digital Marketing" || item.category === "AI" || item.category === "UML" || item.category === "Writing"
     );
   });
 

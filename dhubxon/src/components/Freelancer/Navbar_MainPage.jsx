@@ -12,7 +12,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#E1E1E1] border-b-2 font-poppins navbar-with-shadow py-4 fixed top-0 left-0 right-0 z-10">
+    <nav className="bg-[#e4e4e4] border-b-2 font-poppins navbar-with-shadow py-4 fixed top-0 left-0 right-0 z-10 ">
       <div className="flex items-center justify-between max-w-screen-xl mx-auto">
         <NavLink to="/" className="flex items-center">
           <img src={logo} className="h-6 sm:h-16 w-36" alt="Logo" />

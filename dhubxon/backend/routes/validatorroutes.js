@@ -12,6 +12,8 @@ router.get('/fetch-Dispute-requests', ValidatorController.FetchRequest);
 
 router.get('/fetch-requests',  FreelancerController.FetchRequest);
 
+router.get('/fetch-details',  FreelancerController.FetchSubscriptionDetail);
+
 router.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");
 });
