@@ -10,6 +10,7 @@ const freelancerroute = require("./routes/freelancerroutes");
 const clientroute = require("./routes/clientroutes");
 const messageroute = require("./routes/messageroutes");
 const validatorroute = require("./routes/validatorroutes");
+const productroutes=require('./routes/productroutes');
 const check_record = require("./middleware/check_existing_record");
 const Freelancer = require("./models/freelancermodel");
 const Client = require("./models/clientmodel");
@@ -28,6 +29,7 @@ app.use("/freelancer", freelancerroute);
 app.use("/client", clientroute);
 app.use("/validator",validatorroute);
 app.use("/message", messageroute);
+app.use("/dal", productroutes);
 app.use("/forgetpassword", check_record);
 app.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");

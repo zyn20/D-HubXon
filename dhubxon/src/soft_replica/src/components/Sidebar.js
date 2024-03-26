@@ -9,9 +9,6 @@ import CartItem from "../components/CartItem";
 import { SidebarContext } from "../contexts/SidebarContext";
 import { CartContext } from "../contexts/CartContext";
 
-// import { SidebarContext } from "../../../../courses/src/contexts/SidebarContext";
-// import { CartContext } from "../../../../courses/src/contexts/CartContext";
-
 const Sidebar = () => {
   const { isOpen, handleClose } = useContext(SidebarContext);
   const { cart, clearCart, itemAmount, total } = useContext(CartContext);
@@ -51,9 +48,9 @@ const Sidebar = () => {
             <FiTrash2 />
           </div>
         </div>
-       
+        
         <Link
-          to={"/checkout"}
+          to={"/cart"}
           className="bg-primary flex p-3 justify-center items-center text-white w-full font-medium"
         >
           Checkout
@@ -64,3 +61,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
