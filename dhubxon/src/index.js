@@ -55,6 +55,7 @@ import Pricing from "./pages/PricingHealth";
 import PricingFreelance from "./pages/PricingFreelance";
 import Proposal from "./pages/ProposalCard";
 import TableComponent from "./pages/Allproposals";
+import ViewCompleteDetails from "./components/SubscribeButtons/ViewCompleteDetails";
 import TableComponentOne from "./pages/Onproposal";
 
 const currentUser = true;
@@ -314,6 +315,10 @@ const router = createBrowserRouter([
       {
         path: "/validator/dashboard",
         element: <ValidatorDashboard />
+      },
+      
+      {
+        path:"/validator/view-complete-details/:email", element:<ViewCompleteDetails />
       },
       
      
