@@ -81,3 +81,86 @@ exports.getMessagesBetweenUsers = async (req, res) => {
         res.status(500).send('Error while fetching messages');
     }
   };
+
+
+  exports.deleteMessage = async (req, res) => {
+    const { messageId } = req.params; // Extract the message ID from request parameters
+
+    try {
+        // Find the message by ID
+        const message = await Message.findByPk(messageId);
+
+        // Check if the message exists
+        if (!message) {
+            return res.status(404).json({ message: `Message with ID ${messageId} not found.` });
+        }
+
+        // Delete the message
+        await message.destroy();
+
+        // Respond with success message
+        res.status(200).json({ message: 'Message deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        res.status(500).send('Error while deleting message.');
+    }
+};
+
+
+
+
+
+exports.getmsg = async (req, res) => {
+    const { fromUserEmail, toUserEmail, fromUserType } = req.query;
+
+    if (!fromUserEmail || !toUserEmail || !fromUserType) {
+        return res.status(400).json({
+            message: "'fromUserEmail', 'toUserEmail', and 'fromUserType' query parameters are required."
+        });
+    }
+
+    try {
+        const messages = await Message.findAll({
+            where: {
+                [Op.or]: [
+                    { fromUserEmail: fromUserEmail, toUserEmail: toUserEmail },
+                    { fromUserEmail: toUserEmail, toUserEmail: fromUserEmail }
+                ]
+            },
+            order: [['createdAt', 'ASC']]
+        });
+
+        const userEmails = messages.map(msg => msg.fromUserEmail);
+        const uniqueUserEmails = [...new Set(userEmails)];
+
+        let user;
+        if (fromUserType === 'freelancer') {
+            user = await Freelancer.findOne({ 
+                where: { Email: fromUserEmail }, 
+                attributes: ['Email', 'Name'] 
+            });
+        } else {
+            user = await Client.findOne({ 
+                where: { Email: fromUserEmail }, 
+                attributes: ['Email', 'Name'] 
+            });
+        }
+
+        const enrichedMessages = messages.map(message => ({
+            ...message.toJSON(),
+            fromUserName: user ? user.Name : 'Unknown User'
+        }));
+
+        if (messages.length > 0) {
+            res.json({
+                message: 'Messages retrieved successfully',
+                data: enrichedMessages
+            });
+        } else {
+            res.status(404).json({ message: 'No messages found between the specified users' });
+        }
+    } catch (error) {
+        console.error('Error retrieving messages:', error);
+        res.status(500).send('Error while fetching messages');
+    }
+};

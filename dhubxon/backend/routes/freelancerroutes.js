@@ -56,6 +56,7 @@ router.post('/purchaseitem',searchPurchasesByItemId);
 // router.post('/courses', courseController.addCourse);
 
 router.post('/signIn',functions.signIn);
+router.post('/claim',functions.createClaimSubscription);
 router.post('/signUp', checkDuplicate,functions.signUp);
 router.post('/verify', functions.verify) ;
 router.post('/forgetpassword',functions.forgetpassword);
@@ -91,6 +92,8 @@ router.post('/create-subscription',functions.createSubscription);
 router.get('/subscription-status', functions.getSubscriptionStatus);
 
 router.post('/unsubscribe', functions.unsubscribe);
+
+
 
 
 

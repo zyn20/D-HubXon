@@ -66,3 +66,6 @@ const FreelancerProfile = sequelize.define("FreelancerProfile", {
 });
 
 module.exports = FreelancerProfile;
+
+
+

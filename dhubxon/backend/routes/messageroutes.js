@@ -6,10 +6,18 @@ const chatController = require("../controller/chatcontroller")
 router.post('/send', chatController.sendMessage);
 
 // Route to get chat history
-router.get('/fetch-chat', chatController.getMessagesBetweenUsers);
+//router.get('/fetch-chat', chatController.getMessagesBetweenUsers);
+
+
+router.get('/fetch-chat', chatController.getmsg);
+
+
+router.delete('/delete-msg/:messageId', chatController.deleteMessage);
 
 router.get("*", function (req, res) {
   res.status(404).send("404 error: page not found");
 });
 
 module.exports = router;
+
+

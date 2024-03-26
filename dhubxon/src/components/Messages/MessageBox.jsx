@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {jwtDecode} from 'jwt-decode';
 
-const MessageBox = ({ selectedUser }) => {
+const MessageBox = ({ selectedUser,addMessageToChat }) => {
   const [message, setMessage] = useState('');
+ 
 
   const sendMessage = async () => {
     if (!message.trim()) return;
@@ -44,6 +45,9 @@ const MessageBox = ({ selectedUser }) => {
       toUserType
     };
   
+
+
+
     try {
       const response = await fetch('http://127.0.0.1:5000/message/send', {
         method: 'POST',
@@ -59,7 +63,8 @@ const MessageBox = ({ selectedUser }) => {
       }
   
       const result = await response.json();
-      console.log(result);
+      addMessageToChat(result.data)
+      console.log('Hello Jawad',result);
       setMessage(''); // Clear the message input after sending
     } catch (error) {
       console.error('Error sending message:', error);
