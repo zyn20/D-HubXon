@@ -928,6 +928,24 @@ const createClaimSubscription = async (req, res) => {
 };
 
 
+const FetchRequest =  async (req, res) => {
+  try {
+    // Fetch all ClaimSubscriptions from the database
+    const claimSubscriptions = await ClaimSubscription.findAll();
+
+    // If there are no ClaimSubscriptions found, return 404
+    if (!claimSubscriptions) {
+      return res.status(404).json({ message: 'No ClaimSubscriptions found' });
+    }
+
+    // If ClaimSubscriptions are found, return them as a response
+    res.json(claimSubscriptions);
+  } catch (error) {
+    // If there's an error, return 500 Internal Server Error
+    console.error('Error fetching ClaimSubscriptions:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 
 
 
@@ -966,4 +984,5 @@ module.exports = {
   getSubscriptionStatus,
   unsubscribe,
   createClaimSubscription,
+  FetchRequest,
 };
