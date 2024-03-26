@@ -141,6 +141,17 @@ const ProposalSubmission = () => {
      else{
         Category=selectedCategory
      }
+
+     const proposal = await axios.get(
+      "http://127.0.0.1:5000/client/oneproposal",
+      {
+        params: {
+          project_id: location.state.PROJECTID
+        }
+      }
+    );
+
+
   
       const ProposalData = {
         PROJECTID: location.state.PROJECTID,
@@ -148,6 +159,7 @@ const ProposalSubmission = () => {
         COVERLETTER: coverletter,
         FILEURL: fileurl,
         DISPUTEREQUESTOWNER: Email,
+        PROPOSALFILEURL:proposal.data.FILEURL
       };
       console.log(ProposalData);
       const response = await axios.post(

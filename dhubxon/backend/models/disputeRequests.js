@@ -18,6 +18,10 @@ const DisputeRequests = sequelize.define("DisputeRequests", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  PROPOSALFILEURL: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   DISPUTEREQUESTOWNER: {
     type: DataTypes.STRING,
     allowNull: false,

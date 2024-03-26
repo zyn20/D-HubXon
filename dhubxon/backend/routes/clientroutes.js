@@ -8,6 +8,7 @@ const { handlePurchase } = require('../controller/purchasecontroller'); // Adjus
 const { getProposalsByOwner }= require('../controller/projects');
 const { getProposalsByProjectId }= require('../controller/propsal');
 const { getProposalsByTakenBy}= require('../controller/propsal');
+const { getoneProposalsByProjectId}= require('../controller/propsal');
 
 
 const {   updateProject }= require('../controller/updateproject');
@@ -20,6 +21,7 @@ router.post('/update-project', updateProject);
 router.post('/complete-project', completeProject);
 
 
+router.get("/oneproposal", getoneProposalsByProjectId);
 router.post("/projects", getProposalsByOwner);
 router.post("/proposals", getProposalsByProjectId);
 router.post("/oneproposals", getProposalsByTakenBy);
