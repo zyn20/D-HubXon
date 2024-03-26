@@ -205,7 +205,7 @@ const AddPost = () => {
         const latestProjectIdInteger = ethers.utils
           .parseUnits(latestProjectIdBigNumber.toString(), "wei")
           .toNumber();
-        blockchainindex = latestProjectIdInteger;
+        blockchainindex = latestProjectIdInteger-1;
       } catch (error) {
         Swal.fire({
           icon: "error",
