@@ -60,7 +60,32 @@ const authenticateUser = async () => {
     } catch (clientError) {
       console.error("Client Authentication Error:", clientError);
     }
-  
+
+    try {
+      const validatorResponse = await axios.post('http://localhost:5000/validator/signin', { email, pass });
+    
+      if (validatorResponse.status === 200) {
+        console.log("Validator Sign-in successful!");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Login In Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
+    
+        localStorage.setItem('token', validatorResponse.data.token);
+        console.log(validatorResponse);
+        console.log(validatorResponse.data.token);
+    
+       
+         navigate('/validator/');
+        return;
+      }
+    } catch (validatorError) {
+      console.error("Validator Authentication Error:", validatorError);
+    }
+    
     try {
       const freelancerResponse = await axios.post('http://127.0.0.1:5000/freelancer/signIn', { email, pass });
   
