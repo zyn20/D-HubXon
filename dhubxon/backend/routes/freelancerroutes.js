@@ -4,6 +4,7 @@ const functions = require('../controller/freelancercontroller');
 const checkDuplicate=require('../middleware/checkforduplicate');
 const checkRecord=require("../middleware/check_existing_record");
 const courseController = require('../controller/coursescontroller');
+const productController=require('../controller/productscontroller');
 const { searchPurchasesByItemId } = require('../controller/purchasecontroller');
 
 
@@ -51,6 +52,10 @@ const fileFields = upload.fields([
 router.post('/courses', fileFields, courseController.addCourse);
 router.delete('/course/:courseId', courseController.deleteCourseById);
 router.post('/courseOne',courseController.getCoursesByEmail);
+router.post('/products', fileFields, productController.addProduct);
+router.delete('/products/:courseId', productController. deleteProductById);
+router.post('/productOne',productController.getProductsByEmail);
+
 router.post('/purchaseitem',searchPurchasesByItemId);
 
 // router.post('/courses', courseController.addCourse);

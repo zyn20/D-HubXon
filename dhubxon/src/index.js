@@ -31,10 +31,13 @@ import SidebarProvider from "./courses/src/contexts/SidebarContext";
 import CartProvider from "./courses/src/contexts/CartContext";
 import ClientDashboard from "./pages/ClientDashboard";
 import AddCourses from "./pages/AddCourses";
+import AddCourses2 from "./pages/AddCourse2";
 import SignupPage from "./pages/Signup";
 import MainPage from "./pages/mainPage";
 import Check_ from "./pages/Check_user";
 import Complete_home from "./courses/src/complete_home";
+import home from "./soft_replica/src/complete_home";
+import product from "./soft_replica/src/complete_products";
 import Complete_products from "./courses/src/complete_products";
 import UpdatePassword from "./pages/UpdatePassword";
 import ProductProvid from "./software_products/courses/src/contexts/ProductContext";
@@ -45,10 +48,12 @@ import Chat from './pages/Chat'
 import Progress from './pages/Progress';
 import Software_home from "./software_products/courses/src/complete_home";
 import Software_products from "./software_products/courses/src/complete_products";
-import Coursecard from "./components/Freelancer/courses_cards/Cards_page"
-import AddPost from "./pages/AddPost"
+import Coursecard from "./components/Freelancer/courses_cards/Cards_page";
+import Coursecard2 from "./components/Freelancer/courses_cards/Cards_page2";
+import AddPost from "./pages/AddPost";
 import CardPage from "./components/Freelancer/courses_cards/Cards_page";
 import Checkout from "./courses/src/components/Checkout";
+import Checkout2 from "./software_products/courses/src/components/Checkout";
 import MembersTable from "./components/Freelancer/courses_cards/PurchaseDetail";
 import Pricing from "./pages/PricingHealth";
 import PricingFreelance from "./pages/PricingFreelance";
@@ -86,7 +91,7 @@ const router = createBrowserRouter([
       { path: "verify", element: <VerifyOTP /> },//general Path
       { path: "verify_forgetOTP", element: <VerifyOTP_forgetpassword /> }, //general Path
       { path: "/cart", element: <Checkout /> },
-
+      { path: "/checkout", element: <Checkout2 /> },
       
       //For Only One Time Accessable
       {
@@ -105,6 +110,14 @@ const router = createBrowserRouter([
 
     {path:"/softwareproducts",
     element:<Software_home/>},
+
+
+    
+    {path:"/courseaddreplica",
+    element:<Coursecard2/>},
+    {path:"/course/add",
+    element:<AddCourses2/>},
+    
     {path:"/softwareproductsone/:id",
     element:<Software_products/>},
     {path:"/coursecard",

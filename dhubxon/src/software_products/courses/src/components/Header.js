@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { SidebarContext } from "../contexts/SidebarContext";
 import { CartContext } from "../contexts/CartContext";
-
-// import { SidebarContext } from "../../../../courses/src/contexts/SidebarContext";
-// import { CartContext } from "../../../../courses/src/contexts/CartContext";
-
-
 import { Link } from "react-router-dom";
 import Logo from "../img/logo3.png";
 import Logo3 from "@mui/icons-material/ShoppingCart";
@@ -40,7 +35,7 @@ const Header = () => {
       } fixed w-full z-10 lg:px-8 transition-all`}
     >
       <div className="container mx-auto flex items-center justify-between h-full">
-        <Link to={"/"}>
+        <Link to={"/client/"}>
           <div className="w-[40px]">
             <img src={Logo} alt="" />
           </div>
@@ -52,7 +47,9 @@ const Header = () => {
           className="cursor-pointer flex relative ml-auto"
         >
           <Badge badgeContent={itemAmount} color="error">
-            
+          <ShoppingCartOutlinedIcon
+              style={{ color: "#your-cart-icon-color" }}
+            />
           </Badge>
         </div>
 

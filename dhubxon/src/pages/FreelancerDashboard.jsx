@@ -75,7 +75,7 @@ var Name;
   {/* Software Products Button */}
   <button
     className="flex items-center px-4 py-2 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-colors"
-    onClick={() => navigate('/freelancer/softwares')}
+    onClick={() => navigate('/courseaddreplica')}
   >
     <FontAwesomeIcon icon={faLaptopCode} className="mr-2" />
     Software Products
