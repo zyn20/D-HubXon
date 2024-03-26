@@ -119,7 +119,7 @@ const Post = ({ post, IDENTIFIER, onDelete }) => {
         value: ethers.utils.parseEther(contributionInEther.toString()),
       };
       const transaction = await state.contract.contribute(
-        BLOCKCHAININDEX + 1,
+        2,
         amount
       );
       await transaction.wait();
