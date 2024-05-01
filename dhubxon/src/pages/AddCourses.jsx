@@ -1,5 +1,7 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,useEffect } from 'react';
+import abi from "../contract/Courses.json";
+import { ethers } from "ethers";
 import { useDropzone } from 'react-dropzone';
 import { FaRegStar, FaMoneyBillAlt, FaImage } from 'react-icons/fa';
 import Swal from 'sweetalert2';
@@ -7,12 +9,102 @@ import { useNavigate } from 'react-router-dom';
 import Navbar_Freelancer from '../components/Freelancer/Navbar_Freelancer'
 const ProductForm = () => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
 
 
 
 
 
 
+    const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
+  useEffect(() => {
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0xcF5705A191eA89D74b9ad49Ffdce870fDa314376";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+  }, []);
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to ADD Course.",
+        icon: "error",
+      });
+      navigate('/freelancer/courses')
+    }
+  };
 
 
 
@@ -146,6 +238,40 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
             });
             return;
         }
+
+        const priceInEther = ethers.utils.parseEther(formData.price.toString());
+        const transactionResponse = await state.contract.uploadProduct(
+          formData.title,
+          priceInEther
+        );
+        setIsLoading(true);
+    
+        // Listen for transaction cancellation
+        transactionResponse.catch((error) => {
+          // Check if the error is due to transaction cancellation
+          if (error.code === ethers.utils.Logger.errors.CANCELLED) {
+            Swal.fire({
+              icon: "error",
+              title: "Transaction Cancelled",
+              text: "The transaction was cancelled by the user.",
+            });
+          }
+          setIsLoading(false);  
+          navigate('/freelancer/courses')
+    
+        });
+        const receipt = await transactionResponse.wait();
+    
+        const productUploadedEvent = receipt.events.find(
+          (event) => event.event === "ProductUploaded"
+        );
+    
+        const latestProductIdInteger =
+          productUploadedEvent.args.productId.toNumber();
+        console.log("BlockchainIndex:", latestProductIdInteger);
+    
+
+
         const uploadFormData = new FormData();
         uploadFormData.append('category', formData.category);
         uploadFormData.append('description', formData.description);
@@ -154,6 +280,8 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
         uploadFormData.append('title', formData.title);
         uploadFormData.append('rate', formData.rating.rate);
         uploadFormData.append('count', formData.rating.count);
+        uploadFormData.append("BLOCKCHAININDEX", latestProductIdInteger);
+
     
         if (selectedFile) {
             uploadFormData.append('zipFile', selectedFile);

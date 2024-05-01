@@ -33,6 +33,9 @@ const Course = sequelize.define("Course", {
   price: {
     type: DataTypes.FLOAT,
     allowNull: false,
+  },BLOCKCHAININDEX: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   rating: {
     type: DataTypes.JSONB,

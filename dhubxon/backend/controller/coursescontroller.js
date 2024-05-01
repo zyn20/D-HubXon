@@ -4,7 +4,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const addCourse = async (req, res) => {
   try {
-    const { category, description, price, rating, title, token } = req.body; // Extract token from the request body
+    const { category, description, price, rating, title, token,BLOCKCHAININDEX } = req.body; // Extract token from the request body
 
     // Decode the token to get the freelancer's email
     let freelancerEmail = '';
@@ -29,6 +29,7 @@ const addCourse = async (req, res) => {
 
     // Include the freelancer's email in the data you're saving
     const newCourse = await Course.create({
+      BLOCKCHAININDEX,
       category,
       description,
       image: imagePath,

@@ -240,7 +240,7 @@ const ProductForm = () => {
 
     const priceInEther = ethers.utils.parseEther(formData.price.toString());
     const transactionResponse = await state.contract.uploadProduct(
-      formData.description,
+      formData.title,
       priceInEther
     );
     setIsLoading(true);
@@ -255,7 +255,7 @@ const ProductForm = () => {
           text: "The transaction was cancelled by the user.",
         });
       }
-      setIsLoading(false);
+      setIsLoading(false);  
       navigate("/courseaddreplica");
 
     });
