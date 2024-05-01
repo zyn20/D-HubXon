@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const addProduct = async (req, res) => {
   try {
-    const { category, description, price, rating, title, token } = req.body; // Extract token from the request body
+    const { category, description, price, rating, title, token,BLOCKCHAININDEX} = req.body; // Extract token from the request body
 
     // Decode the token to get the freelancer's email
     let freelancerEmail = '';
@@ -30,6 +30,7 @@ const addProduct = async (req, res) => {
 
     // Include the freelancer's email in the data you're saving
     const newProduct = await Products.create({
+      BLOCKCHAININDEX,
       category,
       description,
       image: imagePath,

@@ -10,7 +10,7 @@ const Complete_products = () => {
        <Sidebar />
        
                      <ProductDetails />
-                     <Footer />   
+                     {/* <Footer />    */}
       </div>
     );
   };

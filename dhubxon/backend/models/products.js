@@ -46,6 +46,10 @@ const Products = sequelize.define("Products", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  BLOCKCHAININDEX: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 }, {
   timestamps: false, // Disable timestamps
 });

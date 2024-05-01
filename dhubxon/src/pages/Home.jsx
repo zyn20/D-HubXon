@@ -12,9 +12,9 @@ const Home = () => {
       </div>
       <div className="flex justify-center items-center">
         <form className="flex items-center w-96">
-          <label htmlFor="simple-search" className="sr-only">
+          {/* <label htmlFor="simple-search" className="sr-only">
             Search
-          </label>
+          </label> */}
           <div className="relative flex items-center w-full">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg

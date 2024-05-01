@@ -251,7 +251,7 @@ const ProposalSubmission = () => {
 
         <div className="w-full max-w-2xl p-6  rounded-lg shadow-md bg-blue-100 mb-8">
           <h1 className="text-3xl font-bold mb-6 text-center text-blue-950">
-            Submit a Proposal
+            Request For Dispute
           </h1>
 
           {/* Proposal Settings */}

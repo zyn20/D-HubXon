@@ -116,10 +116,7 @@ const EditClientProfile = () => {
       !formData.contactphone ||
       isNaN(parseInt(formData.contactphone)) ||
       parseInt(formData.contactphone) < 0 ||
-      !formData.companydescription ||
-      !formData.projectposted ||
-      isNaN(parseInt(formData.projectposted)) ||
-      parseInt(formData.projectposted) < 0
+      !formData.companydescription 
     ) {
       Swal.fire(
         "Please fill in all fields, ensure 'Projects Posted Must a positive Num' and Contact Phone Must be in Correct Format."
@@ -137,7 +134,7 @@ const EditClientProfile = () => {
       const contactemail = formData.contactemail;
       const contactphone = formData.contactphone;
       const companydescription = formData.companydescription;
-      const projectposted = formData.projectposted;
+      const projectposted = 0;
 
       const token = localStorage.getItem("token");
       if (!token) {
@@ -271,13 +268,13 @@ const EditClientProfile = () => {
               onChange={handleChangeForm}
               placeholder="Describe your company..."
             />
-            <InputField
+            {/* <InputField
               label="Projects Posted"
               name="projectposted"
               value={formData.projectposted}
               onChange={handleChangeForm}
               placeholder="Number of projects posted"
-            />
+            /> */}
           </div>
 
           {/* Submit Button */}
