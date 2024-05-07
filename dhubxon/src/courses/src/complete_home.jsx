@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 const Complete_home = () => {
     return (
       <div className="overflow-hidden">
-      <Header />
+      {/* <Header /> */}
               <Home />
           <Sidebar />
           

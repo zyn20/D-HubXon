@@ -20,7 +20,7 @@ const ProductForm = () => {
   useEffect(() => {
     connectmetamask();
     const template = async () => {
-      const contractAddress = "0x02d13357984031Eb1729a8d744237434eeE7511e";
+      const contractAddress = "0x12461f6Ab8909Aa391f09a0e7e7df080F7B5e42a";
       const contractABI = abi.abi;
 
       try {
@@ -207,9 +207,14 @@ const ProductForm = () => {
     return wordCount >= 30;
   };
 
+  
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem("token");
     if (
       !formData.category ||
@@ -237,91 +242,78 @@ const ProductForm = () => {
       });
       return;
     }
-
+  
     const priceInEther = ethers.utils.parseEther(formData.price.toString());
-    const transactionResponse = await state.contract.uploadProduct(
-      formData.title,
-      priceInEther
-    );
-    setIsLoading(true);
-
-    // Listen for transaction cancellation
-    transactionResponse.catch((error) => {
-      // Check if the error is due to transaction cancellation
-      if (error.code === ethers.utils.Logger.errors.CANCELLED) {
-        Swal.fire({
-          icon: "error",
-          title: "Transaction Cancelled",
-          text: "The transaction was cancelled by the user.",
-        });
-      }
-      setIsLoading(false);  
-      navigate("/courseaddreplica");
-
-    });
-    const receipt = await transactionResponse.wait();
-
-    const productUploadedEvent = receipt.events.find(
-      (event) => event.event === "ProductUploaded"
-    );
-
-    const latestProductIdInteger =
-      productUploadedEvent.args.productId.toNumber();
-    console.log("BlockchainIndex:", latestProductIdInteger);
-
-    const uploadFormData = new FormData();
-    uploadFormData.append("category", formData.category);
-    uploadFormData.append("description", formData.description);
-    uploadFormData.append("image", imageFile); // Append the image file
-    uploadFormData.append("price", formData.price);
-    uploadFormData.append("title", formData.title);
-    uploadFormData.append("rate", formData.rating.rate);
-    uploadFormData.append("count", formData.rating.count);
-    uploadFormData.append("BLOCKCHAININDEX", latestProductIdInteger);
-
-    if (selectedFile) {
-      uploadFormData.append("zipFile", selectedFile);
-    }
-    if (token) {
-      uploadFormData.append("token", token);
-    }
-
     try {
+      const transactionResponse = await state.contract.uploadProduct(
+        formData.title,
+        priceInEther
+      );
+      setIsLoading(true);
+  
+      const receipt = await transactionResponse.wait();
+  
+      const productUploadedEvent = receipt.events.find(
+        (event) => event.event === "ProductUploaded"
+      );
+  
+      const latestProductIdInteger =
+        productUploadedEvent.args.productId.toNumber();
+      console.log("BlockchainIndex:", latestProductIdInteger);
+  
+      const uploadFormData = new FormData();
+      uploadFormData.append("category", formData.category);
+      uploadFormData.append("description", formData.description);
+      uploadFormData.append("image", imageFile); // Append the image file
+      uploadFormData.append("price", formData.price);
+      uploadFormData.append("title", formData.title);
+      uploadFormData.append("rate", formData.rating.rate);
+      uploadFormData.append("count", formData.rating.count);
+      uploadFormData.append("BLOCKCHAININDEX", latestProductIdInteger);
+  
+      if (selectedFile) {
+        uploadFormData.append("zipFile", selectedFile);
+      }
+      if (token) {
+        uploadFormData.append("token", token);
+      }
+  
       const response = await fetch("http://127.0.0.1:5000/dal/products", {
         method: "POST",
-        body: uploadFormData, // Send the form data
-        // Don't set Content-Type header, let the browser set it
+        body: uploadFormData,
       });
-
+  
       if (response.ok) {
-        // ... success handling
-
         Swal.fire({
           icon: "success",
           title: "Success!",
           text: "Data added successfully!",
         });
-
         navigate("/courseaddreplica");
       } else {
-        // ... error handling
-
         Swal.fire({
           icon: "error",
           title: "Error!",
           text: "Failed to add data. Please try again.",
         });
       }
+  
+      setIsLoading(false);
     } catch (error) {
       console.error("Error:", error);
-      // ... error handling
+      Swal.fire({
+        icon: "error",
+        title: "Transaction Error",
+        text: "Failed to upload product. Please try again.",
+      });
+      setIsLoading(false);
     }
-
+  
     // Reset the file input after form submission
     setSelectedFile(null);
     setImageFile(null);
-    setIsLoading(false);
   };
+  
 
   // Manually trigger the file input dialog
   const handleFileIconClick = () => {

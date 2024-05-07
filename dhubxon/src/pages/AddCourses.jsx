@@ -12,10 +12,6 @@ const ProductForm = () => {
     const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
 
 
-
-
-
-
     const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
   const [isChecked, setIsChecked] = useState(false);
   const [state, setState] = useState({
@@ -26,7 +22,7 @@ const ProductForm = () => {
   useEffect(() => {
     connectmetamask();
     const template = async () => {
-      const contractAddress = "0xcF5705A191eA89D74b9ad49Ffdce870fDa314376";
+      const contractAddress = "0x650fcd847258fF3f0d03d100AE6fdf0fEc9AE9Ab";
       const contractABI = abi.abi;
 
       try {
@@ -219,8 +215,8 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-
+        var latestCourseId=1;
+console.log("Handlesubmit in Courses");
         const token = localStorage.getItem('token');
         if (!formData.category || !formData.description || !imageFile || !formData.price || !formData.title) {
             Swal.fire({
@@ -239,37 +235,28 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
             return;
         }
 
-        const priceInEther = ethers.utils.parseEther(formData.price.toString());
-        const transactionResponse = await state.contract.uploadProduct(
-          formData.title,
-          priceInEther
-        );
-        setIsLoading(true);
-    
-        // Listen for transaction cancellation
-        transactionResponse.catch((error) => {
-          // Check if the error is due to transaction cancellation
-          if (error.code === ethers.utils.Logger.errors.CANCELLED) {
-            Swal.fire({
-              icon: "error",
-              title: "Transaction Cancelled",
-              text: "The transaction was cancelled by the user.",
-            });
-          }
-          setIsLoading(false);  
-          navigate('/freelancer/courses')
-    
-        });
-        const receipt = await transactionResponse.wait();
-    
-        const productUploadedEvent = receipt.events.find(
-          (event) => event.event === "ProductUploaded"
-        );
-    
-        const latestProductIdInteger =
-          productUploadedEvent.args.productId.toNumber();
-        console.log("BlockchainIndex:", latestProductIdInteger);
-    
+          const priceInEther = ethers.utils.parseEther(formData.price.toString());
+console.log("Price in Ether:", priceInEther);
+try {
+  const transactionResponse = await state.contract.uploadCourse(
+    formData.title,
+    priceInEther
+  );
+  setIsLoading(true);
+
+  const receipt = await transactionResponse.wait();
+
+  const courseUploadedEvent = receipt.events.find(
+    (event) => event.event === "CourseUploaded"
+  );
+
+   latestCourseId = courseUploadedEvent.args.courseId.toNumber();
+  console.log("Blockchain Index:", latestCourseId);
+} catch (error) {
+  console.error("Error uploading course:", error);
+  // Handle error (e.g., show error message to user)
+}
+
 
 
         const uploadFormData = new FormData();
@@ -280,7 +267,7 @@ const { getRootProps: getImageRootProps, getInputProps: getImageInputProps } = u
         uploadFormData.append('title', formData.title);
         uploadFormData.append('rate', formData.rating.rate);
         uploadFormData.append('count', formData.rating.count);
-        uploadFormData.append("BLOCKCHAININDEX", latestProductIdInteger);
+        uploadFormData.append("BLOCKCHAININDEX", latestCourseId);
 
     
         if (selectedFile) {
@@ -318,9 +305,18 @@ navigate('/freelancer/courses')
                                      text: 'Failed to add data. Please try again.',
                                  });
             }
+            setIsLoading(false);
+
         } catch (error) {
-            console.error('Error:', error);
-            // ... error handling
+          console.error("Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Transaction Error",
+        text: "Failed to upload Course. Please try again.",
+      });
+
+            setIsLoading(false);
+
         }
     
         // Reset the file input after form submission
@@ -368,6 +364,14 @@ navigate('/freelancer/courses')
 
         <Navbar_Freelancer/>
         <div className="max-w-md mt-28 mb-14 mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-300">
+        {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
             <form onSubmit={handleSubmit} className="space-y-4">
 
             <div className="mb-4">

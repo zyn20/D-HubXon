@@ -22,16 +22,21 @@ contract ECommerce {
 
     function purchase(uint256 _productId) external payable {
     Product storage product = products[_productId];
-    require(product.price > 0, "Product does not exist");
-    require(product.price <= msg.value, "Insufficient funds");
+    // require(product.price > 0, "Product does not exist");
+    // require(product.price <= msg.value, "Insufficient funds");
 
-    // Transfer funds to seller
-    payable(product.uploader).transfer(msg.value);
-    // Update buyer's balance
-    // Mark product as purchased
+    uint256 dhubxonAmount = (msg.value * 10) / 100;
+    uint256 uploaderAmount = msg.value - dhubxonAmount;
+
+    // Transfer 10% to DHUBXON
+    payable(0x4a0051552A8a8Da192f9AB73B7245e4a233e353A).transfer(dhubxonAmount);
+    // Transfer 90% to uploader
+    payable(product.uploader).transfer(uploaderAmount);
+
 
     emit ProductPurchased(_productId, msg.sender, product.price);
 }
+
 
 
    

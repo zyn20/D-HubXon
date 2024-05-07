@@ -1,12 +1,156 @@
-import React, { useContext } from "react";
+import React, { useContext,useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsPlus, BsEyeFill } from "react-icons/bs";
 import { CartContext } from "../contexts/CartContext";
+import abi from "../../../../contract/Products.json";
+import { ethers } from "ethers";
+import Swal from "sweetalert2";
 
 const Product = ({ product }) => {
-  const { addToCart } = useContext(CartContext);
+  // const { addToCart } = useContext(CartContext);
 
-  const { id, image, category, title, price } = product;
+  const { id, image, category, title, price ,BLOCKCHAININDEX} = product;
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
+
+  const PurchaseFunction = async (product, id) => {
+    const { provider, contract } = state;
+    if (!provider || !contract) {
+      console.error("Provider or contract not initialized");
+      return;
+    }
+
+    try {
+      const accounts = await provider.listAccounts();
+      const account = accounts[0];
+
+      const balance = await provider.getBalance(account);
+
+      const balanceEther = ethers.utils.formatEther(balance);
+
+      const balanceUSD = balanceEther * 3076;
+      console.log("Balance in USD of Metamask:", balanceUSD);
+
+      const coursePrice = price / 3076;
+
+      if (balanceUSD < coursePrice) {
+        Swal.fire({
+          icon: "error",
+          title: "Insufficient Balance",
+          text: "Your Metamask balance is not sufficient for this purchase",
+        });
+        return;
+      }
+
+      const courseId = ethers.BigNumber.from(BLOCKCHAININDEX);
+      const pricee = ethers.utils.parseEther(coursePrice.toString());
+      console.log("price is", coursePrice);
+      const tx = await contract.purchase(courseId, { value: pricee });
+
+      await tx.wait();
+
+      Swal.fire({
+        icon: "success",
+        title: "Purchase Successful",
+        text: "Congratulations! You have successfully purchased the course",
+      });
+    } catch (error) {
+      console.error("Error occurred during purchase:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Purchase Failed",
+        text: "An error occurred during the purchase. Please try again later",
+      });
+    }
+  };
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to ADD Course.",
+        icon: "error",
+      });
+      // navigate('/freelancer/courses')
+    }
+  };
+
+  useEffect(() => {
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x12461f6Ab8909Aa391f09a0e7e7df080F7B5e42a";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+  }, []);
 
   // Construct the full URL for the image
   const imageUrl = `http://127.0.0.1:5000${image.startsWith('/uploads') ? image : '/uploads/' + image}`;
@@ -26,7 +170,7 @@ const Product = ({ product }) => {
         </div>
         {/* buttons */}
         <div className="absolute top-6 -right-11 group-hover:right-5 p-2 flex flex-col justify-center items-center gap-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <button onClick={() => addToCart(product, id)}>
+          <button onClick={() => PurchaseFunction(product, id)}>
             <div className="flex justify-center items-center text-white w-12 h-12 bg-teal-500">
               <BsPlus className="text-3xl" />
             </div>
