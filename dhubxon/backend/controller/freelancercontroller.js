@@ -814,7 +814,7 @@ const getAllFreelancers = async (req, res) => {
 
 const createSubscription = async (req, res) => {
   try {
-    const { subscriptionType, tenure, deductionAmount, packageType, useremail } = req.body;
+    const { subscriptionType, tenure, deductionAmount, packageType, useremail,latestSubscriptionIdint } = req.body;
 
     // Check if there's already a subscription of the same type for the user
     const existingSubscription = await Subscription.findOne({
@@ -835,7 +835,8 @@ const createSubscription = async (req, res) => {
       tenure,
       deductionAmount,
       packageType,
-      useremail
+      useremail,
+      BLOCKCHAININDEX:latestSubscriptionIdint
     });
 
     res.status(201).json(newSubscription);

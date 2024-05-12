@@ -4,10 +4,112 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import abi from "../../contract/SubscriptionContract.json";
+import { ethers } from "ethers";
 
 const HealthReq = () => {
   const [requestData, setRequestData] = useState([]);
   const navigate = useNavigate();
+
+
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
+  // const navigate = useNavigate();
+
+
+
+  useEffect(() => {
+    fetchData();
+
+
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x3DfA46F34FA85ec64B7AAc624B232b5D32104F29";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+
+
+  }, []); 
+
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to For Subscription.",
+        icon: "error",
+      });
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -20,9 +122,7 @@ const HealthReq = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+;
 
   const handleViewDetails = (email) => {
     // Show confirmation dialog before proceeding
@@ -42,8 +142,34 @@ const HealthReq = () => {
     });
   };
 
-  const handleVerify = () => {
+  const handleVerify = async(useremail) => {
     // Show confirmation dialog before proceeding
+
+    const projectDetailResponse = await axios.get(
+      "http://127.0.0.1:5000/freelancer/subscriptionbyemail",
+      {
+          params: {
+            useremail
+          }
+      }
+  );
+
+
+  console.log("User Email is:",projectDetailResponse.data);
+
+
+const amount=projectDetailResponse.data.deductionAmount/3076;
+const projectIdInt = parseInt(projectDetailResponse.data.BLOCKCHAININDEX);
+const priceeINETHER = ethers.utils.parseEther(amount.toString());
+
+
+const tx = await state.contract.claimSubscription(
+  projectIdInt,
+  { value: priceeINETHER }
+);
+await tx.wait();
+
+
     Swal.fire({
       title: "Are you sure?",
       text: "You are about to verify this request. Proceed?",
@@ -61,6 +187,9 @@ const HealthReq = () => {
         console.log("Request verified");
       }
     });
+
+
+   
   };
 
   const handleReject = () => {
@@ -137,7 +266,7 @@ const HealthReq = () => {
                         <button onClick={() => handleViewDetails(request.EMAIL)} style={{ display: 'block', margin: 'auto' }}>View More Details</button>
                       </td>
                       <td className="py-5 px-2 bg-white">
-                        <button onClick={handleVerify} style={{ display: 'block', margin: 'auto' }}>Verify</button>
+                        <button onClick={()=>handleVerify(request.EMAIL)} style={{ display: 'block', margin: 'auto' }}>Verify</button>
                         <button onClick={handleReject} style={{ display: 'block', margin: 'auto' }}>Reject</button>
                       </td>
                     </tr>

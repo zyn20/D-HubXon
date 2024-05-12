@@ -5,6 +5,10 @@ import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { jwtDecode } from "jwt-decode"; 
 import  DataForClaim  from "../components/SubscribeButtons/DataForClaim";
+import abi from "../contract/SubscriptionContract.json";
+import { ethers } from "ethers";
+import { useNavigate } from "react-router-dom";
+
 
 const Pricing = () => {
   const [isYearly, setIsYearly] = useState(false);
@@ -14,10 +18,116 @@ const Pricing = () => {
   const [userSubscription, setUserSubscription] = useState(null);
   const subscriptionType = searchParams.get("type"); // Default to 'Healthcare' if not specified
   const togglePlan = () => setIsYearly(!isYearly);
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
+  const navigate = useNavigate();
+
+
 
   useEffect(() => {
+    // const token = localStorage.getItem('token');
+    // if (token) {
+    //   const decodedToken = jwtDecode(token);
+    //   setprojectowner(decodedToken.clientData.email);
+    // }
+
     checkSubscriptionStatus();
-  }, []);
+
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x3DfA46F34FA85ec64B7AAc624B232b5D32104F29";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+
+
+  }, []); 
+
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to For Subscription.",
+        icon: "error",
+      });
+      navigate('/freelancer/')
+    }
+  };
+
+
+
+
+
+
   
 
   const checkSubscriptionStatus = async () => {
@@ -125,6 +235,40 @@ const Pricing = () => {
       confirmButtonText: "Yes, subscribe!",
     });
 
+    const { provider} = state;
+    const accounts = await provider.listAccounts();
+    const account = accounts[0];
+    const balance = await provider.getBalance(account);
+    const balanceEther = ethers.utils.formatEther(balance);
+    const balanceUSD = balanceEther * 3076;
+
+    if (balanceUSD < deductionAmount) {
+      Swal.fire({
+          icon: "error",
+          title: "Insufficient Balance",
+          text: "Your Metamask balance is not sufficient for this purchase",
+      });
+      return;
+  }
+
+  const AmountINether = deductionAmount / 3076;
+  const priceeINETHER = ethers.utils.parseEther(AmountINether.toString());
+
+  const tx = await state.contract.createSubscription(
+    subscriptionType,
+    tenure,
+    parseInt(deductionAmount),
+    { value: priceeINETHER }
+);
+
+const receipt = await tx.wait(); // Get the transaction receipt
+const latestSubscriptionId = await state.contract.latestSubscriptionIndex();
+        const latestSubscriptionIdint=latestSubscriptionId.toNumber()
+console.log("latestSubscriptionIdint:",latestSubscriptionIdint)
+
+
+
+
     if (confirmed.isConfirmed) {
       try {
         const response = await fetch(
@@ -142,9 +286,17 @@ const Pricing = () => {
               deductionAmount,
               packageType,
               useremail,
+              latestSubscriptionIdint
             }),
           }
         );
+
+
+       
+
+
+
+
 
         if (!response.ok) {
           throw new Error("Failed to subscribe");

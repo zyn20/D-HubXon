@@ -29,7 +29,12 @@ const Subscription = sequelize.define('Subscription', {
   useremail: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  BLOCKCHAININDEX: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
+
 });
 
 
