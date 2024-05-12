@@ -311,7 +311,8 @@ const Postproject = async (req, res) => {
       projectDeadline: req.body.projectDeadline,
       budget: req.body.budget,
       KEYWORDS:req.body.KEYWORDS.toUpperCase(),
-      projectowner:req.body.projectowner
+      projectowner:req.body.projectowner,
+      BLOCKCHAININDEX:req.body.latestProjectIdint
     };
 
     const newPost = await Project.create({

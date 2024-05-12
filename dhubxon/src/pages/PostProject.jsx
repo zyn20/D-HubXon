@@ -1,12 +1,24 @@
 import React, { useState,useEffect } from "react";
+import { ethers } from "ethers";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Navbar_Client from "../components/client/Navbar";
 import { jwtDecode } from "jwt-decode";
+import abi from "../contract/FreelanceMarketplace.json";
+
 
 
 const PostProject = () => {
+
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [projectDuration, setProjectDuration] = useState("");
@@ -78,41 +90,192 @@ const PostProject = () => {
       const decodedToken = jwtDecode(token);
       setprojectowner(decodedToken.clientData.email);
     }
+
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x446bAB9Ccc20E0A3Af7E15D59f5600Eb81649094";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+
+
   }, []); 
 
 
-  const handleSubmit = async (e) => {
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to ADD Project.",
+        icon: "error",
+      });
+      navigate('/client')
+    }
+  };
+
+
+  // const handleSubmit = async (e) => {
   
 
 
+  //   e.preventDefault();
+  //   // if (!validation()) {
+  //   //   return;
+  //   // }
+
+    
+
+
+
+
+
+
+
+
+  //   try {
+
+  //     const tx = await state.contract.uploadProject(
+  //       title,
+  //       selectedSkill === "Others" ? customSkill : selectedSkill,
+  //       parseInt(projectDuration),
+  //       Date.parse(projectDeadline),
+  //       parseInt(budget)
+  //   );
+
+  //   await tx.wait();
+
+  //   const latestProjectId = await state.contract.latestProjectId();
+
+  //   console.log("latestProjectID:",latestProjectId);
+
+  //     const response = await axios.post(
+  //       "http://127.0.0.1:5000/client/post_project",
+  //       {
+  //         title,
+  //         description,
+  //         skillRequired:
+  //         selectedSkill === "Others" ? `${customSkill}` : selectedSkill,
+  //         projectDuration,
+  //         pricingType,
+  //         projectDeadline,
+  //         budget,
+  //         KEYWORDS,
+  //         projectowner
+  //       }
+  //     );
+
+  //     Swal.fire("Project posted successfully");
+  //     navigate("/client/");
+  //   } catch (error) {
+  //     console.error("Error posting project:", error);
+  //   }
+  // };
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validation()) {
-      return;
-    }
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/client/post_project",
-        {
-          title,
-          description,
-          skillRequired:
-          selectedSkill === "Others" ? `${customSkill}` : selectedSkill,
-          projectDuration,
-          pricingType,
-          projectDeadline,
-          budget,
-          KEYWORDS,
-          projectowner
-        }
-      );
+        const tx = await state.contract.uploadProject(
+            title,
+            selectedSkill === "Others" ? customSkill : selectedSkill,
+            projectDuration,
+            projectDeadline,
+            parseInt(budget)
+        );
 
-      Swal.fire("Project posted successfully");
-      navigate("/client/");
+        await tx.wait();
+
+        const latestProjectId = await state.contract.latestProjectId();
+        const latestProjectIdint=latestProjectId.toNumber()
+
+        console.log("latestProjectID:", latestProjectIdint);
+
+        const response = await axios.post(
+            "http://127.0.0.1:5000/client/post_project",
+            {
+                title,
+                description,
+                skillRequired: selectedSkill === "Others" ? `${customSkill}` : selectedSkill,
+                projectDuration,
+                pricingType,
+                projectDeadline,
+                budget,
+                KEYWORDS,
+                projectowner,
+                latestProjectIdint            }
+        );
+
+        Swal.fire("Project posted successfully");
+        navigate("/client/");
     } catch (error) {
-      console.error("Error posting project:", error);
+        console.error("Error posting project:", error);
     }
-  };
+};
+
 
   return (
     <>

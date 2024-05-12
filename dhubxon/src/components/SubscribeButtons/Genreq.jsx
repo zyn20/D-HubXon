@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { ethers } from "ethers";
+import abi from "../../contract/FreelanceMarketplace.json";
+
 
 const Genreq = () => {
-  // State to store the fetched data
+  const navigate = useNavigate();
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
   const [requestData, setRequestData] = useState([]);
 
   // Function to fetch data from the API
@@ -18,51 +29,218 @@ const Genreq = () => {
     }
   };
 
-  const handleclientbutton = () => {
+
+
+  const handleclientbutton = async (projectId) => {
     // Show confirmation dialog before proceeding
     Swal.fire({
       title: "Are you sure?",
-      text: "You are sure to Favour Client. Proceed?",
+      text: "You are sure to Favor Client. Proceed?",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes",
       cancelButtonText: "Cancel",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        // Add verification logic here
-        // For demonstration, showing a success message
-        Swal.fire("Success!", `The request has been Verified.`, "success");
-        console.log("Request verified");
+        try {
+          // Fetch project details from the server
+          const projectDetailResponse = await axios.get(
+            "http://127.0.0.1:5000/client/getprojectbyid",
+            {
+              params: {
+                PROJECTID: projectId
+              }
+            }
+          );
+  
+          // Parse the project ID to an integer
+          const projectIdInt = parseInt(projectDetailResponse.data.BLOCKCHAININDEX);
+  
+          // Call the smart contract function to release payment to the freelancer
+          const tx = await state.contract.releasePaymenttofreelancer(projectIdInt);
+          await tx.wait();
+  
+          // Show success message
+          Swal.fire("Success!", `The request has been Verified.`, "success");
+          await axios.post('http://127.0.0.1:5000/client/complete-project', { projectId });
+
+          // Reload the page
+          window.location.reload();
+        } catch (error) {
+          console.error('Error:', error);
+          // Show error message
+          Swal.fire("Error!", "An error occurred while processing your request.", "error");
+        }
       }
     });
   };
 
-  const handlefreelancerbutton = () => {
+
+
+  const handlefreelancerbutton = async (projectId) => {
     // Show confirmation dialog before proceeding
     Swal.fire({
       title: "Are you sure?",
-      text: "You are sure to Favour Freelancer. Proceed?",
+      text: "You are sure to Favor Freelancer. Proceed?",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes",
       cancelButtonText: "Cancel",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        // Add rejection logic here
-        // For demonstration, showing a success message
-        Swal.fire("Success!", `The request has been Verified.`, "success");
-        console.log("Request rejected");
-      }
-    });
-  };
+        try {
+          // Fetch project details from the server
+          const projectDetailResponse = await axios.get(
+            "http://127.0.0.1:5000/client/getprojectbyid",
+            {
+              params: {
+                PROJECTID: projectId
+              }
+            }
+          );
+  
+          const budgetinINT=parseInt(projectDetailResponse.data.budget);
+          const bugetInEther=budgetinINT/3076;
+          const priceeINETHER = ethers.utils.parseEther(bugetInEther.toString());
+      
+          const ProjectID = parseInt(projectDetailResponse.data.BLOCKCHAININDEX); // Convert to int
+          const tx = await state.contract.releasePayment(ProjectID, { value: priceeINETHER });
+          await tx.wait();
+  
+          // Show success message
+          Swal.fire("Success!", `The request has been Verified.`, "success");
+          await axios.post('http://127.0.0.1:5000/client/complete-project', { projectId });
 
+          // Reload the page
+          window.location.reload();
+        } catch (error) {
+          console.error('Error:', error);
+          // Show error message
+          Swal.fire("Error!", "An error occurred while processing your request.", "error");
+        }
+      }
+    });
+  };
+
+
+  
+
+//   const handlefreelancerbutton = (ProjectID) => {
+//     // Show confirmation dialog before proceeding
+//     Swal.fire({
+//       title: "Are you sure?",
+//       text: "You are sure to Favour Freelancer. Proceed?",
+//       icon: "question",
+//       showCancelButton: true,
+//       confirmButtonColor: "#3085d6",
+//       cancelButtonColor: "#d33",
+//       confirmButtonText: "Yes",
+//       cancelButtonText: "Cancel",
+//     }).then((result) => {
+//       if (result.isConfirmed) {
+//         // Add rejection logic here
+//         // For demonstration, showing a success message
+//         Swal.fire("Success!", `The request has been Verified.`, "success");
+//         console.log("Request rejected");
+//       }
+//     });
+//   };
+
+ 
   useEffect(() => {
     fetchData();
-  }, []);
+
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x446bAB9Ccc20E0A3Af7E15D59f5600Eb81649094";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+
+
+  }, []); 
+
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to ADD Project.",
+        icon: "error",
+      });
+      navigate('/validator/dashboard')
+    }
+  };
+
+
+
 
   return (
     
@@ -105,8 +283,8 @@ const Genreq = () => {
                           <button onClick={() => window.open(request.PROPOSALFILEURL, '_blank')} style={{ display: 'block', margin: 'auto' }}>View More Details</button>
                         </td>
                         <td className="py-5 px-2 bg-white">
-                          <button onClick={handleclientbutton} style={{ display: 'block', margin: 'auto' }}>Client</button>
-                          <button  onClick={handlefreelancerbutton} style={{ display: 'block', margin: 'auto' }}>Freelancer</button>
+                          <button onClick={()=>handleclientbutton(request.PROJECTID)} style={{ display: 'block', margin: 'auto' }}>Client</button>
+                          <button  onClick={()=> handlefreelancerbutton((request.PROJECTID))} style={{ display: 'block', margin: 'auto' }}>Freelancer</button>
                         </td>
                       </tr>
                     ))}

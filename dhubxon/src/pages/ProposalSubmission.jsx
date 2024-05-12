@@ -26,6 +26,42 @@ const ProposalSubmission = () => {
   const [bidAmount, setBidAmount] = useState(100);
   const [EstimatedFee, setEstimatedFee] = useState(90);
   const [isLoading,setisLoading]=useState(false)
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(selectedAddress);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to Send Proposal.",
+        icon: "error",
+      });
+      navigate('/freelancer/search-jobs')
+    }
+  };
 
   const handleBidAmountChange = (e) => {
     // Check if the input value is a valid number
@@ -130,6 +166,7 @@ const ProposalSubmission = () => {
         COVERLETTER: coverletter,
         FILEURL: fileurl,
         PROPOSALOWNER: proposalowner,
+        METAMASKADDRESS:metamaskAddress
       };
       console.log(ProposalData);
       const response = await axios.post(
@@ -163,6 +200,7 @@ const ProposalSubmission = () => {
   
 
   useEffect(() => {
+    connectmetamask();
     settitle(location.state.title);
     setdescription(location.state.description);
     setskillRequired(location.state.skillRequired);

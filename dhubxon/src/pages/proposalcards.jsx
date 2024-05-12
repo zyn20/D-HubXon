@@ -1,8 +1,12 @@
 
 import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import useCountdown from './countdown';
 import axios from 'axios'; // Make sure axios is imported
+import abi from "../contract/FreelanceMarketplace.json";
+import { ethers } from "ethers";
+import Swal from "sweetalert2";
 
 const colorClasses = {
   green: {
@@ -25,9 +29,15 @@ const colorClasses = {
 };
 
 
-const Card = ({id, title, balance, color, duration, pricingType,status,takenby  , projectDeadline }) => {
+const   Card = ({id, title, balance, color, duration, pricingType,status,takenby  , projectDeadline }) => {
 
-
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
   const navigate = useNavigate(); // Initialize the navigate function
   const { days, hours, minutes, seconds } = useCountdown(projectDeadline);
   // Event handler for clicking the button
@@ -39,12 +49,123 @@ const Card = ({id, title, balance, color, duration, pricingType,status,takenby  
     localStorage.setItem('taken', takenby);
     navigate('/oneproposal'); 
   };
+
+  useEffect(() => {
+  
+
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x446bAB9Ccc20E0A3Af7E15D59f5600Eb81649094";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+
+
+  }, []); 
+
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to ADD Project.",
+        icon: "error",
+      });
+      navigate('/client')
+    }
+  };
+
+
+
   const handleCompleteProjectClick = async () => {
     try {
+
+      const projectDetailResponse = await axios.get(
+        "http://127.0.0.1:5000/client/getprojectbyid",
+        {
+            params: {
+                PROJECTID: id
+            }
+        }
+    );
+    const budgetinINT=parseInt(projectDetailResponse.data.budget);
+    const bugetInEther=budgetinINT/3076;
+    const priceeINETHER = ethers.utils.parseEther(bugetInEther.toString());
+
+    const ProjectID = parseInt(projectDetailResponse.data.BLOCKCHAININDEX); // Convert to int
+    const tx = await state.contract.releasePayment(ProjectID, { value: priceeINETHER });
+    await tx.wait();
+
+
+
+
       
       await axios.post('http://127.0.0.1:5000/client/complete-project', { id });
     
-       window.location.reload();
+      //  window.location.reload();
     } catch (error) {
       console.error('Error completing project:', error);
     }

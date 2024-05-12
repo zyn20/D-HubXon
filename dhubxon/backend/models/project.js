@@ -49,7 +49,11 @@ const Project = sequelize.define("Project", {
     type: DataTypes.STRING,
     defaultValue: 'Pending', // Default value set to 'Pending'
     allowNull: false,
-  }
+  },
+  BLOCKCHAININDEX: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 module.exports = Project;

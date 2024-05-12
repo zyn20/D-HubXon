@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import abi from "../contract/FreelanceMarketplace.json";
+import { ethers } from "ethers";
+import Swal from "sweetalert2";
+
 
 const TableComponent = () => {
+  const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
+  const [isChecked, setIsChecked] = useState(false);
+  const [state, setState] = useState({
+    provider: null,
+    signer: null,
+    contract: null,
+  });
+
   const [proposals, setProposals] = useState([]);
   const [coverLetter, setCoverLetter] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -26,7 +38,91 @@ const TableComponent = () => {
       }
     };
     fetchProposals();
+
+    connectmetamask();
+    const template = async () => {
+      const contractAddress = "0x446bAB9Ccc20E0A3Af7E15D59f5600Eb81649094";
+      const contractABI = abi.abi;
+
+      try {
+        const { ethereum } = window;
+
+        ethereum.on("accountsChanged", (accounts) => {
+          const selectedAddress = accounts[0];
+          setmetamaskAddress(
+            selectedAddress ? `Connected: ${selectedAddress}` : "Not Connected"
+          );
+
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const contract = new ethers.Contract(
+            contractAddress,
+            contractABI,
+            signer
+          );
+
+          setState({ provider, signer, contract });
+          //   setContract(state.contract);
+
+          console.log("useeffect Contract Data is:", state);
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+
+        setState({ provider, signer, contract });
+        // setContract(state.contract);
+
+        console.log("useeffect Contract Data is:", state);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    template();
+
   }, []);
+
+
+
+  const connectmetamask = () => {
+    if (window.ethereum) {
+      if (!isChecked) {
+        try {
+          window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((accounts) => {
+              const selectedAddress = accounts[0];
+              setmetamaskAddress(`Connected:${selectedAddress}`);
+
+              setIsChecked(true);
+            })
+            .catch((error) => {
+              console.error("MetaMask account access denied:", error);
+            });
+        } catch (error) {
+          console.error("Error accessing MetaMask account:", error);
+        }
+      } else {
+        setIsChecked(false);
+      }
+    } else {
+      setIsChecked(false);
+
+      Swal.fire({
+        title: "Error!",
+        text: "MetaMask is not available. Please install MetaMask to ADD Project.",
+        icon: "error",
+      });
+      navigate('/client')
+    }
+  };
 
   const handleViewCoverLetter = (coverLetter) => {
     setCoverLetter(coverLetter);
@@ -53,22 +149,75 @@ const TableComponent = () => {
     }
   };
   
-  // const handleAcceptClick = () => {
-  //   setShowConfirmationModal(true);
-  // };
-  const handleAcceptClick = async(proposalOwner, projectId,ProposalId) => {
+  
 
-    //delete all proposals
+const handleAcceptClick = async (proposalOwner, projectId, ProposalId, METAMASKADDRESS, BIDAMOUNT) => {
+  try {
+    const { provider} = state;
+      console.log("METAMASKADDRESS:", METAMASKADDRESS);
+      console.log("ProjectID:", projectId);
+      await axios.post('http://127.0.0.1:5000/client/deleteallotherproposals', {
+          ProposalID: ProposalId
+      });
 
-    const response = await axios.post('http://127.0.0.1:5000/client/deleteallotherproposals', {
-      ProposalID:ProposalId
-    });
+      // Fetch project details from the backend
+      const projectDetailResponse = await axios.get(
+          "http://127.0.0.1:5000/client/getprojectbyid",
+          {
+              params: {
+                  PROJECTID: projectId
+              }
+          }
+      );
+
+      // Fetch Metamask account and balance
+      const accounts = await provider.listAccounts();
+      const account = accounts[0];
+      const balance = await provider.getBalance(account);
+      const balanceEther = ethers.utils.formatEther(balance);
+      const balanceUSD = balanceEther * 3076;
+
+      console.log("Balance in USD of Metamask:", balanceUSD);
+
+      // Convert bid amount to ethers
+      const BIDINETHERS = BIDAMOUNT / 3076;
+      console.log("BID in Ether:",BIDINETHERS);
+      const priceeINETHER = ethers.utils.parseEther(BIDINETHERS.toString());
+
+      // Check if Metamask balance is sufficient for the bid amount
+      if (balanceUSD < BIDAMOUNT) {
+          Swal.fire({
+              icon: "error",
+              title: "Insufficient Balance",
+              text: "Your Metamask balance is not sufficient for this purchase",
+          });
+          return;
+      }
+
+      
 
 
-    setCurrentProposalOwner(proposalOwner);
-    setCurrentProjectId(projectId);
-    setShowConfirmationModal(true);
-  };
+      // Extract project ID and take the project in the contract
+      const projectDetail = projectDetailResponse.data;
+      const ProjectID = parseInt(projectDetail.BLOCKCHAININDEX); // Convert to int
+      console.log("Freelancer Address is:",METAMASKADDRESS);
+      const tx = await state.contract.takeProject(ProjectID, METAMASKADDRESS,);
+
+      await tx.wait();
+
+      console.log("Project Detail:", projectDetail);
+
+      // Set current proposal owner and project ID
+      setCurrentProposalOwner(proposalOwner);
+      setCurrentProjectId(projectId);
+      setShowConfirmationModal(true);
+  } catch (error) {
+      console.error("Error handling accept click:", error);
+      // Handle error appropriately
+  }
+};
+
+
 
   const handleModalClose = () => {
     setShowConfirmationModal(false);
@@ -98,7 +247,7 @@ const TableComponent = () => {
                       <td className="py-5 px-2 bg-white border-b border-r border-[#E8E8E8] flex justify-center items-center gap-4">
                         <a href={proposal.FILEURL} target="_blank" rel="noopener noreferrer" className="border border-green-500 py-2 px-6 text-green-500 inline-block rounded hover:bg-green-500 hover:text-white">Open CV</a>
                         <button onClick={() => handleViewCoverLetter(proposal.COVERLETTER)} className="border border-green-500 py-2 px-6 text-green-500 inline-block rounded hover:bg-green-500 hover:text-white">View Cover Letter</button>
-                        <button onClick={() => handleAcceptClick(proposal.PROPOSALOWNER, proposal.PROJECTID,proposal.id)} className="bg-green-500 py-2 px-6 text-white inline-block rounded hover:bg-green-600">Accept</button>
+                        <button onClick={() => handleAcceptClick(proposal.PROPOSALOWNER, proposal.PROJECTID,proposal.id,proposal.METAMASKADDRESS,proposal.BIDAMOUNT)} className="bg-green-500 py-2 px-6 text-white inline-block rounded hover:bg-green-600">Accept</button>
                       </td>
                     </tr>
                   ))}

@@ -21,7 +21,14 @@ const Proposals = sequelize.define("Proposals", {
   PROPOSALOWNER: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  METAMASKADDRESS: {
+    type: DataTypes.STRING,
+    allowNull: false,
   }
+
+
+  
 });
 
 module.exports = Proposals;

@@ -885,6 +885,39 @@ const getSubscriptionStatus = async (req, res) => {
 };
 
 
+
+const getSubscriptionbyemail = async (req, res) => {
+  try {
+    const useremail = req.query.useremail;
+
+    if (!useremail) {
+      return res.status(400).json({ error: 'User email is required' });
+    }
+
+    // Fetch all subscriptions for the user, instead of just one
+    const subscriptions = await Subscription.findOne({ where: { useremail } });
+
+    if (subscriptions.length === 0) {
+      return res.status(404).json({ message: 'No subscriptions found for this user' });
+    }
+
+    // Map the subscriptions to a response format that lists all subscription details
+    // const subscriptionStatuses = subscriptions.map(subscription => ({
+    //   subscriptionType: subscription.subscriptionType,
+    //   subscribed: subscription.subscribed,
+    //   tenure: subscription.tenure,
+    //   deductionAmount: subscription.deductionAmount,
+    //   packageType: subscription.packageType
+    // }));
+
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    console.error('Error fetching subscription statuses:', error);
+    res.status(500).json({ error: 'Unable to fetch subscription statuses' });
+  }
+};
+
+
 // Function to handle unsubscribe requests
 const unsubscribe = async (req, res) => {
   try {
@@ -1000,6 +1033,7 @@ module.exports = {
   getAllFreelancers,
   createSubscription,
   getSubscriptionStatus,
+  getSubscriptionbyemail,
   unsubscribe,
   SubmitProposals,
   DELETECOMMENT,
