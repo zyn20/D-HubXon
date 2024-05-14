@@ -9,12 +9,12 @@ import {jwtDecode} from 'jwt-decode';
 
 
 const cardData = [
-  { title: 'Projects in Queue', content: '10' },
-  { title: 'Successful Clients', content: '100' },
-  { title: 'Project Invitation', content: '3' },
-  { title: 'Recent Softwares', content: '100' },
-  { title: 'Recent Courses', content: '1000' },
-  { title: 'Courses Request', content: '31' },
+  { title: 'Projects in Queue', content: '2' },
+  { title: 'Successful Clients', content: '1' },
+  { title: 'Project Invitation', content: '0' },
+  { title: 'Recent Softwares', content: '3' },
+  { title: 'Recent Courses', content: '3' },
+  { title: 'Courses Request', content: '0' },
   // Add more card objects as needed
 ];
 
@@ -65,6 +65,23 @@ var Name;
 
   const navigate = useNavigate();
 
+
+  const Ftoken = localStorage.getItem('token');
+if (!Ftoken) {
+  console.error('No token found');
+  return;
+}
+const FdecodedToken = jwtDecode(Ftoken);
+let fREELANCERName;
+
+if (FdecodedToken.freelancerData) {
+ 
+  fREELANCERName = FdecodedToken.freelancerData.name;
+  
+}
+
+
+
     const renderStatisticsOverview = () => {
         return (
           <>
@@ -91,15 +108,15 @@ var Name;
      
           <div className="p-4 bg-white rounded-lg shadow flex justify-around items-center">
             <div className="text-center">
-              <span className="block text-2xl font-bold text-blue-500">$15,000</span>
+              <span className="block text-2xl font-bold text-blue-500">$80</span>
               <span className="text-gray-600">Total Earnings</span>
             </div>
             <div className="text-center">
-              <span className="block text-2xl font-bold text-blue-500">320</span>
+              <span className="block text-2xl font-bold text-blue-500">4</span>
               <span className="text-gray-600">Hours Worked</span>
             </div>
             <div className="text-center">
-              <span className="block text-2xl font-bold text-blue-500">45</span>
+              <span className="block text-2xl font-bold text-blue-500">1</span>
               <span className="text-gray-600">Positive Reviews</span>
             </div>
           </div>
@@ -210,7 +227,7 @@ var Name;
       <div className="w-full max-w-[1400px] h-[200px] bg-blue-900 rounded-xl overflow-hidden flex justify-center mt-[100px] items-center my-10">
         <div className="z-10 text-white text-center">
           <p className='text-xl lg:text-3xl font-poppins'>Welcome to Freelancer Dashboard</p>
-          <p className='text-xl lg:text-3xl font-poppins'>Good Evening Zain!</p>
+          <p className='text-xl lg:text-3xl font-poppins'>{fREELANCERName}</p>
         </div>
       </div>
 

@@ -511,6 +511,57 @@ const deleteproposals = async (req, res) => {
 };
 
 
+const countOngoingProjects = async (req, res) => {
+  try {
+    const owner = req.params.owner; // Assume owner is passed as a URL parameter
+    const count = await Project.count({
+      where: {
+        projectowner: owner,
+        status: 'Pending'
+      }
+    });
+    res.json({ ongoingProjects: count });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+//complete Projects
+const countCompletedProjects = async (req, res) => {
+  try {
+    const owner = req.params.owner; 
+    const count = await Project.count({
+      where: {
+        projectowner: owner,
+        status: 'Completed'
+      }
+    });
+    res.json({ completedProjects: count });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+
+const countPendingProposals = async (req, res) => {
+  try {
+    const owner = req.params.owner; // Assume owner is passed as a URL parameter
+    const count = await Project.count({
+      where: {
+        projectowner: owner,
+        takenby: {
+          [Sequelize.Op.ne]: 'none'
+        }
+      }
+    });
+    res.json({ pendingProposals: count });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+
+
 
 
 
@@ -529,6 +580,9 @@ module.exports = {
   fetchprofileurl,
   getProjectbyid,
   deleteproposals,
-SubmitDisputeRequest
+SubmitDisputeRequest,
+countCompletedProjects,
+countOngoingProjects,
+countPendingProposals
 
 };

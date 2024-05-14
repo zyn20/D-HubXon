@@ -11,6 +11,7 @@ const { getProposalsByTakenBy}= require('../controller/propsal');
 const { getoneProposalsByProjectId}= require('../controller/propsal');
 
 
+
 const {   updateProject }= require('../controller/updateproject');
 const {  completeProject }= require('../controller/updateproject');
 
@@ -41,6 +42,10 @@ router.get("/fetchprofileurl",Functions.fetchprofileurl);
 router.get("/getprojectbyid",Functions.getProjectbyid);
 router.post("/deleteallotherproposals",Functions.deleteproposals);
 router.post("/submitDisputeRequest",Functions.SubmitDisputeRequest);
+
+router.get('/dashboard/ongoing/:owner', Functions.countOngoingProjects);
+router.get('/dashboard/completed/:owner', Functions.countCompletedProjects);
+router.get('/dashboard/proposals/:owner', Functions.countPendingProposals);
 
 
 
