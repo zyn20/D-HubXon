@@ -8,6 +8,7 @@ const DataForClaim = ({ onClose }) => {
   const [documents, setDocuments] = useState(null); // Changed initial state to null
   const [profilePicture, setProfilePicture] = useState(null);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -16,6 +17,7 @@ const DataForClaim = ({ onClose }) => {
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
       try {
+        setIsLoading(true)
         const documentUrl = await uploadFile(documents);
         const profilePictureUrl = await uploadFile(profilePicture);
 
@@ -32,6 +34,7 @@ const DataForClaim = ({ onClose }) => {
             EMAIL: email,
             FILEURL: documentUrl,
             PROFILEURL: profilePictureUrl,
+            Processing:false
           }
         );
 
@@ -45,11 +48,21 @@ const DataForClaim = ({ onClose }) => {
         setProfilePicture(null);
 
         // Close the modal
+        setIsLoading(false)
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Data added successfully!',
+          onClose: onClose // Close the modal after the notification is closed
+        });
+
         onClose();
       } catch (error) {
         console.error("Error submitting claim:", error);
       }
     } else {
+      setIsLoading(false)
+
       setErrors(errors);
     }
   };
@@ -94,6 +107,14 @@ const DataForClaim = ({ onClose }) => {
 
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
+        {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center">
         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
           <div className="absolute inset-0 bg-gray-500 opacity-75"></div>

@@ -10,8 +10,7 @@ import { ethers } from "ethers";
 const HealthReq = () => {
   const [requestData, setRequestData] = useState([]);
   const navigate = useNavigate();
-
-
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
   const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
   const [isChecked, setIsChecked] = useState(false);
   const [state, setState] = useState({
@@ -142,57 +141,68 @@ const HealthReq = () => {
     });
   };
 
-  const handleVerify = async(useremail) => {
-    // Show confirmation dialog before proceeding
-
-    const projectDetailResponse = await axios.get(
-      "http://127.0.0.1:5000/freelancer/subscriptionbyemail",
-      {
+  const handleVerify = async (useremail, id) => {
+    setIsLoading(true)
+    try {
+      // Fetch project details by user email
+      const projectDetailResponse = await axios.get(
+        'http://127.0.0.1:5000/freelancer/subscriptionbyemail',
+        {
           params: {
             useremail
           }
+        }
+      );
+  
+      // Extract relevant data from the response
+      const { deductionAmount, BLOCKCHAININDEX } = projectDetailResponse.data;
+      const amount = deductionAmount / 3076;
+      const projectIdInt = parseInt(BLOCKCHAININDEX);
+      const priceeINETHER = ethers.utils.parseEther(amount.toString());
+  
+      // Call smart contract method to claim subscription
+      const tx = await state.contract.claimSubscription(
+        projectIdInt,
+        { value: priceeINETHER }
+      );
+      await tx.wait();
+      setIsLoading(false)
+
+      // Show confirmation dialog before proceeding
+      const confirmationResult = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to verify this request. Proceed?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, verify',
+        cancelButtonText: 'Cancel',
+      });
+  
+      if (confirmationResult.isConfirmed) {
+        // Update claim request status
+        await axios.post(
+          'http://127.0.0.1:5000/freelancer/updateclaim',
+          { ID: id }
+        );
+  
+        // Show success message after verification
+        Swal.fire('Verified!', 'The request has been verified.', 'success');
+        window.location.reload();
+        console.log('Request verified');
+      } else {
+        // Handle cancellation
+        console.log('Verification cancelled');
       }
-  );
-
-
-  console.log("User Email is:",projectDetailResponse.data);
-
-
-const amount=projectDetailResponse.data.deductionAmount/3076;
-const projectIdInt = parseInt(projectDetailResponse.data.BLOCKCHAININDEX);
-const priceeINETHER = ethers.utils.parseEther(amount.toString());
-
-
-const tx = await state.contract.claimSubscription(
-  projectIdInt,
-  { value: priceeINETHER }
-);
-await tx.wait();
-
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to verify this request. Proceed?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, verify",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Add verification logic here
-        // For demonstration, showing a success message
-        Swal.fire("Verified!", "The request has been verified.", "success");
-        console.log("Request verified");
-      }
-    });
-
-
-   
+    } catch (error) {
+      console.error('Error handling verification:', error);
+      // Handle errors gracefully
+      Swal.fire('Error', 'An error occurred while handling verification.', 'error');
+    }
   };
 
-  const handleReject = () => {
+  const handleReject = (id) => {
     // Show confirmation dialog before proceeding
     Swal.fire({
       title: "Are you sure?",
@@ -203,18 +213,38 @@ await tx.wait();
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, reject",
       cancelButtonText: "Cancel",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        // Add rejection logic here
-        // For demonstration, showing a success message
-        Swal.fire("Rejected!", "The request has been rejected.", "error");
-        console.log("Request rejected");
+        try {
+          // Add rejection logic here
+          await axios.post(
+            'http://127.0.0.1:5000/freelancer/updateclaim',
+            { ID: id }
+          );
+          // For demonstration, showing a success message
+          Swal.fire("Rejected!", "The request has been rejected.", "error");
+          console.log("Request rejected");
+          window.location.reload();
+        } catch (error) {
+          // Handle error
+          console.error("Error rejecting request:", error);
+          Swal.fire("Error", "Failed to reject the request.", "error");
+        }
       }
     });
   };
+  
 
   return (
     <section className="bg-white py-20 lg:py-[120px]">
+        {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-6xl">
@@ -266,8 +296,8 @@ await tx.wait();
                         <button onClick={() => handleViewDetails(request.EMAIL)} style={{ display: 'block', margin: 'auto' }}>View More Details</button>
                       </td>
                       <td className="py-5 px-2 bg-white">
-                        <button onClick={()=>handleVerify(request.EMAIL)} style={{ display: 'block', margin: 'auto' }}>Verify</button>
-                        <button onClick={handleReject} style={{ display: 'block', margin: 'auto' }}>Reject</button>
+                        <button onClick={()=>handleVerify(request.EMAIL,request.id)} style={{ display: 'block', margin: 'auto' }}>Verify</button>
+                        <button onClick={()=>handleReject(request.id)} style={{ display: 'block', margin: 'auto' }}>Reject</button>
                       </td>
                     </tr>
                   ))}

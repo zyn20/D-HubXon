@@ -88,7 +88,11 @@ const signup = async (req, res) => {
   const FetchRequest =  async (req, res) => {
     try {
       // Fetch all ClaimSubscriptions from the database
-      const Requests = await DisputeRequest.findAll();
+      const Requests = await DisputeRequest.findAll({
+        where: {
+          SOLVED: false
+        }
+      });
   
       // If there are no ClaimSubscriptions found, return 404
       if (!Requests) {
@@ -104,7 +108,39 @@ const signup = async (req, res) => {
     }
   }
 
-module.exports = { signup,signIn,FetchRequest };
+
+  const UpdateRequest = async (req, res) => {
+    const id = req.body.ID;
+    try {
+      // Update the SOLVED attribute to true for the given request ID
+      const updatedRequest = await DisputeRequest.update(
+        { SOLVED: true },
+        {
+          where: {
+            id: id,
+            SOLVED: false // Ensuring the request is currently marked as unsolved before updating
+          }
+        }
+      );
+  
+      // Check if any record was updated
+      if (updatedRequest[0] === 0) {
+        // If no record was updated, return 404
+        return res.status(404).json({ message: 'No unsolved DisputeRequest found with the provided ID' });
+      }
+  
+      // If the record was updated successfully, return success message
+      res.json({ message: 'SOLVED attribute updated successfully' });
+    } catch (error) {
+      // If there's an error, return 500 Internal Server Error
+      console.error('Error updating SOLVED attribute:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
+  
+
+
+module.exports = { signup,signIn,FetchRequest,UpdateRequest };
 
 
 

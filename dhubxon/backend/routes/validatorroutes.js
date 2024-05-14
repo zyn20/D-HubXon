@@ -9,6 +9,8 @@ const FreelancerController = require("../controller/freelancercontroller");
 router.post('/signup',  ValidatorController.signup);
 router.post('/signin', ValidatorController.signIn);
 router.get('/fetch-Dispute-requests', ValidatorController.FetchRequest);
+router.post('/updateRequest', ValidatorController.UpdateRequest);
+
 
 router.get('/fetch-requests',  FreelancerController.FetchRequest);
 

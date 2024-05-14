@@ -159,7 +159,8 @@ const ProposalSubmission = () => {
         COVERLETTER: coverletter,
         FILEURL: fileurl,
         DISPUTEREQUESTOWNER: Email,
-        PROPOSALFILEURL:proposal.data.FILEURL
+        PROPOSALFILEURL:proposal.data.FILEURL,
+        SOLVED:false
       };
       console.log(ProposalData);
       const response = await axios.post(

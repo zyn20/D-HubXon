@@ -813,8 +813,9 @@ const getAllFreelancers = async (req, res) => {
 
 
 const createSubscription = async (req, res) => {
+  console.log("Subscription Data:",req.body);
   try {
-    const { subscriptionType, tenure, deductionAmount, packageType, useremail,latestSubscriptionIdint } = req.body;
+    const { subscriptionType, tenure, deductionAmount, packageType, useremail,latestSubscriptionIdint,Processing } = req.body;
 
     // Check if there's already a subscription of the same type for the user
     const existingSubscription = await Subscription.findOne({
@@ -836,7 +837,8 @@ const createSubscription = async (req, res) => {
       deductionAmount,
       packageType,
       useremail,
-      BLOCKCHAININDEX:latestSubscriptionIdint
+      BLOCKCHAININDEX:latestSubscriptionIdint,
+      Processing:false
     });
 
     res.status(201).json(newSubscription);
@@ -961,11 +963,38 @@ const createClaimSubscription = async (req, res) => {
   }
 };
 
+const updateClaimSubscription = async (req, res) => {
+  try {
+    
+
+    // Update the processing status to true for the given ID
+    await ClaimSubscription.update(
+      { Processing: true },
+      {
+        where:{
+          id:req.body.ID
+        }
+      }
+
+    );
+
+    res.status(200).json({ message: "Processing updated successfully" });
+  } catch (error) {
+    console.error("Error updating processing status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 
 const FetchRequest =  async (req, res) => {
   try {
     // Fetch all ClaimSubscriptions from the database
-    const claimSubscriptions = await ClaimSubscription.findAll();
+    const claimSubscriptions = await ClaimSubscription.findAll({
+      where: {
+        Processing: false
+      }
+    });
 
     // If there are no ClaimSubscriptions found, return 404
     if (!claimSubscriptions) {
@@ -1048,4 +1077,5 @@ module.exports = {
   createClaimSubscription,
   FetchRequest,
   FetchSubscriptionDetail,
+  updateClaimSubscription
 };

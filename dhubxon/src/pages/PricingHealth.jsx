@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const PricingHealth = () => {
   const [isYearly, setIsYearly] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
   let [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [showClaimForm, setShowClaimForm] = useState(false);
@@ -234,6 +235,7 @@ const PricingHealth = () => {
       confirmButtonText: "Yes, subscribe!",
     });
 
+    setIsLoading(true);
 
     const { provider} = state;
     const accounts = await provider.listAccounts();
@@ -248,8 +250,11 @@ const PricingHealth = () => {
           title: "Insufficient Balance",
           text: "Your Metamask balance is not sufficient for this purchase",
       });
+      setIsLoading(false);
+
       return;
   }
+
 
   const AmountINether = deductionAmount / 3076;
   const priceeINETHER = ethers.utils.parseEther(AmountINether.toString());
@@ -284,7 +289,7 @@ console.log("latestSubscriptionIdint:",latestSubscriptionIdint)
               deductionAmount,
               packageType,
               useremail,
-              latestSubscriptionIdint
+              latestSubscriptionIdint,
             }),
           }
         );
@@ -292,14 +297,17 @@ console.log("latestSubscriptionIdint:",latestSubscriptionIdint)
         if (!response.ok) {
           throw new Error("Failed to subscribe");
         }
-
+        setIsLoading(false);
         Swal.fire(
           "Subscribed!",
           `You have been subscribed to the ${packageType}.`,
           "success"
         );
+
       } catch (error) {
         console.error("Subscription error:", error);
+        setIsLoading(false);
+
         Swal.fire(
           "Subscription failed",
           "There was a problem with your subscription.",
@@ -356,6 +364,14 @@ console.log("latestSubscriptionIdint:",latestSubscriptionIdint)
 
   return (
     <div className="py-12 bg-blue-50">
+        {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
       <div className="container mx-auto px-4">
         <div className="text-center mb-20">
           <h2 className="text-4xl font-bold text-blue-800">

@@ -25,7 +25,12 @@ const DisputeRequests = sequelize.define("DisputeRequests", {
   DISPUTEREQUESTOWNER: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  SOLVED:{
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
   }
+
 });
 
 module.exports = DisputeRequests;

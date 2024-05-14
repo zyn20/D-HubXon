@@ -50,7 +50,7 @@ const AddPost = () => {
 
   useEffect(() => {
     const template = async () => {
-      const contractAddress = "0x024F0132dBA92E47dEfF82cB0d901E71c47FdF60";
+      const contractAddress = "0xc55b72FCF24645d3eEa45eF8D8337Ae1D1903E10";
       const contractABI = abi.abi;
   
       try {
@@ -205,7 +205,8 @@ const AddPost = () => {
         const latestProjectIdInteger = ethers.utils
           .parseUnits(latestProjectIdBigNumber.toString(), "wei")
           .toNumber();
-        blockchainindex = latestProjectIdInteger-1;
+        blockchainindex = latestProjectIdInteger;
+        console.log("Blockchain Index of posting Project:",blockchainindex);
       } catch (error) {
         Swal.fire({
           icon: "error",

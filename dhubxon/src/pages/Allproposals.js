@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 
 
 const TableComponent = () => {
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
   const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
   const [isChecked, setIsChecked] = useState(false);
   const [state, setState] = useState({
@@ -202,6 +203,7 @@ const handleAcceptClick = async (proposalOwner, projectId, ProposalId, METAMASKA
       const ProjectID = parseInt(projectDetail.BLOCKCHAININDEX); // Convert to int
       console.log("Freelancer Address is:",METAMASKADDRESS);
       const tx = await state.contract.takeProject(ProjectID, METAMASKADDRESS,);
+  setIsLoading(true);
 
       await tx.wait();
 
@@ -210,8 +212,11 @@ const handleAcceptClick = async (proposalOwner, projectId, ProposalId, METAMASKA
       // Set current proposal owner and project ID
       setCurrentProposalOwner(proposalOwner);
       setCurrentProjectId(projectId);
+      setIsLoading(false);
+
       setShowConfirmationModal(true);
   } catch (error) {
+    setIsLoading(false);
       console.error("Error handling accept click:", error);
       // Handle error appropriately
   }
@@ -225,6 +230,14 @@ const handleAcceptClick = async (proposalOwner, projectId, ProposalId, METAMASKA
 
   return (
     <section className="bg-white py-20 lg:py-[120px]">
+       {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-6xl">

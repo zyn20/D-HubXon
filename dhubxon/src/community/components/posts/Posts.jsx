@@ -61,14 +61,14 @@ const Posts = ({IDENTIFIER}) => {
         if(IDENTIFIER=="all"){
         const response = await axios.get('http://127.0.0.1:5000/freelancer/GETcommunity_post');
         
-        setCommunityPosts(response.data.reverse()); 
+        setCommunityPosts(response.data); 
         }
         else{
         const token = localStorage.getItem("token");
         const decodedToken = jwtDecode(token);
         const response = await axios.get('http://127.0.0.1:5000/freelancer/GETcommunity_mypost', { params: { Email: decodedToken.freelancerData.email } });
         
-        setCommunityPosts(response.data.reverse());
+        setCommunityPosts(response.data);
         }
       } catch (error) {
         console.error('Error fetching community posts:', error);

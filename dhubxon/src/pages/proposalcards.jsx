@@ -38,6 +38,7 @@ const   Card = ({id, title, balance, color, duration, pricingType,status,takenby
     signer: null,
     contract: null,
   });
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
   const navigate = useNavigate(); // Initialize the navigate function
   const { days, hours, minutes, seconds } = useCountdown(projectDeadline);
   // Event handler for clicking the button
@@ -157,6 +158,7 @@ const   Card = ({id, title, balance, color, duration, pricingType,status,takenby
 
     const ProjectID = parseInt(projectDetailResponse.data.BLOCKCHAININDEX); // Convert to int
     const tx = await state.contract.releasePayment(ProjectID, { value: priceeINETHER });
+    setIsLoading(true);
     await tx.wait();
 
 
@@ -164,11 +166,16 @@ const   Card = ({id, title, balance, color, duration, pricingType,status,takenby
 
       
       await axios.post('http://127.0.0.1:5000/client/complete-project', { id });
-    
-      //  window.location.reload();
+      setIsLoading(false);
+
+       window.location.reload();
     } catch (error) {
       console.error('Error completing project:', error);
+      setIsLoading(false);
+
     }
+    setIsLoading(false);
+
   };
 
 const handleRequestClick=()=>{
@@ -183,6 +190,14 @@ const handleRequestClick=()=>{
   return (
     // Set a fixed width and a minimum height for each card
     <div className="p-4 md:w-1/3 w-full flex flex-col items-stretch">
+       {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
       <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-white shadow-md shadow-indigo-50 min-h-[300px] w-full">
       <div className="text-sm font-medium">
   {status !== 'Done' && (

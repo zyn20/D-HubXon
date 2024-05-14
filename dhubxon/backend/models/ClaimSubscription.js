@@ -17,7 +17,11 @@ const ClaimSubscription = sequelize.define("ClaimSubscription", {
   PROFILEURL: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
+  Processing:{
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
 });
 
 module.exports = ClaimSubscription;

@@ -10,7 +10,7 @@ import abi from "../contract/FreelanceMarketplace.json";
 
 
 const PostProject = () => {
-
+  const [isLoading, setIsLoading] = useState(false); // State variable for loading screen
   const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
   const [isChecked, setIsChecked] = useState(false);
   const [state, setState] = useState({
@@ -177,63 +177,7 @@ const PostProject = () => {
   };
 
 
-  // const handleSubmit = async (e) => {
   
-
-
-  //   e.preventDefault();
-  //   // if (!validation()) {
-  //   //   return;
-  //   // }
-
-    
-
-
-
-
-
-
-
-
-  //   try {
-
-  //     const tx = await state.contract.uploadProject(
-  //       title,
-  //       selectedSkill === "Others" ? customSkill : selectedSkill,
-  //       parseInt(projectDuration),
-  //       Date.parse(projectDeadline),
-  //       parseInt(budget)
-  //   );
-
-  //   await tx.wait();
-
-  //   const latestProjectId = await state.contract.latestProjectId();
-
-  //   console.log("latestProjectID:",latestProjectId);
-
-  //     const response = await axios.post(
-  //       "http://127.0.0.1:5000/client/post_project",
-  //       {
-  //         title,
-  //         description,
-  //         skillRequired:
-  //         selectedSkill === "Others" ? `${customSkill}` : selectedSkill,
-  //         projectDuration,
-  //         pricingType,
-  //         projectDeadline,
-  //         budget,
-  //         KEYWORDS,
-  //         projectowner
-  //       }
-  //     );
-
-  //     Swal.fire("Project posted successfully");
-  //     navigate("/client/");
-  //   } catch (error) {
-  //     console.error("Error posting project:", error);
-  //   }
-  // };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -246,6 +190,8 @@ const PostProject = () => {
             projectDeadline,
             parseInt(budget)
         );
+        setIsLoading(true);
+
 
         await tx.wait();
 
@@ -268,12 +214,14 @@ const PostProject = () => {
                 projectowner,
                 latestProjectIdint            }
         );
-
+        setIsLoading(false);
         Swal.fire("Project posted successfully");
         navigate("/client/");
     } catch (error) {
         console.error("Error posting project:", error);
     }
+    setIsLoading(false);
+
 };
 
 
@@ -285,6 +233,19 @@ const PostProject = () => {
         className="py-20 bg-gray-100 bg-opacity-50 h-[70%]"
       >
         <div className="mx-auto container max-w-2xl md:w-3/4 shadow-md bg-white rounded-lg overflow-hidden">
+
+        {isLoading && (
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-t-8 border-b-8 border-gray-200"></div>
+                    <div className="absolute top-0 left-0 h-24 w-24 rounded-full border-t-8 border-b-8 border-blue-500 animate-spin"></div>
+                </div>
+            </div>
+        )}
+
+
+
+
           <div className="bg-green-500 text-white p-4">
             <h1 className="text-2xl font-bold">Post a New Project</h1>
           </div>
