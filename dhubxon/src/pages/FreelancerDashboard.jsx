@@ -30,6 +30,12 @@ var Name;
     const fetchData = async () => {
       try {
         token = localStorage.getItem('token');
+
+        if (!token || typeof token !== 'string') { // Check if token is not a string
+          navigate('/login');
+          return; // Exit early
+        }
+
          decodedToken = jwtDecode(token);
         Email=decodedToken.freelancerData.email
         Name=decodedToken.freelancerData.name;

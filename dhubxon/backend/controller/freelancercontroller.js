@@ -468,6 +468,29 @@ const getAllPost = async (req, res) => {
     }
 };
 
+
+
+const getAllProjectByTakenBy = async (req, res) => {
+  const takenBy = req.query.takenby;
+  try {
+    const projects = await Project.findAll({
+      where: {
+        takenby: takenBy
+      }
+    });
+
+    // Respond with the list of projects
+    res.status(200).json(projects);
+  } catch (error) {
+    // Handle errors
+    console.error('Error getting projects:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
 const getmyPost = async (req, res) => {
   const email=req.query.Email;
   
@@ -557,6 +580,33 @@ const DELETEREPLYCOMMENT = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
+
+const updatesubmitwork = async (req, res) => {
+  try {
+    const oldData = await Project.findOne({
+      where: {
+        takenby: req.body.email,
+      },
+    });
+
+    console.log("Old Data:", oldData);
+
+    if (oldData) {
+      await oldData.update({ submitedwork: req.body.workurl });
+      console.log("Submit work updated successfully.");
+      res.status(200).send("Submit work updated successfully.");
+    } else {
+      console.log("No project found with the provided email.");
+      res.status(404).send("No project found with the provided email.");
+    }
+  } catch (error) {
+    console.error("Error in updating submit work:", error);
+    res.status(500).send(error.message);
+  }
+};
+
 
 
 const CHANGELIKE = async (req, res) => {
@@ -1077,5 +1127,7 @@ module.exports = {
   createClaimSubscription,
   FetchRequest,
   FetchSubscriptionDetail,
-  updateClaimSubscription
+  updateClaimSubscription,
+  getAllProjectByTakenBy,
+  updatesubmitwork
 };

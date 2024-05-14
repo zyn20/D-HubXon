@@ -29,7 +29,7 @@ const colorClasses = {
 };
 
 
-const   Card = ({id, title, balance, color, duration, pricingType,status,takenby  , projectDeadline }) => {
+const   Card = ({id, title, balance, color, duration, pricingType,status,takenby, projectDeadline,workurl }) => {
 
   const [metamaskAddress, setmetamaskAddress] = useState("Not Connected");
   const [isChecked, setIsChecked] = useState(false);
@@ -50,6 +50,15 @@ const   Card = ({id, title, balance, color, duration, pricingType,status,takenby
     localStorage.setItem('taken', takenby);
     navigate('/oneproposal'); 
   };
+
+
+  const handleWorkClick=()=>{
+    if (!workurl) {
+      console.error("No work URL found.");
+      return;
+    }
+    window.open(workurl, "_blank");
+  }
 
   useEffect(() => {
   
@@ -253,11 +262,16 @@ const handleRequestClick=()=>{
         </div>
         {status === 'Active' ? (
           <div className='flex space-x-4'>
+           {workurl !== "xyz" && (
+  <button onClick={handleWorkClick} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
+    Work
+  </button>
+)}
             <button  onClick={handleDetailsClick } className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
               Details
             </button>
             <button onClick={handleCompleteProjectClick} className={`mt-2 px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
-              Complete Project
+              Complete
             </button>
             <button onClick={handleRequestClick} className={`mt-auto px-4 py-2 ${classes.bg} text-white rounded-lg tracking-wider ${classes.hoverBg} outline-none`}>
             Request

@@ -10,11 +10,13 @@ function Protected({ component: Component,allowableuser }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
 
-    if (!token) {
+
+
+    if (!token || typeof token != 'string') {
       navigate('/login');
     }
 
-    
+    console.log("Token Type:",typeof token)
 
   
     try {

@@ -74,7 +74,8 @@ router.get("/fetchprofiledata",functions.fetchprofiledata);
 router.post("/resendOTP",functions.Re_send_OTP);
 router.get("/fetchBESTMATCHES",functions.BESTMATCH);
 router.get("/fetchcourses",courseController.getAllCourses);
-
+router.get("/getprojectbytakenby",functions.getAllProjectByTakenBy);
+router.post("/updateproject_work",functions.updatesubmitwork);
 
 router.post("/ADDcommunity_post",functions.addPost);
 router.get("/GETcommunity_post",functions.getAllPost);

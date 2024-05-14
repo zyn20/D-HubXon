@@ -52,6 +52,7 @@ const Proposal = () => {
           color="green"
           duration={proposal.projectDuration}
           pricingType={proposal.pricingType}
+          workurl={proposal.submitedwork}
         />
       ))}
     </div>

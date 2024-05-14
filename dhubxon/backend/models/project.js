@@ -54,6 +54,10 @@ const Project = sequelize.define("Project", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  submitedwork: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = Project;
