@@ -181,7 +181,15 @@ const PostProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!validation()) {
+      // Validation failed, show Swal alert with validation errors
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Input validation Error!",
+      });
+      return;
+    }
     try {
         const tx = await state.contract.uploadProject(
             title,
@@ -192,7 +200,7 @@ const PostProject = () => {
         );
         setIsLoading(true);
 
-
+console.log("Project Hash:",tx.hash)
         await tx.wait();
 
         const latestProjectId = await state.contract.latestProjectId();

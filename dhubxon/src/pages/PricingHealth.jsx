@@ -266,6 +266,8 @@ const PricingHealth = () => {
     { value: priceeINETHER }
 );
 
+console.log("Hash:",tx.hash)
+
 const receipt = await tx.wait(); // Get the transaction receipt
 const latestSubscriptionId = await state.contract.latestSubscriptionIndex();
         const latestSubscriptionIdint=latestSubscriptionId.toNumber()

@@ -587,7 +587,7 @@ const updatesubmitwork = async (req, res) => {
   try {
     const oldData = await Project.findOne({
       where: {
-        takenby: req.body.email,
+        takenby: req.body.email,status:'Active'
       },
     });
 
@@ -915,7 +915,7 @@ const getSubscriptionStatus = async (req, res) => {
     }
 
     // Fetch all subscriptions for the user, instead of just one
-    const subscriptions = await Subscription.findAll({ where: { useremail } });
+    const subscriptions = await Subscription.findAll({ where: { useremail , subscribed: true} });
 
     if (subscriptions.length === 0) {
       return res.status(404).json({ message: 'No subscriptions found for this user' });
